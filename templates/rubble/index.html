@@ -1,0 +1,58 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="keywords" content="{{ config.site.keywords | join(sep=', ')}}" />
+    <link rel="stylesheet" href="/statics/style.css">
+    <link rel="alternate" type="application/rss+xml" title="{{ config.site.title }}" href="/rss.xml" />
+    <title>{{ config.site.title }}</title>
+</head>
+<body>
+
+<section class="full-page">
+    <header>
+        <section class="container">
+            <h1>{{ config.site.title }}</h1>
+            <p>{{ config.site.description }}</p>
+            <nav>
+                <a href="/">HOMEPAGE</a>
+                {% if config.pages %}
+                {% for page in config.pages %}
+                <a href="{{ page.meta.url }}">{{ page.nav_title}}</a>
+                {% endfor %}
+                {% endif %}
+            </nav>
+        </section>
+    </header>
+
+    <section class="container">
+        
+        {% for article in articles %}
+        <section class="article">
+            <p class="mate">{{ article.meta.date | date(format="%B %d, %Y") }}</p>
+            <a class="title"
+               href="{{ article.meta.url }}">{{ article.meta.title }}</a>
+            {% if article.meta.description %}
+            <section class="yue desc">
+                {{ article.meta.description.html | safe }}
+            </section>
+            {% endif %}
+        </section>
+        {% endfor %}
+    </section>
+</section>
+
+
+
+<footer>
+    <section class="container">
+    <p> 自豪地使用 <a href="https://github.com/Kilerd/rubble">Project Rubble</a> 运行。 </p>
+    <div style="display:none"><!-- Global site tag (gtag.js) - Google Analytics --> <script async src="https://www.googletagmanager.com/gtag/js?id=UA-68997851-1"></script> <script>   window.dataLayer = window.dataLayer || [];   function gtag(){dataLayer.push(arguments);}   gtag('js', new Date());    gtag('config', 'UA-68997851-1'); </script></div>
+    </section>
+</footer>
+<script src="/statics/prism.js" type="text/javascript"></script>
+</body>
+</html>

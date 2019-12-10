@@ -1,0 +1,34 @@
+[site]
+title = "你好，耳先生"
+subtitle = ""
+description = "先生贵姓？耳东陈。好的，这边请，耳先生。"
+keywords = []
+author = ""
+email = ""
+utc_offset = 800
+theme = "rubble"
+
+[url]
+url = "http://localhost:8000"
+root = "/"
+
+[pagination]
+page_size = 10
+
+[[pages]]
+show_in_nav = true
+nav_title = "PORTFOLIOS"
+file = "portfolios.md"
+template = "page.html"
+
+[[pages]]
+show_in_nav = true
+nav_title = "ABOUTME"
+file = "about.md"
+template = "page.html"
+
+[rss]
+enable = true
+article_limited = 10
+
+[extra]
