@@ -1,5 +1,5 @@
  - title = 如果，哭可以解决问题
- - url = if_i_can_cry
+ - url = if-i-can-cry
  - tags = 
  - datetime = 2015-05-30 20:22:36 +0800
 

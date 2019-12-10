@@ -1,5 +1,5 @@
  - title = 自制 Web 框架的那些事儿
- - url = things_of_creating_web_framework
+ - url = things-of-creating-web-framework
  - tags = 
  - datetime = 2018-07-12 03:15:28 +0800
 

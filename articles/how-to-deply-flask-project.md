@@ -1,5 +1,5 @@
  - title = 如何正确的部署 Flask 项目
- - url = how_to_deply_flask_project
+ - url = how-to-deply-flask-project
  - tags = 
  - datetime = 2016-11-25 12:07:27 +0800
 

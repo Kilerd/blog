@@ -1,5 +1,5 @@
  - title = 一场诡异的梦
- - url = a_wired_dream
+ - url = a-wired-dream
  - tags = 
  - datetime = 2017-05-19 15:30:11 +0800
 

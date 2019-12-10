@@ -1,5 +1,5 @@
  - title = Guys, you are not the center of the world.
- - url = you_are_not_the_center_of_world
+ - url = you-are-not-the-center-of-world
  - tags = 
  - datetime = 2016-06-25 13:36:40 +0800
 

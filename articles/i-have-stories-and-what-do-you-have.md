@@ -1,5 +1,5 @@
  - title = 我有5毛，你能卖我一碗鸡汤吗？
- - url = i_have_stories_and_what_do_you_have
+ - url = i-have-stories-and-what-do-you-have
  - tags = 
  - datetime = 2016-03-15 23:45:27 +0800
 

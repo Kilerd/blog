@@ -1,5 +1,5 @@
  - title = 科技的未来到底在哪里？
- - url = thought_after_reading_the_electric_state
+ - url = thought-after-reading-the-electric-state
  - tags = 
  - datetime = 2019-02-11 08:58:38 +0800
 

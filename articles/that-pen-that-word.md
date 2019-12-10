@@ -1,5 +1,5 @@
  - title = 抓不惯的笔，写不出的字
- - url = that_pen_that_word
+ - url = that-pen-that-word
  - tags = 
  - datetime = 2016-01-26 23:19:17 +0800
 

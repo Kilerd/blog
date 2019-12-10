@@ -1,5 +1,5 @@
  - title = Misuzu 偏执的 WEB 框架
- - url = misuzu_web
+ - url = misuzu-web
  - tags = 
  - datetime = 2017-04-19 10:31:58 +0800
 

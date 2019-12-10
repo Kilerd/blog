@@ -1,5 +1,5 @@
  - title = 优化 Rust 的项目 Docker 打包流程.Rust
- - url = rust_auto_optimize_dockerize_procedure
+ - url = rust-auto-optimize-dockerize-procedure
  - tags = 
  - datetime = 2019-04-28 15:52:05 +0800
 

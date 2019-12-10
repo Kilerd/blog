@@ -1,5 +1,5 @@
  - title = 新的博客
- - url = new_blog
+ - url = new-blog
  - tags = 
  - datetime = 2015-04-18 21:16:11 +0800
 

@@ -1,5 +1,5 @@
  - title = Rust Web初试
- - url = first_taste_rust_web
+ - url = first-taste-rust-web
  - tags = 
  - datetime = 2017-01-06 23:15:27 +0800
 

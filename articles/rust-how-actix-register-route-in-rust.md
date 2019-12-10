@@ -1,5 +1,5 @@
  - title = Actix通过什么方法来实现路由注册的.RUST
- - url = rust_how_actix_register_route_in_rust
+ - url = rust-how-actix-register-route-in-rust
  - tags = 
  - datetime = 2019-05-13 08:40:47 +0800
 

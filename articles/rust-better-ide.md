@@ -1,5 +1,5 @@
  - title = 更好的 IDE 配置.RUST
- - url = rust_better_ide
+ - url = rust-better-ide
  - tags = 
  - datetime = 2018-12-11 02:51:19 +0800
 

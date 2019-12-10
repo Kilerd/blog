@@ -1,5 +1,5 @@
  - title = 基于证书权限的电脑应用商场
- - url = app_store_based_on_cert
+ - url = app-store-based-on-cert
  - tags = 
  - datetime = 2015-06-07 13:09:31 +0800
 

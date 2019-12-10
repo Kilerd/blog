@@ -1,5 +1,5 @@
  - title = 山寨红色 iPhone 5S
- - url = a_fake_red_iphone_5s
+ - url = a-fake-red-iphone-5s
  - tags = 
  - datetime = 2016-12-05 23:27:26 +0800
 

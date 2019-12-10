@@ -1,5 +1,5 @@
  - title = HOOK机制浅谈与实现
- - url = how_hooks_works
+ - url = how-hooks-works
  - tags = 
  - datetime = 2016-06-25 17:05:34 +0800
 

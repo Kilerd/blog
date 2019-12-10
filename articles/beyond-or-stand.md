@@ -1,5 +1,5 @@
  - title = 要么孤独，要么平庸
- - url = beyond_or_stand
+ - url = beyond-or-stand
  - tags = 
  - datetime = 2015-11-26 19:43:21 +0800
 

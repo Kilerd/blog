@@ -1,5 +1,5 @@
  - title = 自动解引用.RUST
- - url = rust_auto_deref
+ - url = rust-auto-deref
  - tags = 
  - datetime = 2019-04-18 06:11:25 +0800
 

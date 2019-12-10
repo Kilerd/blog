@@ -1,5 +1,5 @@
  - title = 入门就写一个博客程序吧.RUST
- - url = rust_how_to_learn_it
+ - url = rust-how-to-learn-it
  - tags = 
  - datetime = 2018-12-28 15:03:59 +0800
 

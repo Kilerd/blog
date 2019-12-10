@@ -1,5 +1,5 @@
  - title = Python Web 从入门到放弃：Flask or Tornado
- - url = python_web_learning_and_giving_up
+ - url = python-web-learning-and-giving-up
  - tags = 
  - datetime = 2017-02-08 23:33:43 +0800
 

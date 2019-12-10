@@ -1,5 +1,5 @@
  - title = 浅谈 Web 用户验证的几种方式
- - url = web_authorizations
+ - url = web-authorizations
  - tags = 
  - datetime = 2018-02-21 16:10:34 +0800
 

@@ -1,5 +1,5 @@
  - title = 用 Webpack 和 React 搭建一个适用于 Chrome Extension 的脚手架
- - url = starter_of_chrome_extension
+ - url = starter-of-chrome-extension
  - tags = 
  - datetime = 2017-11-28 23:19:47 +0800
 

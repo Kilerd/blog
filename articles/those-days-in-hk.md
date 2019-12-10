@@ -1,5 +1,5 @@
  - title = 在 HongKong 的那些天那些事
- - url = those_days_in_hk
+ - url = those-days-in-hk
  - tags = 
  - datetime = 2017-08-27 15:29:01 +0800
 

@@ -1,5 +1,5 @@
  - title = [译文]如何使用Flask部署大型应用？
- - url = how_to_deploy_flask
+ - url = how-to-deploy-flask
  - tags = 
  - datetime = 2015-07-14 23:30:18 +0800
 

@@ -1,5 +1,5 @@
  - title = 一人孤独，两份寂寥
- - url = everyone_is_lonely
+ - url = everyone-is-lonely
  - tags = 
  - datetime = 2016-08-21 12:52:25 +0800
 

@@ -1,5 +1,5 @@
  - title = 我的技术断离舍
- - url = learnning_zen_of_tech
+ - url = learnning-zen-of-tech
  - tags = 
  - datetime = 2019-11-08 16:52:13 +0800
 

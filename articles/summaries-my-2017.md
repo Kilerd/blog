@@ -1,5 +1,5 @@
  - title = 2017 个人总结
- - url = summaries_my_2017
+ - url = summaries-my-2017
  - tags = 
  - datetime = 2017-12-29 14:39:44 +0800
 

@@ -1,5 +1,5 @@
  - title = 简单几步打造个人集群和自动化流水线
- - url = personal_docker_cluster_and_ci_package_pipeline
+ - url = personal-docker-cluster-and-ci-package-pipeline
  - tags = 
  - datetime = 2019-06-13 13:16:33 +0800
 

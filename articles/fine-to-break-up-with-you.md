@@ -1,5 +1,5 @@
- - title = fine_to_break_up_with_you
- - url = fine_to_break_up_with_you
+ - title = 人家甩你很正常啊，你丑
+ - url = fine-to-break-up-with-you
  - tags = 
  - datetime = 2018-12-24 15:31:19 +0800
 
