@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="keywords" content="" />
+    <link rel="stylesheet" href="/statics/style.css">
+    <link rel="alternate" type="application/rss+xml" title="你好，耳先生" href="/rss.xml" />
+    <title>简单几步打造个人集群和自动化流水线</title>
+</head>
+
+<body>
+
+
+    <section class="full-page">
+        <section class="container">
+            <nav>
+                <a href="/">HOMEPAGE</a>
+                
+                
+                <a href="portfolios">PORTFOLIOS</a>
+                
+                <a href="about">ABOUTME</a>
+                
+                
+            </nav>
+            <section class="single article">
+                <p class="mate">April 18, 2015</p>
+                <h2>新的博客</h2>
+                <section class="content yue">
+                    <p>在认识的小伙伴发了他做的项目部署文档出来之后，我便决定开始写这篇文章，原因是他使用的部署方式太麻烦，而且太不自动化，同时有时候也会因为开发任务繁忙导致没能部署好等等。</p>
+<p>这篇文章是介绍了一个极度适合用于个人或者几个人的小团队使用的集群搭建方式，在保证了安全性的同时，提供了几乎全自动的部署方式，在手动配置一次之后，每次服务更新都是自动触发的，极大地减少了部署的时间。</p>
+<p>本篇文章适用于 GIT-FLOW 类似的「master 即 生产代码」的一切工作模式（或者某一个分支为生产代码）。如果您的开发模式不符合这个特征，那么可以关闭网页了。</p>
+<!--more-->
+<h2>服务器架构</h2>
+<p>服务器方面，为了方便使用，我们选择了 docker swarm 而不是 k8s，我们先看一个全览图：</p>
+<p><img src="https://i.loli.net/2019/06/13/5d0220558718054830.jpg" alt="server-structure.jpg" /></p>
+<p>整个架构的思路就是用 NGINX 来代理所有的 web 应用，内部每个应用都以 stack 的方式部署，同时配合 Portainer 进行自动化更新。一个超级简单的部署模式，却基本满足了我个人的所有开发场景。</p>
+<h2>环境部署</h2>
+<p>首先你要有一台独立的服务器，什么发行版都不所谓了，我们不会在宿主机里面干任何事情，一切都是在Docker 内实现。</p>
+<p>服务器只需要对外暴露 80 和 443 端口即可，ssh 使用密钥的方式登陆保证安全。</p>
+<h3>安装Docker 并启动 Docker Swarm 模式</h3>
+<p>因为这里采用了单机的方式，所以一步就启动了 swarm 模式：</p>
+<pre><code class="language-shell">docker swarm init
+</code></pre>
+<h3>安装 Nginx</h3>
+<p>在这里 Nginx 作为 Load Balancer 和自动 HTTPS 的工具，需要实现服务发现的功能，你可以用 <code>docker-gen</code> 自己撸一个，也可以采用现成的软件来完成。这里我才用了这个 <a href="https://github.com/buchdag/letsencrypt-nginx-proxy-companion-compose/blob/master/2-containers/compose-v3/environment/docker-compose.yaml">buchdag/letsencrypt-nginx-proxy-companion-compose</a> 。</p>
+<p>先创建一个 nginx network：</p>
+<pre><code class="language-shell">docker network create nginx-net --attachable
+</code></pre>
+<p>因为我喜欢吧 volume 不与任何服务直接挂钩，所以我的 volume 都是独立创建的：</p>
+<pre><code class="language-shell">docker volume create nginx-conf
+docker volume create nginx-vhost
+docker volume create nginx-html
+docker volume create nginx-dhparam
+docker volume create nginx-certs
+</code></pre>
+<p>最后以 stack 的模式启动 nginx: </p>
+<pre><code class="language-yaml">version: '3'
+
+services:
+
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    ports:
+      - &quot;80:80&quot;
+      - &quot;443:443&quot;
+    volumes:
+      - nginx-conf:/etc/nginx/conf.d
+      - nginx-vhost:/etc/nginx/vhost.d
+      - nginx-html:/usr/share/nginx/html
+      - nginx-dhparam:/etc/nginx/dhparam
+      - nginx-certs:/etc/nginx/certs:ro
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+    labels:
+      - &quot;com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy&quot;
+    networks:
+      - nginx-net
+
+  letsencrypt:
+    image: jrcs/letsencrypt-nginx-proxy-companion
+    depends_on:
+      - nginx-proxy
+    volumes:
+      - nginx-vhost:/etc/nginx/vhost.d
+      - nginx-html:/usr/share/nginx/html
+      - nginx-dhparam:/etc/nginx/dhparam:ro
+      - nginx-certs:/etc/nginx/certs
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - nginx-net
+
+volumes:
+  nginx-conf:
+    external:
+      name: nginx-conf
+  nginx-vhost:
+    external:
+      name: nginx-vhost
+  nginx-html:
+    external:
+      name: nginx-html
+  nginx-dhparam:
+    external:
+      name: nginx-dhparam
+  nginx-certs:
+    external:
+      name: nginx-certs
+
+networks:
+  nginx-net:
+    external: true
+</code></pre>
+<pre><code class="language-shell">docker stack deploy --compose-file nginx.yml nginx
+</code></pre>
+<p>OK，这个时候 nginx 就已经创建好了。</p>
+<h3>安装 Portainer</h3>
+<p>Portainer 是一个为数不多的简洁，消耗资源又少的 docker 管理面板，有他可以更加直观地管理集群的内容，同时新版的 Portainer 还提供了一个比较方便的更新服务的方法，所以他对于我来说是必须的</p>
+<pre><code class="language-yaml">version: &quot;3&quot;
+services:
+  agent:
+    image: portainer/agent
+    environment:
+      # REQUIRED: Should be equal to the service name prefixed by &quot;tasks.&quot; when
+      # deployed inside an overlay network
+      AGENT_CLUSTER_ADDR: tasks.agent
+      # AGENT_PORT: 9001
+      # LOG_LEVEL: debug
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/lib/docker/volumes:/var/lib/docker/volumes
+    networks:
+      - agent_network
+    deploy:
+      mode: global
+      placement:
+        constraints: [node.platform.os == linux]
+
+  portainer:
+    image: portainer/portainer
+    command: -H tcp://tasks.agent:9001 --tlsskipverify
+    environment:
+      VIRTUAL_HOST: portainer.kilerd.me
+      VIRTUAL_PORT: 9000
+      LETSENCRYPT_HOST: portainer.kilerd.me
+      LETSENCRYPT_EMAIL: blove694@gmail.com
+    volumes:
+      - portainer_data:/data
+    networks:
+      - agent_network
+      - nginx-net
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints: [node.role == manager]
+
+networks:
+  agent_network:
+    driver: overlay
+  nginx-net:
+    external: true
+
+volumes:
+  portainer_data:
+</code></pre>
+<p><strong>注意：这里不能直接照抄配置文件了</strong>：在 <code>portainer</code> 这个服务里面，对外暴露出了一个GUI管理页面，他是需要通过 nginx 进行代理才能访问的，所以需要修改 <code>VIRTUAL_HOST</code> <code>LETSENCRYPT_HOST</code> 为你的域名， <code>LETSENCRYPT_EMAIL</code> 为你的邮箱。</p>
+<pre><code class="language-shell">docker stack deploy --compose-file portainer.yml portainer
+</code></pre>
+<p>好，不出意外的话，你就可以通过 <code>https://你的域名</code> 来访问到 Portainer 的页面了，进去改密码，就完事了。</p>
+<h3>部署自己的 Docker Registry</h3>
+<p>首先先创建 volumes：</p>
+<pre><code class="language-shell">docker volume create registry_data
+docker volume create registry_auth
+</code></pre>
+<p>然后在 <code>registry_auth</code> 生成一个用于提供密码保护的配置文件 <code>.passwd</code> ，因为 registry 没有密码很不安全</p>
+<pre><code class="language-shell">cd /var/lib/docker/volumes/registry_auth/_data
+docker run --entrypoint htpasswd registry:2 -Bbn 用户名 密码 &gt; .passwd
+</code></pre>
+<p><strong>上述不要直接复制，请修改用户名密码</strong></p>
+<p>然后，部署 stack：</p>
+<pre><code>version: &quot;3&quot;
+services:
+  registry:
+    image: registry:2
+    environment:
+      VIRTUAL_HOST: registry.kilerd.me
+      VIRTUAL_PORT: 5000
+      LETSENCRYPT_HOST: registry.kilerd.me
+      LETSENCRYPT_EMAIL: blove694@gmail.com
+      REGISTRY_AUTH: htpasswd
+      REGISTRY_AUTH_HTPASSWD_PATH: /auth/.passwd
+      REGISTRY_AUTH_HTPASSWD_REALM: Registry Realm
+    volumes:
+      - registry_data:/var/lib/registry
+      - registry_auth:/auth
+    networks:
+      - nginx-net
+volumes:
+  registry_auth:
+    external:
+      name: registry_auth
+  registry_data:
+    external:
+      name: registry_data
+
+networks:
+  nginx-net:
+    external: true
+
+</code></pre>
+<p><strong>上述不要直接复制，请修改访问地址，邮箱</strong></p>
+<p>因为 nginx 有默认最大传输大小，所以可能会导致<code>docker push image</code> 失败，在 image 太大时，所以需要一下命令取消限制：</p>
+<pre><code class="language-shell">cd /var/lib/docker/volumes/nginx-vhost/_data
+echo &quot;client_max_body_size 0;&quot; &gt; registry.kilerd.me
+</code></pre>
+<p><strong>上述不要直接复制，请修改域名</strong></p>
+<p>这样必要的东西就完成了，环境就完全搭建完毕。</p>
+<h2>自动化流水线</h2>
+<p>接下来就是怎么通过流水线自动发布新版本的应用了，这里会以我的一个小项目为例子，一一说明你需要怎么做。</p>
+<p>假设我们的项目就是一个简单的文本：</p>
+<pre><code class="language-shell">echo &quot;hello world&quot; &gt; index.html
+</code></pre>
+<p>然后我们编写一个超级简单的 Dockerfile：</p>
+<pre><code class="language-dockerfile">FROM python:3.7
+
+COPY index.html index.html
+
+EXPOSE 8000
+CMD [&quot;python -m http.server 8000&quot;]
+</code></pre>
+<p>这个docker 会暴露出 8000 端口作为 http 访问。</p>
+<h3>Travis CI or Circle CI</h3>
+<p>相比自己搭建一套CI，我现在了 Circle CI 来做持续集成和持续部署。我们的策略是这样的：</p>
+<ul>
+<li>如果不是 master 分支，不执行</li>
+<li>打包docker 镜像</li>
+<li>推送到我们刚刚部署的 Registry</li>
+<li>更新我们的服务</li>
+</ul>
+<p>先看看 circle ci 的配置文件：</p>
+<pre><code class="language-yaml">version: 2
+jobs:
+  build:
+    working_directory: /app
+    docker:
+      - image: docker:17.05.0-ce-git
+    steps:
+      - checkout
+      - setup_remote_docker
+      - restore_cache:
+          keys:
+            - v1-{{ .Branch }}
+          paths:
+            - /caches/app.tar
+      - run:
+          name: Load Docker image layer cache
+          command: |
+            set +o pipefail
+            docker load -i /caches/app.tar | true
+      - run:
+          name: Build application Docker image
+          command: |
+            docker build --cache-from=app -t app .
+      - run:
+          name: Save Docker image layer cache
+          command: |
+            mkdir -p /caches
+            docker save -o /caches/app.tar app
+      - save_cache:
+          key: v1-{{ .Branch }}-{{ epoch }}
+          paths:
+            - /caches/app.tar
+      - run:
+          name: Push to registry
+          command: |
+            docker login registry.kilerd.me -u 用户名 -p 密码
+            docker tag app registry.kilerd.me/app
+            docker push registry.kilerd.me/app
+  deploy:
+    machine:
+      enabled: true
+    steps:
+      - run:
+          name: update service
+          command: |
+            curl -X POST PORTAINER_WEBHOOK_URL
+workflows:
+  version: 2
+  build-and-deploy:
+    jobs:
+      - build:
+          filters:
+            branches:
+              ignore:
+                - develop
+                - /feature-.*/
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
+</code></pre>
+<p>上面这个配置信息很多都是与缓存有关的，用来加快<code>docker build </code> 的过程，主要的只有几行：</p>
+<ul>
+<li><code>docker login registry.kilerd.me -u 用户名 -p 密码</code> 登陆部署的 Registry</li>
+<li><code>docker tag app registry.kilerd.me/app</code> 打 TAG</li>
+<li><code>docker push registry.kilerd.me/app</code> 推送</li>
+<li><code>curl -X POST PORTAINER_WEBHOOK_URL</code> 更新服务，这里因为还没有在集群里面创建 stack，所以还没有这个 <code>PORTAINER_WEBHOOK_URL</code> ，下文会补上。</li>
+</ul>
+<p><strong>注意：上述用户名、密码、PORTAINER_WEBHOOK_URL 请用 circle 的 environment variable 来储存，不要直接写在配置文件内</strong> （作者就吃了这样的亏，导致项目无法开源）</p>
+<p>OK，推到项目仓库，circle ci 就开始执行了，配置没问题的话， registry 里面就已经有这个application 的 docker 镜像了，但是更新会失败，因为我们还没有创建application的stack。</p>
+<h3>Application Stack</h3>
+<p>对于一个应用我们都要创建一个独立的stack，并接入 <code>nginx-net</code> 让 nginx 为应用代理http，同时申请 https 证书。</p>
+<p>那么这个应用的 stack 文件要这么写：</p>
+<pre><code class="language-yaml">version: &quot;3&quot;
+services:
+  backend:
+    image: registry.kilerd.me/app:latest
+    environment:
+      VIRTUAL_HOST: test.kilerd.me
+      VIRTUAL_PORT: 8000
+      LETSENCRYPT_HOST: test.kilerd.me
+      LETSENCRYPT_EMAIL: blove694@gmail.com
+    networks:
+      - nginx-net
+
+networks:
+  nginx-net:
+    external: true
+  backend:
+</code></pre>
+<p><strong>上述配置文件不要直接复制，请修改 镜像地址，域名，邮箱</strong></p>
+<p>创建 stack，之后我们就去要去找到刚刚缺失的那个 <code>PORTAINER_WEBHOOK_URL</code> </p>
+<p><img src="https://i.loli.net/2019/06/13/5d024996dc34d88705.png" alt="Screen Shot 2019-06-13 at 9.01.43 PM.png" /></p>
+<p>进入你想更新的那个 Service Detail 页面，开启 <code>Service webhook</code> 功能，链接就出来了，把它复制到circle的配置中。</p>
+<p>一切就完成了。</p>
+<h3>开发流程</h3>
+<p>如果你的开发流程是基于 GIT-FLOW 的话，那么可以 follow 一下步骤进行开发 ：</p>
+<ul>
+<li>在 <code>feature/xxx</code> 分支开发对于 Feature</li>
+<li>开发完成进入 <code>develop</code> 分支进行验证</li>
+<li>release version 阶段把 <code>develop</code> 合并进 <code>master</code> 分支</li>
+<li>Circle CI 收到 <code>master</code> 分支的推送 webhook， 触发docker image 构建</li>
+<li>构建完成，推送 image 到 registry</li>
+<li>推送完成，通过 <code>PORTAINER_WEBHOOK_URL</code> 触发 Portainer 更新指定的 Service</li>
+</ul>
+<blockquote>
+<p>docker service update xxx 一直都有个问题，不会主动拉取latest的镜像，portainer 自带的这个可以满足，所以说在我的开发环境里面他是必须的。比如就只能 ssh 到服务器，手动执行命令更新。</p>
+</blockquote>
+<p>所以在开发阶段，只要开发然后推送，其他都由 CI 帮你完成所有的部署功能。</p>
+<h2>缺点和优化的地方</h2>
+<ul>
+<li>这个部署方式只适用于单机 docker swarm 集群，多机需要用 NAS 来创建 volume</li>
+<li>如果打包出来的docker image 无法执行，没有一个有效的回退旧版本机制</li>
+<li>目前没有找到比较好的日志收集方式</li>
+</ul>
+
+                </section>
+            </section>
+        </section>
+    </section>
+
+
+    <footer>
+        <section class="container">
+            <p> 自豪地使用 <a href="https://github.com/Kilerd/rubble">Project Rubble</a> 运行。 </p>
+            <div style="display:none"><script async src="https://www.googletagmanager.com/gtag/js?id=UA-68997851-1"></script> <script>   window.dataLayer = window.dataLayer || [];   function gtag(){dataLayer.push(arguments);}   gtag('js', new Date());    gtag('config', 'UA-68997851-1'); </script>
+</div>
+        </section>
+    </footer>
+    <script src="/statics/prism.js" type="text/javascript"></script>
+</body>
+
+</html>

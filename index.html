@@ -1,0 +1,556 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="keywords" content="" />
+    <link rel="stylesheet" href="/statics/style.css">
+    <link rel="alternate" type="application/rss+xml" title="你好，耳先生" href="/rss.xml" />
+    <title>你好，耳先生</title>
+</head>
+<body>
+
+<section class="full-page">
+    <header>
+        <section class="container">
+            <h1>你好，耳先生</h1>
+            <p>先生贵姓？耳东陈。好的，这边请，耳先生。</p>
+            <nav>
+                <a href="/">HOMEPAGE</a>
+                
+                
+                <a href="portfolios">PORTFOLIOS</a>
+                
+                <a href="about">ABOUTME</a>
+                
+                
+            </nav>
+        </section>
+    </header>
+
+    <section class="container">
+        
+        
+        <section class="article">
+            <p class="mate">November 08, 2019</p>
+            <a class="title"
+               href="learnning-zen-of-tech">我的技术断离舍</a>
+            
+            <section class="yue desc">
+                <p>在工作了一年多后，脑子里面满是想离职的事情。在此之前，我还在持续构思这一年多学习到内容的总结，然后品了品，这一年内，为了柴米油盐持续奔波，并没有留下过多的时间来学习新的技术，反而相比于刚刚毕业的那个时候，这时的我忘记的知识远远多于我学习到的。</p>
+<p>然而又尽力过一段时间的沉思，我才意识到这可能并不是一件坏事，反而让我可以更好地学习下去。</p>
+
+            </section>
+            
+        </section>
+        
+        <section class="article">
+            <p class="mate">June 13, 2019</p>
+            <a class="title"
+               href="personal-docker-cluster-and-ci-package-pipeline">简单几步打造个人集群和自动化流水线</a>
+            
+            <section class="yue desc">
+                <p>在认识的小伙伴发了他做的项目部署文档出来之后，我便决定开始写这篇文章，原因是他使用的部署方式太麻烦，而且太不自动化，同时有时候也会因为开发任务繁忙导致没能部署好等等。</p>
+<p>这篇文章是介绍了一个极度适合用于个人或者几个人的小团队使用的集群搭建方式，在保证了安全性的同时，提供了几乎全自动的部署方式，在手动配置一次之后，每次服务更新都是自动触发的，极大地减少了部署的时间。</p>
+<p>本篇文章适用于 GIT-FLOW 类似的「master 即 生产代码」的一切工作模式（或者某一个分支为生产代码）。如果您的开发模式不符合这个特征，那么可以关闭网页了。</p>
+
+            </section>
+            
+        </section>
+        
+        <section class="article">
+            <p class="mate">May 13, 2019</p>
+            <a class="title"
+               href="rust-how-actix-register-route-in-rust">Actix通过什么方法来实现路由注册的.RUST</a>
+            
+            <section class="yue desc">
+                <p>如果你写过 <code>actix-web</code> 1.0 的代码，会发现在路由注册的函数中，你可以传入各种不同签名的函数题。</p>
+<pre><code class="language-rust">App::new()
+        .service(
+            web::scope(&quot;/admin/&quot;)
+                .service(
+                    web::resource(&quot;/article&quot;).route(
+                        web::post().to(post_method),
+                        web::delete().to(delete_method)
+                    ),
+                )
+</code></pre>
+<p>不难发现，根据业务的不同，传入 <code>to</code> 方法中的函数签名必然会不同，那么 Actix 是怎么处理的呢？或者说是怎么实现这个功能的。接下来我们将一步一步实现这一个类似的需求。</p>
+
+            </section>
+            
+        </section>
+        
+        <section class="article">
+            <p class="mate">April 28, 2019</p>
+            <a class="title"
+               href="rust-auto-optimize-dockerize-procedure">优化 Rust 的项目 Docker 打包流程.Rust</a>
+            
+            <section class="yue desc">
+                <p>在把 Project Rubble 从 Rocket 框架迁移到 Actix-web 的过程中，我顺便把困惑已久的 Docker 打包流程优化了不少。</p>
+<p>这篇文章适用于那些在项目中带有 <code>Denpendencies.lock</code> 类似的固定依赖版本的 LOCK 文件。</p>
+
+            </section>
+            
+        </section>
+        
+        <section class="article">
+            <p class="mate">April 18, 2019</p>
+            <a class="title"
+               href="rust-auto-deref">自动解引用.RUST</a>
+            
+            <section class="yue desc">
+                <p>解引用应该说是 Rust 为了解决不采用 Class 来实现对象化编程的一个解决方案。假想一下如果 Python 或者 Java 之流，需要对一个结构体（准确来说应该是类）进行自定义扩展：增加字段，增加方法，重写方法等等，我们可以直接用继承的方式来实现</p>
+<pre><code class="language-python">class Base:
+	a: int = 2
+
+class Extend(Base):
+	my_self_field: int = 3
+</code></pre>
+<p>当一个函数希望传入实现了 <code>Base</code> 类的所有实例时，可以直接以 <code>Base</code> 为约束，限定其参数范围。在 Java 中就可以使用基类或者 Interface 来约束。</p>
+<pre><code class="language-python">def base_bound(param: Base):
+    pass
+</code></pre>
+<p>这一套在 Rust 并不适用，在 Rust 中时采用 Struct + Trait 来抽象对象化。所以若想对结构体进行扩展，那么就只能再用一层结构体去包（wrap）住原来的结构体。</p>
+<pre><code class="language-rust">struct MyOwnDerefStruct(String);
+</code></pre>
+
+            </section>
+            
+        </section>
+        
+        <section class="article">
+            <p class="mate">February 11, 2019</p>
+            <a class="title"
+               href="thought-after-reading-the-electric-state">科技的未来到底在哪里？</a>
+            
+            <section class="yue desc">
+                <p>最近把电幻国度看完了，同样主题的书籍和电影有黑镜和玩家一号。但是这几个作品表达的未来都不太一样，各自导演和作者表达了对这种技术前景的担忧和喜悦。</p>
+
+            </section>
+            
+        </section>
+        
+        <section class="article">
+            <p class="mate">December 28, 2018</p>
+            <a class="title"
+               href="rust-how-to-learn-it">入门就写一个博客程序吧.RUST</a>
+            
+            <section class="yue desc">
+                <blockquote>
+<p>当你不知道要干什么的时候，那就写个博客程序吧。 —— 鲁迅</p>
+</blockquote>
+<p>是的，鲁迅曾经这么说过。当你的编程能力出现停滞的时候就写一个博客吧，尤其是入门阶段。更具体而言是写一个 CMS 系统，这也是我平时学习的习惯，我会一步一步解释清楚为什么我会选择这样的学习路线。</p>
+
+            </section>
+            
+        </section>
+        
+        <section class="article">
+            <p class="mate">December 24, 2018</p>
+            <a class="title"
+               href="fine-to-break-up-with-you">人家甩你很正常啊，你丑</a>
+            
+            <section class="yue desc">
+                <p>如果你能重遇一个很久之前遇见过的人，你会想对她说什么。如果命运决定你只能走那么远，你会不会奋力再拼搏一下，再努力往前走两步？</p>
+<blockquote>
+<p>那么热的夏天，少年的后背被女孩的悲伤烫出一个洞，一直贯穿到心脏，无数个季节的风穿越这条通道，有一只萤火虫在风里飞舞，忽明忽暗。</p>
+<p>——《云边有个小卖部》</p>
+</blockquote>
+
+            </section>
+            
+        </section>
+        
+        <section class="article">
+            <p class="mate">December 11, 2018</p>
+            <a class="title"
+               href="rust-better-ide">更好的 IDE 配置.RUST</a>
+            
+            <section class="yue desc">
+                <p>这段时间一直忙于折腾 Rust，自从 Rust 2018 Edition 出来之后，一个很明显的感受就是写起来更加符合一个现代化编程语言的样子，当然也有可能是我的水平太低了，还不足以体验到 Rust 那种非人类的写法和特性。</p>
+<p>这一系列文章会是我记录 Rust 学习路程的文章，那么自然而然地就是从环境配置开始了。</p>
+<blockquote>
+<p>PS: 这一系列的文章都是以 MacOS 为基础，不会过多涉及 自编译 Rust、环境折腾等等内容，更加注重在如何高效地进行 Rust 开发和 Rust学习技巧。</p>
+</blockquote>
+
+            </section>
+            
+        </section>
+        
+        <section class="article">
+            <p class="mate">July 12, 2018</p>
+            <a class="title"
+               href="things-of-creating-web-framework">自制 Web 框架的那些事儿</a>
+            
+            <section class="yue desc">
+                <blockquote>
+<p>不想造轮子的程序员不是一个好码农。  —— 鲁迅</p>
+</blockquote>
+
+            </section>
+            
+        </section>
+        
+        <section class="article">
+            <p class="mate">February 21, 2018</p>
+            <a class="title"
+               href="web-authorizations">浅谈 Web 用户验证的几种方式</a>
+            
+            <section class="yue desc">
+                <p>这片文章试图介绍清楚网站前端与后端之间数据交流时用到的技术，诸如 Session，Cookies，Token，Jwt 等等；同时解释清楚几个初学者容易混淆的地方。</p>
+
+            </section>
+            
+        </section>
+        
+        <section class="article">
+            <p class="mate">December 29, 2017</p>
+            <a class="title"
+               href="summaries-my-2017">2017 个人总结</a>
+            
+            <section class="yue desc">
+                <blockquote>
+<p>鲁迅说过：&quot;Sometimes you need to leave things behind to move forward&quot;</p>
+<p>这一年下来，整个过程就是这样的情况。放弃了一些东西，努力了一些东西。</p>
+</blockquote>
+
+            </section>
+            
+        </section>
+        
+        <section class="article">
+            <p class="mate">November 28, 2017</p>
+            <a class="title"
+               href="starter-of-chrome-extension">用 Webpack 和 React 搭建一个适用于 Chrome Extension 的脚手架</a>
+            
+            <section class="yue desc">
+                <p>做为一个不称职的前端设计师，对于前端的框架，尤其是各式各样的 JavaScript 框架，我都是习惯使用官方自带的 CLI 工具来搭建脚手架的。因为在混乱的前端世界中，<code>Babel</code> 和 <code>Webpack</code> 的配置不是一般的麻烦。而且我对于前端的学习就是冲着写 Side Project 去的，所以效率对我来多很重要。</p>
+<p>我选择的前端框架是 React + Redux，同时也有一个很好用的 CLI 工具来初始化 React 项目：<a href="https://github.com/facebookincubator/create-react-app">create-react-app</a>。对于像我这样的懒人来说，这确实很好用，但同时也有不少缺点。</p>
+<p>我是一个勤勤恳恳的 Python 工程师，所以使用装饰器是我的日常，同时 JavaScript 在 ES7 的 Proposal 中也有类似的装饰器提议，那么使用装饰器肯定是必不可少的了。Create-Reat-App 的最大问题就在于<strong>不支持装饰器</strong></p>
+
+            </section>
+            
+        </section>
+        
+        <section class="article">
+            <p class="mate">August 27, 2017</p>
+            <a class="title"
+               href="those-days-in-hk">在 HongKong 的那些天那些事</a>
+            
+            <section class="yue desc">
+                <blockquote>
+<p>终于忙完了，有了闲空可以写一写那些天在 HongKong 遇到的一些人，一些事。</p>
+</blockquote>
+
+            </section>
+            
+        </section>
+        
+        <section class="article">
+            <p class="mate">June 21, 2017</p>
+            <a class="title"
+               href="http-options">关于 HTTP OPTIONS</a>
+            
+            <section class="yue desc">
+                <blockquote>
+<p>本文参考了两篇文章：</p>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/OPTIONS">OPTIONS - HTTP | MDN</a></li>
+<li><a href="http://www.ruanyifeng.com/blog/2016/04/cors.html">跨域资源共享 CORS 详解 - 阮一峰的网络日志</a></li>
+</ul>
+</blockquote>
+<p>首先 OPTIONS 方法不应该像 GET, POST, PUT 等方法一样返回内容，它返回的应该就只有Header。</p>
+<p>OPTIONS 的功能基本上只有两个：</p>
+<ul>
+<li>在普通访问中，它会返回同 URL 中允许访问的 METHODS</li>
+<li>在跨域访问 (CORS) 中，返回对应的原站 (Origin) 能访问的METHODS</li>
+</ul>
+
+            </section>
+            
+        </section>
+        
+        <section class="article">
+            <p class="mate">May 25, 2017</p>
+            <a class="title"
+               href="changes-and-development-of-nougat">Nougat(Misuzu) 的进展和改变</a>
+            
+            <section class="yue desc">
+                <p>Misuzu 这个名字被人吐槽了很久，不知道怎么读，也不知道什么意思。所以就改成了 <strong>Nougat</strong> 这个名字，意为牛轧糖。</p>
+
+            </section>
+            
+        </section>
+        
+        <section class="article">
+            <p class="mate">May 19, 2017</p>
+            <a class="title"
+               href="a-wired-dream">一场诡异的梦</a>
+            
+            <section class="yue desc">
+                <p>终于放了很长的一段假期后，我重新回到了学校。明明来这学校很久了，可是我还是无法记住整个学校的所有路径。甚至我已经忘记了这段假期放假的理由。</p>
+<p>我的学校坐落于一个偏僻的地方，旁边一栋其余的建筑物都没有。整个学校在天空看起来就像一个巨大的堡垒，在其周围是一些泥土小路，少有的几条沥青公路，并不能见到任何高架公路。其余地方均是被黄图覆盖的大地。</p>
+
+            </section>
+            
+        </section>
+        
+        <section class="article">
+            <p class="mate">April 19, 2017</p>
+            <a class="title"
+               href="misuzu-web">Misuzu 偏执的 WEB 框架</a>
+            
+            <section class="yue desc">
+                <p>我是一个不折不扣的偏执狂，所以我认为所谓的产品就应该是为了特定的人群而服务的。这同样适用于 WEB 框架。</p>
+<p>现在 Python 中的三大 WEB 框架(Flask, Tornado, Django) 都属于通用型框架，并不存在一个为 API ，尤其是 REST API 设计的框架。这也是 Misuzu 被创建的原因之一。</p>
+
+            </section>
+            
+        </section>
+        
+        <section class="article">
+            <p class="mate">February 08, 2017</p>
+            <a class="title"
+               href="python-web-learning-and-giving-up">Python Web 从入门到放弃：Flask or Tornado</a>
+            
+            <section class="yue desc">
+                <p>Python Web 这个领域一直都处于不温不火的情况，但是因为 Python 的易上手性，导致了一部分人也在坚持着这一个领域。
+Python Web 框架主要有： Django、Flask、Tornado。</p>
+<p>这三大党派都有自己坚持的理由：</p>
+<ul>
+<li><code>Django</code> Full Stack 式的开发模式，开发者查看官方文档即可实现大部分网站的大部分功能。</li>
+<li><code>Flask</code> Minimal 的框架，框架内部只实现了基础功能。Extensionable 的设计，让你的绝大部分功能都可以通过其他开发者完成的 Extension 来实现。</li>
+<li><code>Tornado</code> 三者中唯一一个异步框架，Web Framework 和 HTTPClient 的结合，同时也是一个简约的设计。</li>
+</ul>
+
+            </section>
+            
+        </section>
+        
+        <section class="article">
+            <p class="mate">January 06, 2017</p>
+            <a class="title"
+               href="first-taste-rust-web">Rust Web初试</a>
+            
+            <section class="yue desc">
+                <p>Rust 是最近中意的一门语言。相比于 C 和 C++，我更加喜欢 Rust 的语法。</p>
+<p>奈何 Rust 的学习曲线太陡了，一直都只能在入门阶段徘徊，没能深入了解 Rust。 个人感觉最大的问题在于没能搞懂 Rust 的所有权、引用借用和生命周期三个方面。</p>
+<p>因此，我尝试着用 Rust 来进行 Web 开发，从而加深对 Rust 语法的了解。</p>
+
+            </section>
+            
+        </section>
+        
+        <section class="article">
+            <p class="mate">December 05, 2016</p>
+            <a class="title"
+               href="a-fake-red-iphone-5s">山寨红色 iPhone 5S</a>
+            
+            <section class="yue desc">
+                <p><img src="https://ooo.0o0.ooo/2016/12/05/584585c512313.jpg" alt="" /></p>
+<p>突发奇想，买了一个祖国版 iPhone 5S ，这个红色是不是很好看呢。</p>
+
+            </section>
+            
+        </section>
+        
+        <section class="article">
+            <p class="mate">November 25, 2016</p>
+            <a class="title"
+               href="how-to-deply-flask-project">如何正确的部署 Flask 项目</a>
+            
+            <section class="yue desc">
+                <h1>系统 Python 设置</h1>
+<p>由于每个 Linux 发行版的内置 Python 都不太一样，而且为了避免你的项目在不同的 Python 版本下出现各种奇怪问题。</p>
+<p>比如，<code>requests</code> 库在 python 2.7.5 的环境下访问 HTTPS 网站会出现 SNI 的问题，导致访问失败。</p>
+<p>所以我们需要使用 <code>pyenv</code> 和 <code>virtualenv</code> 。</p>
+<p><strong>注：强烈不建议直接更新系统里面的 Python ，否则你会出现各种各样的奇怪问题</strong></p>
+
+            </section>
+            
+        </section>
+        
+        <section class="article">
+            <p class="mate">August 21, 2016</p>
+            <a class="title"
+               href="everyone-is-lonely">一人孤独，两份寂寥</a>
+            
+            <section class="yue desc">
+                <p>![lonely][1]</p>
+<p>大概是因为这篇文章 <a href="https://www.v2ex.com/t/300576">这几天累得我想自杀</a> 引起了我的思绪，或者早就预谋已久。 </p>
+<blockquote>
+<p>孤独就是一份毒品，能让你上瘾，亦能杀死你。</p>
+</blockquote>
+<p>那篇文章是一个996的程序员发出来的。回复的人几乎都是在劝楼主换工作、对自己好一点别那么拼。朝九晚五，看似很合理也很常见的工作时间，在程序员圈子基本不可能见到。996即是指朝九晚九六个工作日，甚者9107。</p>
+
+            </section>
+            
+        </section>
+        
+        <section class="article">
+            <p class="mate">June 25, 2016</p>
+            <a class="title"
+               href="how-hooks-works">HOOK机制浅谈与实现</a>
+            
+            <section class="yue desc">
+                <p>HOOK机制最常见的地方就是在 windows 系统里面。你可以通过 HOOKS 来监控键盘输入、鼠标点击等等。那到底什么是 HOOK 机制呢？用人话讲就是“允许在特定的行为前后添加自定义行为”</p>
+<pre><code class="language-python"># before doing
+do something...
+# after doing
+</code></pre>
+
+            </section>
+            
+        </section>
+        
+        <section class="article">
+            <p class="mate">June 25, 2016</p>
+            <a class="title"
+               href="you-are-not-the-center-of-world">Guys, you are not the center of the world.</a>
+            
+            <section class="yue desc">
+                <blockquote>
+<p>标题用英语的原因在于，用中文讲相当不雅。</p>
+<p>这篇文章可能会引起你的不适，适当时候可以选择略过。</p>
+</blockquote>
+<p>有些时候，你真的很难理解你身边的某些人的所做。所以他们会令你十分难受，以至心情十分不好。我不懂，真的想不明白。</p>
+
+            </section>
+            
+        </section>
+        
+        <section class="article">
+            <p class="mate">March 15, 2016</p>
+            <a class="title"
+               href="i-have-stories-and-what-do-you-have">我有5毛，你能卖我一碗鸡汤吗？</a>
+            
+            <section class="yue desc">
+                <blockquote>
+<p>“你虽平凡，但每个人都有一部属于自己的传记” —— 某个我听说过的人</p>
+</blockquote>
+<p>我？不知道谁来的。一般别人叫我都是那个谁。不突出、没专长、没特色就是我的特点。我只是芸芸众生中的一个普通的存在。</p>
+
+            </section>
+            
+        </section>
+        
+        <section class="article">
+            <p class="mate">February 22, 2016</p>
+            <a class="title"
+               href="This-will-be-the-day-we-ve-waited-for">This will be the day we&#x27;ve waited for</a>
+            
+            <section class="yue desc">
+                <p>![RWBY][1]</p>
+<blockquote>
+<p>This will be the day we've waited for
+This will be the day we open up the door</p>
+</blockquote>
+<p>这两句话是最近比较迷上的动漫 RWBY 里面OP的头两句。感觉蛮不错的，所以就被引用来了。</p>
+
+            </section>
+            
+        </section>
+        
+        <section class="article">
+            <p class="mate">January 26, 2016</p>
+            <a class="title"
+               href="that-pen-that-word">抓不惯的笔，写不出的字</a>
+            
+            <section class="yue desc">
+                <p>高中那些年，有幸进入了一家不错的高中，地域也很偏僻，能够安静地认真读一读书。也是在那个地方，自己真正地爱上了文字。</p>
+<p>那里的宿舍堪称豪华，几乎可以称得上是学生宿舍的最高标准。自己唯独最中意的一点便是上床下铺的设计。还记得我们（那些舍友死党）把差不多干的衣服往床边一挂，人往里面一坐，开盏台灯，就可以奋斗到天亮。当然我很少那么勤奋，像我那么懒的人至多躲在里面玩玩手机，写写情书罢。可惜最后那情书还是只有自己看到。</p>
+<p>我喜欢的，是一个人躲在里面自己的空间。也真是这样，我逐渐喜欢上了写日记。</p>
+
+            </section>
+            
+        </section>
+        
+        <section class="article">
+            <p class="mate">November 26, 2015</p>
+            <a class="title"
+               href="beyond-or-stand">要么孤独，要么平庸</a>
+            
+            <section class="yue desc">
+                <p>秋风起，秋风落，便是一年；睁眼，闭眼，便是一天。时间消逝之快，我们很多时候难以想象，只有事后回想，才知晓。</p>
+<p>有人说过，人的一生大概只有1000个月的时间。如果我们试图画一个表去记录这1000个月，每过一个月就画去一个，这样就可以感受到时间的逝去。</p>
+
+            </section>
+            
+        </section>
+        
+        <section class="article">
+            <p class="mate">July 14, 2015</p>
+            <a class="title"
+               href="how-to-deploy-flask">[译文]如何使用Flask部署大型应用？</a>
+            
+            <section class="yue desc">
+                <p>原文地址： <a href="https://github.com/mitsuhiko/flask/wiki/Large-app-how-to">https://github.com/mitsuhiko/flask/wiki/Large-app-how-to</a></p>
+<blockquote>
+<p>译者：本译文已经违背了原文的意图，请勿加以转载。此文仅用于个人使用。</p>
+</blockquote>
+<p><strong>这篇文章并不是官方的！它包含了很多非官方资源的建议并且没有通过一系列的测试（审查）。这里描述的写法可能很有用，但是同时它也可能很危险。请记住，不要在本文档添加任何附加信息。或者，引用在你的网站或者博客。这篇文章之所以保存，是因为很多<code>StackOverflow</code>答案指向了这里</strong></p>
+
+            </section>
+            
+        </section>
+        
+        <section class="article">
+            <p class="mate">June 07, 2015</p>
+            <a class="title"
+               href="app-store-based-on-cert">基于证书权限的电脑应用商场</a>
+            
+        </section>
+        
+        <section class="article">
+            <p class="mate">May 30, 2015</p>
+            <a class="title"
+               href="if-i-can-cry">如果，哭可以解决问题</a>
+            
+            <section class="yue desc">
+                <p>我们的出生就被称为了“呱呱坠地”，说明哭是我们与生俱来的。不需要谁来教，谁也教不了。</p>
+<p>然后，这么一个与生俱来的能力，却被冠上了小孩专属的称号。摔倒了，哭一下，等爸妈来安慰自己；刮伤了，哭一下，等爸妈来吹吹伤口。这些温馨而和谐的画面，永远都是以小孩为主角。</p>
+<p>长大了，坚强了。坚强，一个自欺欺人的词，没有人愿意选择，或者说喜欢，受伤了不需要人安慰就自己当作什么事都没发生；没有人喜欢眼泪在眼眶里打滚就要留下来了，却只能默默咬紧嘴唇，忍住哭声。</p>
+
+            </section>
+            
+        </section>
+        
+        <section class="article">
+            <p class="mate">April 20, 2015</p>
+            <a class="title"
+               href="20150420-v2ex-change">20150420 V2EX备案日</a>
+            
+            <section class="yue desc">
+                <p>关于V2EX，我去那里差不多一年了。V2EX，一个创意工作者的论坛。</p>
+<p>我很喜欢那里的氛围，因为它不像大部分国内论坛那样，全都是水贴。在V2EX，我能找到很多很有想法的人，也能看到其他人很奇妙很神奇的想法。这样十分享受的氛围，使我基本每天都在刷V2EX，这也是我手机除了用于通讯以外最大的用处了。</p>
+<p>不知道什么时候开始，C大的ShadowSocks在V2EX里面流行了起来，让V2EX涌入了很多销售SS的用户，小白也慢慢增多。</p>
+
+            </section>
+            
+        </section>
+        
+        <section class="article">
+            <p class="mate">April 18, 2015</p>
+            <a class="title"
+               href="new-blog">新的博客</a>
+            
+        </section>
+        
+    </section>
+</section>
+
+
+
+<footer>
+    <section class="container">
+    <p> 自豪地使用 <a href="https://github.com/Kilerd/rubble">Project Rubble</a> 运行。 </p>
+    <div style="display:none"><script async src="https://www.googletagmanager.com/gtag/js?id=UA-68997851-1"></script> <script>   window.dataLayer = window.dataLayer || [];   function gtag(){dataLayer.push(arguments);}   gtag('js', new Date());    gtag('config', 'UA-68997851-1'); </script>
+</div>
+    </section>
+</footer>
+<script src="/statics/prism.js" type="text/javascript"></script>
+</body>
+</html>

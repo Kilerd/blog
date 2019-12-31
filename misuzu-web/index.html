@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="keywords" content="" />
+    <link rel="stylesheet" href="/statics/style.css">
+    <link rel="alternate" type="application/rss+xml" title="你好，耳先生" href="/rss.xml" />
+    <title>Misuzu 偏执的 WEB 框架</title>
+</head>
+
+<body>
+
+
+    <section class="full-page">
+        <section class="container">
+            <nav>
+                <a href="/">HOMEPAGE</a>
+                
+                
+                <a href="portfolios">PORTFOLIOS</a>
+                
+                <a href="about">ABOUTME</a>
+                
+                
+            </nav>
+            <section class="single article">
+                <p class="mate">April 18, 2015</p>
+                <h2>新的博客</h2>
+                <section class="content yue">
+                    <p>我是一个不折不扣的偏执狂，所以我认为所谓的产品就应该是为了特定的人群而服务的。这同样适用于 WEB 框架。</p>
+<p>现在 Python 中的三大 WEB 框架(Flask, Tornado, Django) 都属于通用型框架，并不存在一个为 API ，尤其是 REST API 设计的框架。这也是 Misuzu 被创建的原因之一。</p>
+<!--more-->
+<p>Misuzu 是偏执的，它只为 API 服务，因此我为它做了这些限定：</p>
+<ol>
+<li>RESTFUL API 是用 HTTP METHOD 来区分服务的，因此 Misuzu 在定义路由的时候，就需要指定是哪一种 METHOD，而不是像 Flask 那样可以同时把 GET，POST 写进一个 handler 里面。</li>
+<li>API 最常见的返回格式就是 <code>JSON</code> ，因此应该做到简化对 <code>JSON</code> 返回内容的处理，能 <code>return {&quot;name&quot;: &quot;hello&quot;}</code> 的就不应该<code>return json.dumps({&quot;name&quot;: &quot;hello&quot;})</code></li>
+<li>框架应该把 HTML 模板引擎设为可选的，而不是必须的，毕竟一个单纯的 API 系统是不需要渲染 HTML 的</li>
+<li>我觉得 API 是可以分成几个部分的：参数定义及处理、逻辑处理、返回内容的规范化</li>
+<li>Python 写出来的作品就应该更 Pythonic，因此我选择了大量使用装饰器这种及其优雅的处理方式</li>
+</ol>
+<p>综合了以上几点，Misuzu 的基本模型就出来了：</p>
+<pre><code class="language-python">from misuzu import Misuzu
+
+app = Misuzu(__name__)
+
+@app.get('/&lt;name&gt;')
+@app.param('name', str)
+async def index(request):
+    return {'hello': request.params.name}
+
+app.run()
+</code></pre>
+<p>这只是 Misuzu 的第一步，不过也已经确定了它今后的走向。Misuzu 的偏执注定了它不会成为主流，但是只要它能够被一部分人所接受就足以。</p>
+<p>如果你喜欢Misuzu，可以前往 <a href="https://github.com/Kilerd/misuzu">https://github.com/Kilerd/misuzu</a> 了解更多。</p>
+
+                </section>
+            </section>
+        </section>
+    </section>
+
+
+    <footer>
+        <section class="container">
+            <p> 自豪地使用 <a href="https://github.com/Kilerd/rubble">Project Rubble</a> 运行。 </p>
+            <div style="display:none"><script async src="https://www.googletagmanager.com/gtag/js?id=UA-68997851-1"></script> <script>   window.dataLayer = window.dataLayer || [];   function gtag(){dataLayer.push(arguments);}   gtag('js', new Date());    gtag('config', 'UA-68997851-1'); </script>
+</div>
+        </section>
+    </footer>
+    <script src="/statics/prism.js" type="text/javascript"></script>
+</body>
+
+</html>

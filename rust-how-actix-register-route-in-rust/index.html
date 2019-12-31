@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="keywords" content="" />
+    <link rel="stylesheet" href="/statics/style.css">
+    <link rel="alternate" type="application/rss+xml" title="你好，耳先生" href="/rss.xml" />
+    <title>Actix通过什么方法来实现路由注册的.RUST</title>
+</head>
+
+<body>
+
+
+    <section class="full-page">
+        <section class="container">
+            <nav>
+                <a href="/">HOMEPAGE</a>
+                
+                
+                <a href="portfolios">PORTFOLIOS</a>
+                
+                <a href="about">ABOUTME</a>
+                
+                
+            </nav>
+            <section class="single article">
+                <p class="mate">April 18, 2015</p>
+                <h2>新的博客</h2>
+                <section class="content yue">
+                    <p>如果你写过 <code>actix-web</code> 1.0 的代码，会发现在路由注册的函数中，你可以传入各种不同签名的函数题。</p>
+<pre><code class="language-rust">App::new()
+        .service(
+            web::scope(&quot;/admin/&quot;)
+                .service(
+                    web::resource(&quot;/article&quot;).route(
+                        web::post().to(post_method),
+                        web::delete().to(delete_method)
+                    ),
+                )
+</code></pre>
+<p>不难发现，根据业务的不同，传入 <code>to</code> 方法中的函数签名必然会不同，那么 Actix 是怎么处理的呢？或者说是怎么实现这个功能的。接下来我们将一步一步实现这一个类似的需求。</p>
+<!--more-->
+<h2>最小的执行框架</h2>
+<p>为了实现这个功能，我们先模拟出一个最小的框架：有一个路由 <code>Router</code> 他里面有一个方法 <code>to</code> 来注册 handler，为了方便同时关注我们所想的，handler 这里就设计成只能返回 <code>String</code>。</p>
+<pre><code class="language-rust">#[derive(Debug)]
+enum Method {
+    Head,
+    Option,
+    Get,
+    Post,
+    Patch,
+    Put,
+    Delete,
+}
+
+struct Router;
+
+impl Router {
+    pub fn to&lt;H&gt;(&amp;self, method: Method, handler: H) -&gt; &amp;Self
+    where
+        H: Fn() -&gt; String,
+    {
+        println!(&quot;handle route {:?}&quot;, method);
+        self
+    }
+}
+
+fn public_route() -&gt; String {
+    &quot;hello world&quot;.into()
+}
+
+fn main() {
+    let router = Router {};
+    router.to(Method::Get, public_route);
+}
+
+</code></pre>
+<p>代码：https://gist.github.com/8c8c8ad0dbe21d0ebacc8d9f6f5f5c78</p>
+<p>在这个演示代码中 17L，限定了传入的 handler 只能是 <code>Fn()-&gt;String</code>，意思是没有参数，同时返回值为 <code>String</code></p>
+<h2>允许传入不同参数</h2>
+<p>Rocket 和 Actix 都不约而同的采用了 Request Guard 的方式来对路由进行限制或者扩展，有一个例子是说，如果我们希望一个路由只有授权之后才能访问，那么这个 Handler 是这样签名的：</p>
+<pre><code class="language-rust">fn private_route(token: Token) -&gt; String {
+    &quot;hello private world&quot;.into()
+}
+</code></pre>
+<p>当我们注册到 <code>Router</code> 时，必然需要调用 <code>to</code> 方法，<code>router.to(method::Post, private_route)</code> ，那会出现一下的错误</p>
+<pre><code>error[E0593]: function is expected to take 0 arguments, but it takes 1 argument
+  --&gt; src/main.rs:37:6
+   |
+29 | fn private_route(token: Token) -&gt; String {
+   | ---------------------------------------- takes 1 argument
+...
+37 |     .to(Method::Post, private_route);
+   |      ^^ expected function that takes 0 arguments
+
+error: aborting due to previous error
+</code></pre>
+<p>错误原因是说 <code>to</code> 里面的 handler 范型约束了不能带参数，而 Rust 又不能写出类似 <code>where H: Fn() -&gt; String | Fn(Token) -&gt; String</code> 的或关系的骚操作，所以只能把这些关系再抽象一层，于是就抽象出了 Trait <code>HandlerFactory</code>。 这个 Trait 只是把不同的handler 包装成相似的签名。</p>
+<pre><code class="language-rust">trait HandlerFactory&lt;P&gt; {
+    fn call(&amp;self, _: P) -&gt; String;
+}
+</code></pre>
+<p>这下我们就可以通过 <code>handler.call()</code> 来执行这些 handler。</p>
+<p>同时，我们对刚刚这两个Handler 实现一下这个 Trait <code>HandlerFactory</code></p>
+<pre><code class="language-rust">impl&lt;F&gt; HandlerFactory&lt;()&gt; for F where F: Fn() -&gt; String {
+    fn call(&amp;self, _: ()) -&gt; String {
+        (self)()
+    }
+}
+
+impl&lt;F&gt; HandlerFactory&lt;(Token, )&gt; for F
+    where F: Fn(Token) -&gt; String,
+{
+    fn call(&amp;self, params: (Token, )) -&gt; String {
+        (self)(params.0)
+    }
+}
+</code></pre>
+<p>顺便再改一下 <code>to</code> 的签名，让 <code>to</code> 接受 <code>HandlerFactory</code> 的类型就可以把刚刚的两个handler 都通过 <code>to</code>方法来注册了。</p>
+<p>详情代码看这里：https://gist.github.com/3b166bc90bd6ee6dcb20d3b1f751e119</p>
+<h2>FromRequest 的抽象</h2>
+<p>在第二个handler 里面，我们传入了<code>Token</code> 类型的参数，同时用了 <code>impl&lt;F&gt; HandlerFactory&lt;(Token, )&gt; for Fwhere F: Fn(Token) -&gt; String</code> 来注册签名，那么如果我们有大量不同类型的参数的话，是不是都要一个一个明确的写出声明呢？其实不然，我们可以给这些类型共同实现一个叫 <code>FromRequest</code> 的Trait，来统一处理。</p>
+<pre><code class="language-rust">trait FromRequest {
+    fn from_request() -&gt; Self where Self: Sized;
+}
+</code></pre>
+<p>在 <code>impl FromRequest for Token</code>, <code>impl FormRequest for String</code> ... 的方法实现之后，Router 知道这是一个「实现了 <code>FromRequest</code> Trait 」的类型就可以了。意味着在 <code>to</code> 的签名里面可以换成 Trait 的名字，而不是某种具体的类型。又因为我们需要告诉 <code>HandlerFactory</code> 这些参数的具体类型，所以需要在其加多一个范型参数。</p>
+<pre><code class="language-rust">trait HandlerFactory&lt;P&gt; {
+    fn call(&amp;self, _: P) -&gt; String;
+}
+</code></pre>
+<p>再看看对单个参数的实现</p>
+<pre><code>impl&lt;F, P&gt; HandlerFactory&lt;(P, )&gt; for F
+    where F: Fn(P) -&gt; String,
+          P: FromRequest
+{
+    fn call(&amp;self, params: (P, )) -&gt; String {
+        (self)(params.0)
+    }
+}
+</code></pre>
+<p>在 3L 我们明确地指出 P 需要是实现了 <code>FromRequest</code> 的 类型。 好，需求就实现了，具体实现在<a href="https://gist.github.com/4ee6eb1e3dda0f6e7c8858a1c58026ed">这里</a></p>
+<h2>多个参数怎么办</h2>
+<p>handler 里面不可能永远都只有一个参数吧。再看看上面的那个代码，我们在 <code>HandlerFactory&lt;(P, )&gt; </code> 其实是传入了一个 Tuple，里面只有一个值，类型是 P，同时 P 还是 FromRequest 的类型。 </p>
+<p>那是不是意味着只要我们有一个 <code>HandlerFactory&lt;(P, P2)&gt; </code> 的实现就可以完成两个参数的传入了呢？没错就是这样，所以我们可以写下以下的代码：</p>
+<pre><code class="language-rust">impl&lt;F, P, P2&gt; HandlerFactory&lt;(P, P2)&gt; for F
+    where F: Fn(P, P2) -&gt; String,
+          P: FromRequest,
+          P2: FromRequest
+{
+    fn call(&amp;self, params: (P, P2)) -&gt; String {
+        (self)(params.0, params.1)
+    }
+}
+</code></pre>
+<p>那三个参数呢？四个参数呢？五个呢？以此往下，是需要重复写大量的 <code>impl </code>代码的。但是有一个问题是，对于不同的参数，它的函数签名又不一样，不能用「为某种类型实现某种 Trait」的方式一次性写完。但是又不想写那么多重复的代码怎么办？</p>
+<p>在详细看看一个参数的签名和两个参数的签名，其实只有几个地方不一样，而且大致都能复用，那么这时候宏的作用就出来了。这里我从 actix 模仿了一个出来。</p>
+<pre><code class="language-rust">macro_rules! factory_tuple ({ $(($n:tt, $T:ident)),+} =&gt; {
+    impl&lt;F, $($T,)+&gt; HandlerFactory&lt;($($T,)+)&gt; for F
+    where F: Fn($($T,)+) -&gt; String,
+    {
+        fn call(&amp;self, param: ($($T,)+)) -&gt; String {
+            (self)($(param.$n,)+)
+        }
+    }
+});
+</code></pre>
+<p>这里 Actix 的源码在<a href="https://github.com/actix/actix-web/blob/df08baf67f166d2d75118b859f1049b01944daf4/src/handler.rs#L376">src/handler.rs#L376</a></p>
+<p>关于 Rust 宏的签名可以通过<a href="https://lukaslueg.github.io/macro_railroad_wasm_demo/">这个网站</a>来查看它的签名。</p>
+<p>那么我们在实现不同参数的时候就可以通过以下简单的代码来简单实现：</p>
+<pre><code class="language-rust">factory_tuple!((0, A));
+factory_tuple!((0, A), (1, B));
+factory_tuple!((0, A), (1, B), (2, C));
+</code></pre>
+<p>对于三个参数的宏实现，展开之后是这个样子的：</p>
+<pre><code class="language-rust">impl&lt;F, A, B, C, &gt; HandlerFactory&lt;(A, B, C, )&gt; for F
+    where F: Fn(A, B, C ) -&gt; String,
+{
+    fn call(&amp;self, param: (A, B, C, )) -&gt; String {
+        (self)(param.0, param.1, param.2 )
+    }
+}
+</code></pre>
+<p>具体代码可以<a href="https://gist.github.com/7610290a37934703a4450888afb54f2f">看看这里</a></p>
+<h2>最后</h2>
+<p>这个场景确实是很常见的，这里用了以下几个特性来实现了这个功能：</p>
+<ul>
+<li>为某种类型实现Trait</li>
+<li>为「实现了某种Trait」的类型实现Trait</li>
+<li>利用宏消除重复代码</li>
+</ul>
+<h3>彩蛋</h3>
+<p>看回 <a href="https://github.com/actix/actix-web/blob/df08baf67f166d2d75118b859f1049b01944daf4/src/handler.rs#L411">acitx-web handler</a> 的实现，它只实现到了10个参数，那是不是说只要写出 11 个参数的 handler 就会报错呢？我们感觉来试一下。</p>
+<pre><code class="language-rust">
+use actix_web::{web, App, HttpServer, Responder};
+
+fn a_lot_parameters(
+    a: web::Path&lt;String&gt;,
+    b: web::Path&lt;String&gt;,
+    c: web::Path&lt;String&gt;,
+    d: web::Path&lt;String&gt;,
+    e: web::Path&lt;String&gt;,
+    f: web::Path&lt;String&gt;,
+    g: web::Path&lt;String&gt;,
+    h: web::Path&lt;String&gt;,
+    i: web::Path&lt;String&gt;,
+    j: web::Path&lt;String&gt;,
+    //    k: web::Path&lt;String&gt;,
+    //    l: web::Path&lt;String&gt;,
+    //    m: web::Path&lt;String&gt;,
+) -&gt; impl Responder {
+    &quot;hello world&quot;
+}
+
+fn main() {
+    HttpServer::new(move || {
+        App::new().route(
+            &quot;/{a}/{b}/{c}/{d}/{e}/{f}/{g}/{h}/{i}/{j}/{k}/{l}/{m}&quot;,
+            web::get().to(a_lot_parameters),
+        )
+    })
+    .bind((&quot;0.0.0.0&quot;, 8000))
+    .unwrap()
+    .run();
+}
+</code></pre>
+<p>10个的情况正常启动了项目。好我们吧注释去掉一个，再启动看看会不会报错</p>
+<pre><code>error[E0277]: the trait bound `fn(actix_web::types::path::Path&lt;std::string::String&gt;, actix_web::types::path::Path&lt;std::string::String&gt;, actix_web::types::path::Path&lt;std::string::String&gt;, actix_web::types::path::Path&lt;std::string::String&gt;, actix_web::types::path::Path&lt;std::string::String&gt;, actix_web::types::path::Path&lt;std::string::String&gt;, actix_web::types::path::Path&lt;std::string::String&gt;, actix_web::types::path::Path&lt;std::string::String&gt;, actix_web::types::path::Path&lt;std::string::String&gt;, actix_web::types::path::Path&lt;std::string::String&gt;, actix_web::types::path::Path&lt;std::string::String&gt;) -&gt; impl actix_web::responder::Responder {a_lot_parameters}: actix_web::handler::Factory&lt;_, _&gt;` is not satisfied
+   --&gt; src/main.rs:121:24
+    |
+121 |             web::get().to(a_lot_parameters),
+    |                        ^^ the trait `actix_web::handler::Factory&lt;_, _&gt;` is not implemented for `fn(actix_web::types::path::Path&lt;std::string::String&gt;, actix_web::types::path::Path&lt;std::string::String&gt;, actix_web::types::path::Path&lt;std::string::String&gt;, actix_web::types::path::Path&lt;std::string::String&gt;, actix_web::types::path::Path&lt;std::string::String&gt;, actix_web::types::path::Path&lt;std::string::String&gt;, actix_web::types::path::Path&lt;std::string::String&gt;, actix_web::types::path::Path&lt;std::string::String&gt;, actix_web::types::path::Path&lt;std::string::String&gt;, actix_web::types::path::Path&lt;std::string::String&gt;, actix_web::types::path::Path&lt;std::string::String&gt;) -&gt; impl actix_web::responder::Responder {a_lot_parameters}`
+
+error: aborting due to previous error
+</code></pre>
+<p>YEAH，预期地报错了✌️</p>
+
+                </section>
+            </section>
+        </section>
+    </section>
+
+
+    <footer>
+        <section class="container">
+            <p> 自豪地使用 <a href="https://github.com/Kilerd/rubble">Project Rubble</a> 运行。 </p>
+            <div style="display:none"><script async src="https://www.googletagmanager.com/gtag/js?id=UA-68997851-1"></script> <script>   window.dataLayer = window.dataLayer || [];   function gtag(){dataLayer.push(arguments);}   gtag('js', new Date());    gtag('config', 'UA-68997851-1'); </script>
+</div>
+        </section>
+    </footer>
+    <script src="/statics/prism.js" type="text/javascript"></script>
+</body>
+
+</html>

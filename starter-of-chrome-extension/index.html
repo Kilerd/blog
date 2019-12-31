@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="keywords" content="" />
+    <link rel="stylesheet" href="/statics/style.css">
+    <link rel="alternate" type="application/rss+xml" title="你好，耳先生" href="/rss.xml" />
+    <title>用 Webpack 和 React 搭建一个适用于 Chrome Extension 的脚手架</title>
+</head>
+
+<body>
+
+
+    <section class="full-page">
+        <section class="container">
+            <nav>
+                <a href="/">HOMEPAGE</a>
+                
+                
+                <a href="portfolios">PORTFOLIOS</a>
+                
+                <a href="about">ABOUTME</a>
+                
+                
+            </nav>
+            <section class="single article">
+                <p class="mate">April 18, 2015</p>
+                <h2>新的博客</h2>
+                <section class="content yue">
+                    <p>做为一个不称职的前端设计师，对于前端的框架，尤其是各式各样的 JavaScript 框架，我都是习惯使用官方自带的 CLI 工具来搭建脚手架的。因为在混乱的前端世界中，<code>Babel</code> 和 <code>Webpack</code> 的配置不是一般的麻烦。而且我对于前端的学习就是冲着写 Side Project 去的，所以效率对我来多很重要。</p>
+<p>我选择的前端框架是 React + Redux，同时也有一个很好用的 CLI 工具来初始化 React 项目：<a href="https://github.com/facebookincubator/create-react-app">create-react-app</a>。对于像我这样的懒人来说，这确实很好用，但同时也有不少缺点。</p>
+<p>我是一个勤勤恳恳的 Python 工程师，所以使用装饰器是我的日常，同时 JavaScript 在 ES7 的 Proposal 中也有类似的装饰器提议，那么使用装饰器肯定是必不可少的了。Create-Reat-App 的最大问题就在于<strong>不支持装饰器</strong></p>
+<!--more-->
+<blockquote>
+<h2>Can I Use Decorators?</h2>
+<p>Many popular libraries use <a href="https://medium.com/google-developers/exploring-es7-decorators-76ecb65fb841">decorators</a> in their documentation.</p>
+<p>Create React App doesn’t support decorator syntax at the moment because:</p>
+<ul>
+<li>It is an experimental proposal and is subject to change.</li>
+<li>The current specification version is not officially supported by Babel.</li>
+<li>If the specification changes, we won’t be able to write a codemod because we don’t use them internally at Facebook.</li>
+</ul>
+<p>However in many cases you can rewrite decorator-based code without decorators just as fine.
+Please refer to these two threads for reference:</p>
+<ul>
+<li><a href="https://github.com/facebookincubator/create-react-app/issues/214">#214</a></li>
+<li><a href="https://github.com/facebookincubator/create-react-app/issues/411">#411</a></li>
+</ul>
+<p>Create React App will add decorator support when the specification advances to a stable stage.</p>
+</blockquote>
+<p>并且还有一个问题在于 Chrome Extension 并不是一个简单的 SPA，所以就需要我们自己来手动配置一份 <code>webpack.config.js</code> 了，以下就是我的折腾记录</p>
+<h2>项目结构</h2>
+<pre><code>├── dist
+├── src
+│   ├── Components
+│   │   └── Container
+│   │       ├── index.jsx
+│   │       └── style.css
+│   ├── background.js
+│   ├── content.js
+│   ├── icon-128.png
+│   ├── manifest.json
+│   ├── popup.html
+│   └── popup.jsx
+├── webpack.config.js
+├── yarn.lock
+├── package-lock.json
+├── package.json
+└── readme.md
+</code></pre>
+<p>一般来说，Chrome Extension 的主要文件如下：</p>
+<ul>
+<li><code>manifest.json</code> Extension 的配置文件，包括了 LOGO，版本号，权限等等</li>
+<li><code>popup.html</code> POPUP 页面，也就是说点击 Extension 图标是显示的页面，实际上就是一个普通的HTML页面</li>
+<li><code>background.js</code> 在后台运作的 JS 文件</li>
+<li><code>content.js</code> 注入用户页面的 JS 文件</li>
+</ul>
+<p>当然了，在上面是找不到这几个文件的，我们要做的就是怎么通过上面那一串文件来构建出这几个文件。</p>
+<p>我们先来讲下项目中的文件、文件夹是干什么的：</p>
+<ul>
+<li><code>dist</code> 项目生成文件夹，也就是说我们构建出来的文件也是在这里面的。<strong>当开发的时候，在 Chrome 中也是把这个文件夹加载成 Extension</strong></li>
+<li><code>src</code> 项目的源文件
+<ul>
+<li><code>Components</code> React 项目中通常用到的组件文件夹，里面的每一个文件夹都是一个组件</li>
+<li><code>background.js</code> 用来构建后台运作的 JS 文件</li>
+<li><code>content.js</code> 用来构建注入用户页面的 JS 文件</li>
+<li><code>icon-128.png</code> 项目 LOGO</li>
+<li><code>manifest.json</code> 项目的 Chrome Extension 配置文件</li>
+<li><code>popup.html</code> 用来构建 popup 页面。(如果开发过 React，通常都知道这个文件基本不用怎么动，仅作为一个入口文件而已)</li>
+<li><code>popup.jsx</code> popup 里面用到的 JS 文件，同时也是 React 的入口</li>
+</ul>
+</li>
+<li><code>webpack.config.js</code> 自己配置的 Webpack</li>
+<li><code>package.json</code> NPM 配置文件</li>
+<li><code>readme.md</code> 项目介绍</li>
+</ul>
+<p>当我们执行 <code>webpack -p</code> 来打包 Production 版本的时候， <code>dist</code> 文件夹就会生出我们期望的那些文件：</p>
+<pre><code>├── dist
+│   ├── content.bundle.js
+│   ├── bundle.css
+│   ├── background.bundle.js
+│   ├── icon-128.png
+│   ├── manifest.json
+│   ├── popup.bundle.js
+│   └── popup.html
+</code></pre>
+<h2>Webpack 配置</h2>
+<p>OK，那么我们来看看我们从源文件构建出目的文件有哪些步骤：</p>
+<ol>
+<li><code>manifest.json</code> 和 <code>icon-128.png</code> 这种与 JavaScript 无关的文件原封不动的复制过去。</li>
+<li><code>popup.jsx</code> 构建出一个完整的 React 项目，名字叫做 <code>popup.bundle.js</code> ，React 项目中用到的 CSS 构建出 <code>bundle.css</code></li>
+<li>把构建出来的 <code>popup.bundle.js</code> 在 <code>popup.html</code> 中引用</li>
+<li><code>content.js</code> 和 <code>background.js</code> 分别构建出 <code>content.bundle.js</code> 和 <code>background.bundle.js</code></li>
+</ol>
+<h3>webpack.config.js 内容</h3>
+<p>这里给出文件完整内容，之后的内容就是按上述内容逐点讲解。若不感兴趣可以直接把文件内容复制走即可。</p>
+<pre><code class="language-js">const path = require('path')
+const webpack = require('webpack')
+const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
+
+module.exports = {
+  entry: {
+    popup: './src/popup.jsx',
+    content: './src/content.js',
+    background: './src/background.js'
+  },
+  output: {
+    path: path.resolve(__dirname, 'dist'),
+    filename: '[name].bundle.js'
+  },
+  resolve: {
+    extensions: ['.js', '.jsx']
+  },
+  module: {
+    loaders: [
+      // We use Babel to transpile JSX
+      {
+        test: /\.js[x]$/,
+        include: [path.resolve(__dirname, './src')],
+        exclude: /node_modules/,
+        loader: 'babel-loader',
+        query: {
+          presets: ['react', 'es2015'],
+          plugins: [
+            'react-hot-loader/babel'
+          ]
+        }
+      }, {
+        test: /\.css$/,
+        loader: ExtractTextPlugin.extract({ fallback: 'style-loader', use: 'css-loader' })
+      }, {
+        test: /\.(ico|eot|otf|webp|ttf|woff|woff2)(\?.*)?$/,
+        use: 'file-loader?limit=100000'
+      }, {
+        test: /\.(jpe?g|png|gif|svg)$/i,
+        use: [
+          'file-loader?limit=100000', {
+            loader: 'img-loader',
+            options: {
+              enabled: true,
+              optipng: true
+            }
+          }
+        ]
+      }
+    ]
+  },
+  plugins: [
+    // create CSS file with all used styles
+    new ExtractTextPlugin('bundle.css'),
+    // create popup.html from template and inject styles and script bundles
+    new HtmlWebpackPlugin({
+      inject: true,
+      chunks: ['popup'],
+      filename: 'popup.html',
+      template: './src/popup.html'
+    }),
+    // copy extension manifest and icons
+    new CopyWebpackPlugin([
+      {
+        from: './src/manifest.json'
+      }, {
+        context: './src',
+        from: 'icon-**'
+      }
+    ])
+  ]
+}
+
+</code></pre>
+<h3>1. 复制非 JS 内容</h3>
+<p>这里用到的是 <code>CopyWebpackPlugin</code> 这个插件</p>
+<pre><code class="language-js">new CopyWebpackPlugin([
+      {
+        from: './src/manifest.json'
+      }, {
+        context: './src',
+        from: 'icon-**'
+      }
+    ])
+</code></pre>
+<p>这里做了两件事情：</p>
+<ul>
+<li>复制 <code>./src/manifest.json</code> 到文件前面定义的 <code>output.path</code> 中去，或者也可以指定 <code>to</code> 属性说明目的路径</li>
+<li>从 <code>./src</code> 中找到符合 <code>icon-**</code> 的文件复制过去，这里的目的主要是复制 LOGO</li>
+</ul>
+<h3>2.构建 React 应用</h3>
+<p>首先我们先把 <code>popup.jsx</code> 编译成 <code>popup.js</code> ：</p>
+<pre><code class="language-js">{
+  test: /\.js[x]$/,
+  include: [path.resolve(__dirname, './src')],
+  exclude: /node_modules/,
+  loader: 'babel-loader',
+  query: {
+    presets: ['react', 'es2015'],
+    plugins: [
+      'react-hot-loader/babel'
+    ]
+  }
+}
+</code></pre>
+<p>这里是 <code>module.loaders</code> 里面关于 JS 和 JSX 的配置信息，有几点需要注意的：</p>
+<ul>
+<li><code>loader</code> 用的是 <code>babel</code> ，目的是把我们用 ES6 或者 ES7 写的 React 相关代码进行转码</li>
+<li><code>presets</code> 指的是目的代码，首先指明了需要转义 <code>react</code> ，其次要把所有代码翻译到 ES2015</li>
+</ul>
+<h4>reserve jsx file</h4>
+<p>在这里我碰到了一个坑，就是<strong>Webpack 不会 reverse JSX 文件</strong></p>
+<p>例如，你在一个 JS 文件中引用 <code>xx.jsx</code> 文件 ： <code>import xxx from './xxx'</code> 。 这样的写法 Webpack 是不认的，一定要写成 <code>import xxx from './xxx.jsx'</code> 。这样十分不优雅。</p>
+<p>默认的情况下，它只会去找 <code>xxx</code> 文件夹、<code>xxx.js</code> 、<code>xxx.json</code> 。</p>
+<p>所以我们要在 Webpack 中指明需要 reverse <code>.jsx</code> 这种文件类型：</p>
+<pre><code class="language-js">resolve: {
+  extensions: ['.js', '.jsx']
+}
+</code></pre>
+<h3>3.把 CSS 和 popup.bundle.js 在 popup.html 中引用</h3>
+<pre><code class="language-Js">// create CSS file with all used styles
+new ExtractTextPlugin('bundle.css'),
+// create popup.html from template and inject styles and script bundles
+new HtmlWebpackPlugin({
+  inject: true,
+  chunks: ['popup'],
+  filename: 'popup.html',
+  template: './src/popup.html'
+}),
+</code></pre>
+<ul>
+<li>第一个插件指的是把React 中用到的 CSS 抽出来，构建 <code>bundle.css</code> 文件</li>
+<li>第二个插件就是把<code>bundle.css</code> 和 <code>popup.js</code> 写到 <code>popup.html</code> 中</li>
+</ul>
+<h3>4.构建 content.bundle.js 和 background.bundle.js</h3>
+<pre><code class="language-js">entry: {
+  popup: './src/popup.jsx',
+  content: './src/content.js',
+  background: './src/background.js'
+},
+output: {
+  path: path.resolve(__dirname, 'dist'),
+  filename: '[name].bundle.js'
+}
+</code></pre>
+<p>实际上这个部分就是告诉了 Webpack 几件事情：</p>
+<ul>
+<li>有三个文件要构建</li>
+<li>构建完了之后就根据 <code>output</code> 的配置输出</li>
+</ul>
+<p>这里有一点需要注意的是：在 <code>output.filename</code> 中的 <code>[name]</code> 指的是 <code>entry</code> 中的 KEY</p>
+<p>也就是说：</p>
+<pre><code class="language-js">entry: {
+  foo: './src/bar.jsx'
+},
+output: {
+  path: path.resolve(__dirname, 'dist'),
+  filename: '[name].bundle.js'
+}
+</code></pre>
+<p>这代码值的就是用 <code>./src/bar.jsx</code> 构建出 <code>./dist/foo.bundle.js</code></p>
+<h2>如何工作</h2>
+<p>开启 Watch 模式自动监控文件改变，并且 Reload 项目</p>
+<pre><code class="language-bash">webpack --watch
+</code></pre>
+<p><strong>这个 Reload 只适用于 popup.html 相关文件的改变，content.bundle.js 和 background.bundle.js 需要在 Chrome 中 Reload 项目</strong></p>
+<h2>写在最后</h2>
+<p>这样的一个脚手架可以给 Chrome Extension 的开发者一个比较好的开发环境。在此之前我一直都是写原生的 JavaScript 代码，导致开发体验十分差。</p>
+<p>我也是一个 JavaScript 新手，如有差错，请见谅。</p>
+
+                </section>
+            </section>
+        </section>
+    </section>
+
+
+    <footer>
+        <section class="container">
+            <p> 自豪地使用 <a href="https://github.com/Kilerd/rubble">Project Rubble</a> 运行。 </p>
+            <div style="display:none"><script async src="https://www.googletagmanager.com/gtag/js?id=UA-68997851-1"></script> <script>   window.dataLayer = window.dataLayer || [];   function gtag(){dataLayer.push(arguments);}   gtag('js', new Date());    gtag('config', 'UA-68997851-1'); </script>
+</div>
+        </section>
+    </footer>
+    <script src="/statics/prism.js" type="text/javascript"></script>
+</body>
+
+</html>

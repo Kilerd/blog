@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="keywords" content="" />
+    <link rel="stylesheet" href="/statics/style.css">
+    <link rel="alternate" type="application/rss+xml" title="你好，耳先生" href="/rss.xml" />
+    <title>更好的 IDE 配置.RUST</title>
+</head>
+
+<body>
+
+
+    <section class="full-page">
+        <section class="container">
+            <nav>
+                <a href="/">HOMEPAGE</a>
+                
+                
+                <a href="portfolios">PORTFOLIOS</a>
+                
+                <a href="about">ABOUTME</a>
+                
+                
+            </nav>
+            <section class="single article">
+                <p class="mate">April 18, 2015</p>
+                <h2>新的博客</h2>
+                <section class="content yue">
+                    <p>这段时间一直忙于折腾 Rust，自从 Rust 2018 Edition 出来之后，一个很明显的感受就是写起来更加符合一个现代化编程语言的样子，当然也有可能是我的水平太低了，还不足以体验到 Rust 那种非人类的写法和特性。</p>
+<p>这一系列文章会是我记录 Rust 学习路程的文章，那么自然而然地就是从环境配置开始了。</p>
+<blockquote>
+<p>PS: 这一系列的文章都是以 MacOS 为基础，不会过多涉及 自编译 Rust、环境折腾等等内容，更加注重在如何高效地进行 Rust 开发和 Rust学习技巧。</p>
+</blockquote>
+<!--more-->
+<h2>Rustup</h2>
+<p>Rust 官方推荐使用 Rustup 来安装，这是一个相对好的软件，他可以帮你管理一系列的 Rust 生态。它在某种程度上像 Python 的 <code>pipenv</code> ，Node 的 <code>nvm</code> 和 <code>n</code> 。Rust 的环境需要装很多东西：</p>
+<ul>
+<li><code>cargo</code> 项目管理和依赖管理</li>
+<li><code>rust-std</code> Rust 的 std 库，用于代码提示和分析</li>
+<li><code>rustfmt</code> 用于格式化代码</li>
+<li><code>cargo-watch</code> 监控文件修改以便重启服务的插件</li>
+</ul>
+<p>等等，很多很多的配套软件生态。同时 Rust 自己也有三个大版本<code>stable</code> <code>beta</code> <code>nightly</code> 。三个版本之间的组件也各不相同。因此在版本切换的时候就需要同时更新相对于的生态组件。Rustup 就很好的帮助我们管理。</p>
+<p>安装就不过多描述，<a href="https://rustup.rs/">详情可以查看这里</a></p>
+<h2>IDE 的选择</h2>
+<p>目前来说，Rust 最好用的有三个编译器支持 <code>vim</code> <code>vs code</code> <code>JetBrains IntelliJ</code></p>
+<p>当然如果你愿意折腾其他的IDE，可以查阅这里 <a href="https://areweideyet.com/">Are we IDE yet</a></p>
+<p>我个人大部分时间用的是 <code>JetBrains Clion</code> ，实际上是跟 <code>IntelliJ</code> 是一样的。小部分时间在使用 <code>vs code</code> 。</p>
+<p>这里我会讲一些我日常用的 IDEA 插件</p>
+<h3>Rainbow Brackets</h3>
+<p><img src="https://i.loli.net/2018/12/11/5c0f2171407a1.jpg" alt="rainbow-brackets.jpg" /></p>
+<p>这个东西可以让你更加直观地匹配到括号的范围</p>
+<h3>Highlight Bracket Pair</h3>
+<p><img src="https://i.loli.net/2018/12/11/5c0f221588cbb.jpg" alt="highlight bracket pair.jpg" /></p>
+<p>在一些复杂的函数里面，可以可以比较清晰地看到当前 block 的范围</p>
+<h3>Git Conflict</h3>
+<p>这个插件是用来高亮 conflict 的范围，不需要人肉查看冲突的范围在哪个部分</p>
+<h3>Active Intellij Tab Highlighter</h3>
+<p><img src="https://i.loli.net/2018/12/11/5c0f221598f1a.jpg" alt="tab-highlighter.jpg" /></p>
+<p>IntelliJ 的高亮 TAB 一直都是一个很麻烦的问题，所以这个插件可以自定义颜色用来高亮当前的 TAB</p>
+<h2>常用的几个 Cargo 组件</h2>
+<h3><a href="https://github.com/passcod/cargo-watch">cargo-watch</a></h3>
+<p>cargo-watch 用来自动监听项目文件以重新执行编译工作。目前来说我最经常的使用场景就是</p>
+<ul>
+<li><code>cargo watch -x run</code> 一般用于 web 的开发</li>
+<li><code>cargo watch -x test</code> 用于写库时自动重新跑 Testcase</li>
+</ul>
+<h3>Cargo doc</h3>
+<p>这个就是自带的命令，用于生成项目的文档</p>
+
+                </section>
+            </section>
+        </section>
+    </section>
+
+
+    <footer>
+        <section class="container">
+            <p> 自豪地使用 <a href="https://github.com/Kilerd/rubble">Project Rubble</a> 运行。 </p>
+            <div style="display:none"><script async src="https://www.googletagmanager.com/gtag/js?id=UA-68997851-1"></script> <script>   window.dataLayer = window.dataLayer || [];   function gtag(){dataLayer.push(arguments);}   gtag('js', new Date());    gtag('config', 'UA-68997851-1'); </script>
+</div>
+        </section>
+    </footer>
+    <script src="/statics/prism.js" type="text/javascript"></script>
+</body>
+
+</html>

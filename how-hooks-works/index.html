@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="keywords" content="" />
+    <link rel="stylesheet" href="/statics/style.css">
+    <link rel="alternate" type="application/rss+xml" title="你好，耳先生" href="/rss.xml" />
+    <title>HOOK机制浅谈与实现</title>
+</head>
+
+<body>
+
+
+    <section class="full-page">
+        <section class="container">
+            <nav>
+                <a href="/">HOMEPAGE</a>
+                
+                
+                <a href="portfolios">PORTFOLIOS</a>
+                
+                <a href="about">ABOUTME</a>
+                
+                
+            </nav>
+            <section class="single article">
+                <p class="mate">April 18, 2015</p>
+                <h2>新的博客</h2>
+                <section class="content yue">
+                    <p>HOOK机制最常见的地方就是在 windows 系统里面。你可以通过 HOOKS 来监控键盘输入、鼠标点击等等。那到底什么是 HOOK 机制呢？用人话讲就是“允许在特定的行为前后添加自定义行为”</p>
+<pre><code class="language-python"># before doing
+do something...
+# after doing
+</code></pre>
+<!--more-->
+<h3>HOOK 与 非HOOK 的对比</h3>
+<p>这里我们用博客评论做例子（感觉这会是最常见的例子了），并且用伪代码来做演示。</p>
+<p>博客评论最基本的函数可以写成这个样子</p>
+<pre><code class="language-c++">function comment_process(){
+  Insert to database
+}
+</code></pre>
+<p>如果我们有那么一个需求：在评论之后发送一个通知邮件给评论者，那么我们就需要修改这个 <code>commet_process</code> 函数</p>
+<pre><code class="language-c++">function comment_process(){
+  Insert to database
+  send_email(commenter);
+}
+</code></pre>
+<p>如果我们还需要发邮件通知博客主人，那么</p>
+<pre><code class="language-c++">function comment_process(){
+  Insert to database
+  send_email(commenter);
+  send_email(host);
+}
+</code></pre>
+<p>或许，有人会说可以用配置文件来解决这个问题，就像如下：</p>
+<pre><code class="language-c++">function comment_process(){
+  Insert to database
+  if(config['send_to_commenter']){
+    send_email(commenter);
+  }
+  if(config['send_to_host']){
+    send_email(host);
+  }
+}
+</code></pre>
+<p>看起来这个需求是解决了。但是如果我们需要把这个设计的模式交由用户或者开发者来使用。不可能让他们去直接修改程序的代码。甚者他们还不一定看得懂。</p>
+<p>所以，我们可以采用 HOOK 机制，采用插件的方式来完美解决这个问题。</p>
+<hr />
+<p>像上文所说，我们允许在评论前后自定义行为， 所以<code>comment_process</code>函数就可以改成一下形式</p>
+<pre><code class="language-c++">function comment_process(){
+  hook.call('COMMENT_BEFORE', args);
+  Insert to database
+  hook.call('COMMENT_AFTER', args);
+}
+</code></pre>
+<p>我们先定义一个<code>hook</code>变量来操作HOOK，从代码中，我们可以很清晰地看出来在<code>Insert to database</code> 操作前，先执行 <code>COMMENT_BEFORE</code> 相关的内容； 之后执行<code>COMMENT_AFTER</code> 相关内容。</p>
+<p>简单来讲，我们可以理解成<code>hook</code> 存在两个列表<code>COMMENT_BEFORE</code> 和<code>COMMENT_AFTER</code> ，当执行<code>hook.call()</code> 命令时便遍历执行对应列表中的内容。</p>
+<p>所以，如果我们用 HOOK 来实现上述 非HOOK的功能的话， 就是需要把 <code>send_email(commenter);</code> 和 <code>send_email(host);</code> 加入 <code>COMMENT_AFTER</code> 列表中。</p>
+<p>可以清晰地看到，无论我们的需求改成怎样，对<code>comment_process</code> 函数的入侵和修改都是最小的。</p>
+<p>那么，如果能解决怎么把 <code>自定义行为</code> 加入列表，就可以完美地写出插件机制。</p>
+<p>为此，我们可以为<code>hook</code> 变量定义注册函数<code>register_action()</code> </p>
+<pre><code class="language-c++">function register_action(type, action_name){
+  list[type].append(action_name);
+}
+</code></pre>
+<p>自此我们有了一个注册函数，用于添加自定义行为</p>
+<pre><code class="language-c++">hook.register_action('COMMENT_AFTER', 'send_to_commenter');
+hook.register_action('COMMENT_AFTER', 'send_to_host');
+</code></pre>
+<p>这样列表<code>COMMENT_AFTER</code> 就更新成 <code>['send_to_commenter', 'send_to_host']</code> </p>
+<p>下面再实现 <code>hook.call()</code> 方法：</p>
+<pre><code class="language-c++">function call(type, args){
+  for each_one in list[type]{
+    each_one(args);
+  }
+}
+</code></pre>
+<p>至此，HOOK功能也就基本描述完了，一个简单的插件模式也完成了。</p>
+<p>添加功能只用以下两步：</p>
+<ol>
+<li>编写对应逻辑的方法/函数</li>
+<li>调用<code>hook.register_action</code> 方法进行注册</li>
+</ol>
+<h3>Python中的具体实现方法</h3>
+<blockquote>
+<p>谁叫我主要用python呢 。 ╮(╯_╰)╭</p>
+</blockquote>
+<p>如上文所说，我们存入列表中的是方法的名字(类型为字符串/string)，所以我们需要把字符串转换成方法指针。也就是说，我们需要遍历所有的代码，找出一个方法/变量/函数与之同名。</p>
+<p>庆幸的是Python提供了<code>eval</code> 函数，可以直接使用</p>
+<pre><code class="language-python">def test_function():
+    print 'hey, it is me.'
+
+if __name__ == '__main__':
+    
+    eval('test_function')() # hey, it is me.
+</code></pre>
+<p>居然成功执行了， <code>eval('test_function')</code> 指向了<code>test_function</code> 这个函数</p>
+<pre><code class="language-python">def test_function():
+    print 'hey, it is me.'
+
+if __name__ == '__main__':
+    
+    print id(test_function) # 4292954292
+    print id(eval('test_function')) # 4292954292
+    print test_function == eval('test_function') # True
+</code></pre>
+<p><code>eval('test_function')</code> 成了<code>test_function</code> 的一个引用</p>
+<p><strong>BUT</strong>，<code>eval</code> 有一个致命的弱点：写不好的话可能会引起漏洞供人注入。（这里不是本文讨论的重点，详情请GOOGLE）并且<code>eval</code> 挺慢的， 我们做1,000,000 次 <code>1 + 1</code> 试试</p>
+<pre><code class="language-python">import time
+def test_function():
+    return 1+1
+if __name__ == '__main__':
+    # eval test
+    i=1000000
+    start = time.time()
+    while i&gt;0:
+        eval('test_function')()
+        i -= 1
+    end = time.time()
+    print '{}'.format(end-start)  # 6.56956291199
+
+    # normal test
+    i=1000000
+    start = time.time()
+    while i&gt;0:
+        test_function()
+        i -= 1
+    end = time.time()
+    print '{}'.format(end-start)  # 0.15709900856
+</code></pre>
+<p>6.57s 和 0.15s 的差距还是蛮大的。 不过均摊到1次的时间就好象可以忽略了。</p>
+<p>有了<code>eval</code> 函数的帮忙，实现hook就会变得简单不少</p>
+<p>PS: 最后讲道理，居然没有用上<code>eval</code> ，不过当你用不同写法的时候还是可能会用上的。ㄟ( ▔, ▔ )ㄏ</p>
+<p>首先，我们先定义工程目录分布：</p>
+<pre><code>/app
+..../plugins
+........__init__.py
+......../test_plugin
+............__init__.py
+............function.py
+....hook.py
+....view.py
+</code></pre>
+<p>其中<code>hook.py</code> 用于实现HOOK机制</p>
+<pre><code class="language-python">class Hook:
+    _list = {}  # 用于储存HOOK行为
+
+    @classmethod
+    def register_action(cls, type, plugin_name, action_name):  # 注册行为
+        if type not in cls._list:
+            cls._list[type] = []
+            cls._list[type].append((plugin_name, action_name))
+        elif action_name not in cls._list[type]:
+                cls._list[type].append((plugin_name, action_name))
+
+    @classmethod
+    def call(cls, type, **args):  # 执行行为
+        if type not in cls._list:
+            return;
+        for action in cls._list[type]:
+            exec_string = 'from plugins.{}.function import {}'.format(action[0], action[1])
+            exec(exec_string)  # 动态加载
+            eval(action[1])(**args)  # 执行
+
+</code></pre>
+<p><code>/plugins/test_plugin/function.py</code> 中就是我们自定义的HOOK行为</p>
+<pre><code class="language-python">def send_to_commenter(**args):
+    print 'send email to {}'.format(args['commenter'])
+
+def send_to_host(**args):
+    print 'send email to {}'.format(args['host'])
+</code></pre>
+<p>这里使用 <code>**args</code> 作为参数入口，接受所有参数</p>
+<p><code>view.py</code> 中包含两部分内容：前部分为初始化代码； 后部分是模拟函数执行</p>
+<pre><code class="language-python">from hook import Hook
+
+def comment(commenter, content):
+    args = {
+        'commenter': commenter,
+        'host': 'myself'
+    }
+    Hook.call('COMMENT_BEFORE', **args)
+    print content
+    Hook.call('COMMENT_AFTER', **args)
+
+# 注册两个钩子
+Hook.register_action('COMMENT_AFTER','test_plugin', 'send_to_commenter')
+Hook.register_action('COMMENT_AFTER','test_plugin', 'send_to_host')
+
+# 模拟运行 comment 行为
+comment('someone@domain.com', 'Hello, Guys')
+</code></pre>
+<p>运行结果是很明显的：</p>
+<pre><code class="language-bash">Hello, Guys
+send email to someone@domain.com  # send_to_commenter
+send email to myself  # send_to_host
+</code></pre>
+<p>至此，HOOK机制讲完了， 也可以顺利写出 插件机制 了。</p>
+<hr />
+<p>但是上面这个程序看起来并不是那么完美，因为还需要手动在代码初始化的地方手动注册HOOK行为。</p>
+<p>为什么不用自动注册的方式呢？</p>
+<p>在一般的项目里面，数据库是必不可少的，所以我们可以把这个行为记录进一个特定的表<code>plugins_hook</code>中(代替<code>HOOK._list</code> 作用)。在插件安装和删除的时候，对表<code>plugins_hook</code> 进行更新。</p>
+<p>所以我们就无需在<code>view.py</code> 中用<code>register_action</code> 来注册 HOOK 行为。</p>
+<p>我们只需在 <code>/plugins/your-plugin/__init__.py</code> 中类似地写入以下信息：</p>
+<pre><code class="language-python"># some basic information
+NAME = 'Plugin Name'
+DESCRIPTION = 'Ohhhhhhhhhhh'
+AUTHOR = 'Some One'
+EMAIL = 'my email'
+
+# hook register
+HOOK_REGISTER = [
+  ('COMMENT_AFTER', 'send_to_commenter'),
+  ('COMMENT_AFTER', 'send_to_host')
+]
+</code></pre>
+<p>这样你的插件机制会更加完善。</p>
+<hr />
+<p>好了，整个HOOK机制就讲完了，希望本文能对你有不少帮助。</p>
+<p>PS: 如果你需要其他语言的DEMO，可以联系我，我们可以一起商讨以下。</p>
+
+                </section>
+            </section>
+        </section>
+    </section>
+
+
+    <footer>
+        <section class="container">
+            <p> 自豪地使用 <a href="https://github.com/Kilerd/rubble">Project Rubble</a> 运行。 </p>
+            <div style="display:none"><script async src="https://www.googletagmanager.com/gtag/js?id=UA-68997851-1"></script> <script>   window.dataLayer = window.dataLayer || [];   function gtag(){dataLayer.push(arguments);}   gtag('js', new Date());    gtag('config', 'UA-68997851-1'); </script>
+</div>
+        </section>
+    </footer>
+    <script src="/statics/prism.js" type="text/javascript"></script>
+</body>
+
+</html>

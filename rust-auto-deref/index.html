@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="keywords" content="" />
+    <link rel="stylesheet" href="/statics/style.css">
+    <link rel="alternate" type="application/rss+xml" title="你好，耳先生" href="/rss.xml" />
+    <title>自动解引用.RUST</title>
+</head>
+
+<body>
+
+
+    <section class="full-page">
+        <section class="container">
+            <nav>
+                <a href="/">HOMEPAGE</a>
+                
+                
+                <a href="portfolios">PORTFOLIOS</a>
+                
+                <a href="about">ABOUTME</a>
+                
+                
+            </nav>
+            <section class="single article">
+                <p class="mate">April 18, 2015</p>
+                <h2>新的博客</h2>
+                <section class="content yue">
+                    <p>解引用应该说是 Rust 为了解决不采用 Class 来实现对象化编程的一个解决方案。假想一下如果 Python 或者 Java 之流，需要对一个结构体（准确来说应该是类）进行自定义扩展：增加字段，增加方法，重写方法等等，我们可以直接用继承的方式来实现</p>
+<pre><code class="language-python">class Base:
+	a: int = 2
+
+class Extend(Base):
+	my_self_field: int = 3
+</code></pre>
+<p>当一个函数希望传入实现了 <code>Base</code> 类的所有实例时，可以直接以 <code>Base</code> 为约束，限定其参数范围。在 Java 中就可以使用基类或者 Interface 来约束。</p>
+<pre><code class="language-python">def base_bound(param: Base):
+    pass
+</code></pre>
+<p>这一套在 Rust 并不适用，在 Rust 中时采用 Struct + Trait 来抽象对象化。所以若想对结构体进行扩展，那么就只能再用一层结构体去包（wrap）住原来的结构体。</p>
+<pre><code class="language-rust">struct MyOwnDerefStruct(String);
+</code></pre>
+<!--more-->
+<p>这里我们就对 <code>String</code> 进行了自己的封装，这里并没有对字段进行扩展，但是这确实在 Rust 中比较常见的场景：一旦我们希望对某个特定的 Struct 实现某个特定的 Trait，同时 Struct 和 Trait 都来自第三方库（不在当前库中定义），那么为了实现<code>impl Trait for Struct</code> ，我们就需要解决孤儿定律（Orphan Rule），此时我们就可以用这种简单的包装方式来满足他。</p>
+<blockquote>
+<h5>什么是孤儿定律 Orphan Rule？</h5>
+<p>在 Rust 中， 若想对 Struct 实现一个 Trait， 那么 Struct 和 Trait 一定要有一方是在当前库中定义的。</p>
+<p>这个约束很好理解，也很适用。</p>
+<p>假设一个场景：C 库中对 A 的 Struct 实现了 B 中的 Trait。此时我们在当前库中使用了 C 库和 A 库，那么我们可能会对 A 中的 Struct 误解，其可能已经被继承了很多奇怪的 Trait，会严重影响我们对 Struct 的使用</p>
+</blockquote>
+<p>同时，Rust 为了移除运行时和 GC 的消耗，实现了诸多智能指针：<code>Box</code> <code>Rc</code> <code>Arc</code> 等等。所以可能会出现诸如以下的包装 <code>let param: Arc&lt;Mutex&lt;Box&lt;Vec&lt;i32&gt;&gt;&gt;&gt;;</code> 这种在 Python 中只是简单的 <code>a: List&lt;int&gt;</code> 的包装。</p>
+<p>为了方便这种因为语言特性导致的额外包装，Rust 提供了自动解引用 <code>Deref</code> 来简化编程。</p>
+<pre><code class="language-rust">#[lang = &quot;deref&quot;]
+#[doc(alias = &quot;*&quot;)]
+#[doc(alias = &quot;&amp;*&quot;)]
+#[stable(feature = &quot;rust1&quot;, since = &quot;1.0.0&quot;)]
+pub trait Deref {
+    /// The resulting type after dereferencing.
+    #[stable(feature = &quot;rust1&quot;, since = &quot;1.0.0&quot;)]
+    type Target: ?Sized;
+
+    /// Dereferences the value.
+    #[must_use]
+    #[stable(feature = &quot;rust1&quot;, since = &quot;1.0.0&quot;)]
+    fn deref(&amp;self) -&gt; &amp;Self::Target;
+}
+</code></pre>
+<p>若要使用 Deref Trait，我们先看看 Deref 里面有什么东西：</p>
+<ul>
+<li><code>type Target</code> 指的是我们希望被解引用到那个数据结构。</li>
+<li><code>deref()</code> 提供了一个手动调用解引用到 <code>&amp;Target</code> 的方法。</li>
+</ul>
+<p>回到我们写的 <code>MyOwnDerefStruct</code> 例子，我们包装了 <code>String</code> 类型，如果现在有一个接收 <code>&amp;String</code> 参数的函数，在没有 Deref 的场景我们需要怎么调用他呢？</p>
+<pre><code class="language-rust">struct MyOwnDerefStruct(String);
+
+fn print(s: &amp;String) {
+    println!(&quot;{}&quot;, s);
+}
+
+fn main() {
+    let deref_struct = MyOwnDerefStruct(String::from(&quot;hello world&quot;));
+    print(&amp;deref_struct.0);
+}
+
+</code></pre>
+<p>在 L9 中，我们需要先通过 <code>deref_struct.0</code> 获取到 <code>MyOwnDerefStruct</code> 中的第一个属性 <code>String</code> ，然后再通过 <code>&amp;</code> 来转换成 <code>&amp;String</code> 。</p>
+<p>如果我们直接用会 C 中的逻辑 <code>print(&amp;deref_struct)</code> ，我们会得到以下的错误信息：</p>
+<pre><code>error[E0308]: mismatched types
+  --&gt; src/main.rs:23:11
+   |
+23 |     print(&amp;deref_struct);
+   |           ^^^^^^^^^^^^^ expected struct `std::string::String`, found struct `MyOwnDerefStruct`
+   |
+   = note: expected type `&amp;std::string::String`
+              found type `&amp;MyOwnDerefStruct`
+
+</code></pre>
+<p>此时如果我们为我们的结构体 <code>MyOwnDerefStruct</code> 实现自动解引用的话，以上代码就可以正常编译：</p>
+<pre><code class="language-rust">impl Deref for MyOwnDerefStruct {
+    type Target = String;
+
+    fn deref(&amp;self) -&gt; &amp;Self::Target {
+        return &amp;self.0;
+    }
+}
+</code></pre>
+<p>在上述代码中，我们告诉 Rust 编译器：「我们期望 <code>MyOwnDerefStruct</code> 被解到 <code>String</code>」，那么在编译过程中碰到需要 <code>&amp;String</code> 时，编译器会自动帮我们转换。而且我们还能写出以下相当 tricky 的代码 <code>print(&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;deref_struct);</code>（这代码能跑的原因，可以自行去看看 Rust 内部对 &amp; 的处理）</p>
+<p>自动解引用还有一个好处就是，他可以直接寻址到 <code>Target</code> 的方法。在我们的场景里面，<code>String</code> 中有判断两个字符串是否相等的方法 <code>eq</code> 。因为自动解引用的存在，我们并不需要 <code>deref_struct.0.eq(String::from(&quot;hello world))</code> 的写法。  <code>MyOwnDerefStruct</code> 可以直接调用 <code>eq</code> 方法。</p>
+<pre><code class="language-rust">assert_eq!(true, deref_struct.eq(&quot;hello world&quot;));
+</code></pre>
+<p>这样就避免了在使用智能指针的时候在代码中出现大量的 <code>variable_box.0.method()</code> 。避免了 <code>.0</code> 的出现，大大地简化了代码，同时也增加了代码的可读性。</p>
+<h2><code>variable.deref()</code> 和 <code>*variable</code> 的区别</h2>
+<p>使用解引用的时候需要注意的是函数 <code>deref()</code> 和 <code>*</code> 的行为是不一样的。</p>
+<ul>
+<li><code>deref()</code> 的函数原型是 <code>fn deref(&amp;self) -&gt; &amp;Self::Target;</code> 所以我们拿到的是 Target 的引用 <code>&amp;Target</code></li>
+<li><code>*</code> 是直接拿到 <code>Target</code></li>
+</ul>
+<p>所以，简单来说 <code>variable.deref()</code> 就等价于 <code>&amp;*variable</code></p>
+
+                </section>
+            </section>
+        </section>
+    </section>
+
+
+    <footer>
+        <section class="container">
+            <p> 自豪地使用 <a href="https://github.com/Kilerd/rubble">Project Rubble</a> 运行。 </p>
+            <div style="display:none"><script async src="https://www.googletagmanager.com/gtag/js?id=UA-68997851-1"></script> <script>   window.dataLayer = window.dataLayer || [];   function gtag(){dataLayer.push(arguments);}   gtag('js', new Date());    gtag('config', 'UA-68997851-1'); </script>
+</div>
+        </section>
+    </footer>
+    <script src="/statics/prism.js" type="text/javascript"></script>
+</body>
+
+</html>

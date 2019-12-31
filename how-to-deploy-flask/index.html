@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="keywords" content="" />
+    <link rel="stylesheet" href="/statics/style.css">
+    <link rel="alternate" type="application/rss+xml" title="你好，耳先生" href="/rss.xml" />
+    <title>[译文]如何使用Flask部署大型应用？</title>
+</head>
+
+<body>
+
+
+    <section class="full-page">
+        <section class="container">
+            <nav>
+                <a href="/">HOMEPAGE</a>
+                
+                
+                <a href="portfolios">PORTFOLIOS</a>
+                
+                <a href="about">ABOUTME</a>
+                
+                
+            </nav>
+            <section class="single article">
+                <p class="mate">April 18, 2015</p>
+                <h2>新的博客</h2>
+                <section class="content yue">
+                    <p>原文地址： <a href="https://github.com/mitsuhiko/flask/wiki/Large-app-how-to">https://github.com/mitsuhiko/flask/wiki/Large-app-how-to</a></p>
+<blockquote>
+<p>译者：本译文已经违背了原文的意图，请勿加以转载。此文仅用于个人使用。</p>
+</blockquote>
+<p><strong>这篇文章并不是官方的！它包含了很多非官方资源的建议并且没有通过一系列的测试（审查）。这里描述的写法可能很有用，但是同时它也可能很危险。请记住，不要在本文档添加任何附加信息。或者，引用在你的网站或者博客。这篇文章之所以保存，是因为很多<code>StackOverflow</code>答案指向了这里</strong></p>
+<!--more-->
+<p>这篇文章试图去描述一个由Flask和一些基础的模块组成的大型应用的第一步。</p>
+<ul>
+<li>SQLAlchemy</li>
+<li>WTForms</li>
+</ul>
+<p>请随时可以修改和添加自己的Tips</p>
+<h1>安装</h1>
+<h2>Flask</h2>
+<p><a href="http://flask.pocoo.org/docs/installation/">Flask Installation</a>
+我建议使用<code>virtualenv</code>:它是一个简单并且允许你在同一个机器上执行多个环境的玩意，甚至，他不需要机器上的超级权限(root)，近警示作为一个库文件安装在本地。</p>
+<h2>Flask-SQLAlchemy</h2>
+<p><code>SQLAlchemy</code>提供了一个简单而快捷的方式去映射你的对象到不同的关系型数据库。在<code>virtualenv</code>里面用<code>pip</code>安装<code>Flask-SQLAlchemy</code>:</p>
+<pre><code class="language-bash">pip install flask-sqlalchemy
+</code></pre>
+<p><a href="http://packages.python.org/Flask-SQLAlchemy/">更多关于Flask-SQLAlchemy</a></p>
+<h2>Flask-WTF</h2>
+<p><code>WTForms</code>提供了一个简单的方式去处理用户提交的数据</p>
+<pre><code class="language-bash">pip install Flask-WTF
+</code></pre>
+<p><a href="http://packages.python.org/Flask-WTF/">更多关于Flask-WTF</a></p>
+<h1>概述</h1>
+<p>好了，到了现在，我们就准备好了所需的所有库。下面是应用的文件夹结构。</p>
+<pre><code class="language-bash">/config.py
+/run.py
+/shell.py 
+/app.db
+/app/__init__.py
+/app/constants.py
+/app/static/
+</code></pre>
+<p>对于每一个模块(或者子应用)都会有这样的文件结构(这里展示的是<code>users</code>模块)</p>
+<pre><code class="language-bash">/app/users/__init__.py
+/app/users/views.py
+/app/users/forms.py
+/app/users/constants.py
+/app/users/models.py
+/app/users/decorators.py
+</code></pre>
+<p>对于每一个模块，都需要用到模版(jinja)，所以我们以<code>模版文件夹 + 模块目录</code>的形式进行储存。</p>
+<pre><code class="language-bash">/app/templates/404.html
+/app/templates/base.html
+/app/templates/users/login.html
+/app/templates/users/register.html
+</code></pre>
+<p>我们本应该使用一个专门的http服务来提供静态文件，但是随着科技的发展，我们可以让Flask来完成这项工作。Flask会自动地从<code>static/</code>文件夹里面读取静态文件。如果你想使用其他文件夹，那么你可以阅读这篇文章：
+<a href="http://flask.pocoo.org/docs/api/#application-object">http://flask.pocoo.org/docs/api/#application-object</a></p>
+<pre><code class="language-bash">/app/static/js/main.js
+/app/static/css/reset.css
+/app/static/img/header.png
+</code></pre>
+<p>我们将会创建4个模块：用户模块（用于管理用户的注册、登陆、找回密码、信息修改，甚至第三方登陆/注册）、运用列队服务的邮件模块、文章和评论模块。</p>
+<h2>配置</h2>
+<p><code>/run.py</code>用于启动网站服务器</p>
+<pre><code class="language-python">from app import app
+app.run(debug=True)
+</code></pre>
+<p><code>/shell.py</code>将会打开一个Flask环境的控制台。在这个环境下，或许用pdb执行调试并不太理想，但是总是有用的（当你初始化你的数据库时）</p>
+<pre><code class="language-python">#!/usr/bin/env python
+import os
+import readline
+from pprint import pprint
+
+from flask import *
+from app import *
+
+os.environ['PYTHONINSPECT'] = 'True'
+</code></pre>
+<p><code>config.py</code>储存了所有模块的配置信息。这次，我们将使用<code>SQLite</code>数据库，因为他是十分简单、易用。很可能<code>/config.py</code>不会是仓库的一部分，因为在测试和生产环境是不同的。</p>
+<pre><code class="language-python">import os
+_basedir = os.path.abspath(os.path.dirname(__file__))
+
+DEBUG = False
+
+ADMINS = frozenset(['youremail@yourdomain.com'])
+SECRET_KEY = 'This string will be replaced with a proper key in production.'
+
+SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(_basedir, 'app.db')
+DATABASE_CONNECT_OPTIONS = {}
+
+THREADS_PER_PAGE = 8
+
+CSRF_ENABLED = True
+CSRF_SESSION_KEY = &quot;somethingimpossibletoguess&quot;
+
+RECAPTCHA_USE_SSL = False
+RECAPTCHA_PUBLIC_KEY = '6LeYIbsSAAAAACRPIllxA7wvXjIE411PfdB2gt2J'
+RECAPTCHA_PRIVATE_KEY = '6LeYIbsSAAAAAJezaIq3Ft_hSTo0YtyeFG-JgRtu'
+RECAPTCHA_OPTIONS = {'theme': 'white'}
+</code></pre>
+<ul>
+<li><code>_basedir</code>读取脚本运行所在的目录</li>
+<li><code>DEBUG</code>说明这是一个开发环境。当发生错误时，你会从Flask得到一个非常有用的错误页面</li>
+<li><code>SECRET_KEY</code>用于加密Cookies。当这个值改变时，你的用户需要重新登录</li>
+<li><code>ADMINS</code>会被调用，当你需要发邮件给网站管理员时</li>
+<li><code>SQLALCHEMY_DATABASE_URI</code> 和 <code>DATABASE_CONNECT_OPTIONS</code> 是SQLAlchemy连接信息（建议高强度）</li>
+<li><code>THREAD_PAGE</code> 我的理解是2/核心数，或许这是错误的理解</li>
+<li><code>CSRF_ENABLED</code> 和 <code>CSRF_SESSION_KEY</code>用于防止异常操作的POST</li>
+<li><code>RECAPTCHA_*</code> 将使用自带<code>RecaptchaField</code>的WTForms，用于验证网站和公钥、私钥。</li>
+</ul>
+<h1>第一个模块</h1>
+<p>我们将开始写用户模块。为此，我们将会定义一些模型、用于模型的常数、表单，最后是第一个视图和模版。</p>
+<h2>第一个模型（和它的常数文件）</h2>
+<p><code>/app/users/models.py</code>文件：</p>
+<pre><code class="language-python">from app import db
+from app.users import constants as USER
+
+class User(db.Model):
+
+    __tablename__ = 'users_user'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), unique=True)
+    email = db.Column(db.String(120), unique=True)
+    password = db.Column(db.String(120))
+    role = db.Column(db.SmallInteger, default=USER.USER)
+    status = db.Column(db.SmallInteger, default=USER.NEW)
+
+    def __init__(self, name=None, email=None, password=None):
+        self.name = name
+        self.email = email
+        self.password = password
+
+    def getStatus(self):
+        return USER.STATUS[self.status]
+
+    def getRole(self):
+        return USER.ROLE[self.role]
+
+    def __repr__(self):
+        return '&lt;User %r&gt;' % (self.name)
+</code></pre>
+<p>在<code>/app/users/constants.py</code>文件中的常数:</p>
+<pre><code class="language-python"># User role
+ADMIN = 0
+STAFF = 1
+USER = 2
+ROLE = {
+    ADMIN: 'admin',
+    STAFF: 'staff',
+    USER: 'user',
+}
+
+# user status
+INACTIVE = 0
+NEW = 1
+ACTIVE = 2
+STATUS = {
+    INACTIVE: 'inactive',
+    NEW: 'new',
+    ACTIVE: 'active',
+}
+</code></pre>
+<p>译文未完成</p>
+
+                </section>
+            </section>
+        </section>
+    </section>
+
+
+    <footer>
+        <section class="container">
+            <p> 自豪地使用 <a href="https://github.com/Kilerd/rubble">Project Rubble</a> 运行。 </p>
+            <div style="display:none"><script async src="https://www.googletagmanager.com/gtag/js?id=UA-68997851-1"></script> <script>   window.dataLayer = window.dataLayer || [];   function gtag(){dataLayer.push(arguments);}   gtag('js', new Date());    gtag('config', 'UA-68997851-1'); </script>
+</div>
+        </section>
+    </footer>
+    <script src="/statics/prism.js" type="text/javascript"></script>
+</body>
+
+</html>
