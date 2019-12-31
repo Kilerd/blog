@@ -1,4 +1,4 @@
-name: Build Demo Github Page
+name: Build blog github page
 
 on: [push]
 
@@ -10,7 +10,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Install Staple
-      run: cargo install --git git@github.com:Kilerd/staple.git
+      run: cargo install --git https://github.com/Kilerd/staple
     - name: Build blog
       run: staple build
     - name: Deploy site to gh-pages branch
