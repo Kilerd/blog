@@ -20,7 +20,7 @@
                 <a href="/">HOMEPAGE</a>
                 {% if config.pages %}
                 {% for page in config.pages %}
-                <a href="{{ page.meta.url }}">{{ page.nav_title}}</a>
+                <a href="/{{ page.meta.url }}">{{ page.nav_title}}</a>
                 {% endfor %}
                 {% endif %}
             </nav>

@@ -21,7 +21,7 @@
                 <a href="/">HOMEPAGE</a>
                 {% if config.pages %}
                 {% for page in config.pages %}
-                <a href="{{ page.meta.url }}">{{ page.nav_title}}</a>
+                <a href="/{{ page.meta.url }}">{{ page.nav_title}}</a>
                 {% endfor %}
                 {% endif %}
             </nav>
@@ -34,7 +34,7 @@
         <section class="article">
             <p class="mate">{{ article.meta.date | date(format="%B %d, %Y") }}</p>
             <a class="title"
-               href="{{ article.meta.url }}">{{ article.meta.title }}</a>
+               href="/{{ article.meta.url }}">{{ article.meta.title }}</a>
             {% if article.meta.description %}
             <section class="yue desc">
                 {{ article.meta.description.html | safe }}
