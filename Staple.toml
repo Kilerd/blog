@@ -9,7 +9,7 @@ utc_offset = 800
 theme = "rubble"
 
 [url]
-url = "http://localhost:8000"
+url = "https://www.kilerd.me"
 root = "/"
 
 [pagination]
@@ -27,8 +27,15 @@ nav_title = "ABOUTME"
 file = "about.md"
 template = "page.html"
 
+[[statics]]
+from = "CNAME"
+to = "CNAME"
+
 [rss]
 enable = true
 article_limited = 10
 
 [extra]
+ga = """
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-68997851-1"></script> <script>   window.dataLayer = window.dataLayer || [];   function gtag(){dataLayer.push(arguments);}   gtag('js', new Date());    gtag('config', 'UA-68997851-1'); </script>
+"""
