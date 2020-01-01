@@ -25,8 +25,8 @@
                 {% endif %}
             </nav>
             <section class="single article">
-                <p class="mate">April 18, 2015</p>
-                <h2>新的博客</h2>
+                <p class="mate">{{ article.meta.date | date(format="%B %d, %Y") }}</p>
+                <h2>{{ article.meta.title }}</h2>
                 <section class="content yue">
                     {{ article.content.html | safe }}
                 </section>
