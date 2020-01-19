@@ -23,7 +23,7 @@ template = "page.html"
 
 [[pages]]
 show_in_nav = true
-nav_title = "我的阅读"
+nav_title = "READINGS"
 file = "read.md"
 template = "page.html"
 
