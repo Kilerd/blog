@@ -59,20 +59,8 @@
 
 
 
-## MrLogin
+## Resource.rs
 
-[GITHUB](<https://github.com/mr-login/mrlogin>) [WEBSITE](<https://mrlogin.org/>) 👈有了域名，还没开始使用
+[GITHUB](<https://github.com/kilerd/resource>) [WEBSITE](<https://resource.rs/>)
 
-这是一个计划中的项目，在实现多个项目之后，发现都需要单独写一套授权系统，这无论是对用户还是开发者来说都是一件不可接受的事情，所以一个 单点登录 SSO 的系统就开始筹备了。
-
-- 支持 SSO 登录
-- 将支持 OAuth2.0 登录
-- 第三方登录： Github 等等
-
-这将会是接下来一段时间会 focus 在这个项目上，当然这个项目也是开源的，可以去 Github 中查看最新的开发进度。
-
-
-
-## GetArticle.TOP
-
-这也是一个计划中的项目，计划定期推送一些质量上等的文章给用户，如有可能，会提供译文。
+一份希望能够提供中文化的Rust学习资源。
