@@ -1,5 +1,5 @@
-<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:media="http://search.yahoo.com/mrss/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>你好，耳先生</title><link>https://www.kilerd.me/</link><description>先生贵姓？耳东陈。好的，这边请，耳先生。</description><generator>Staple</generator><item><title>2019 个人总结</title><link>https://www.kilerd.me/summaries-my-2019</link><description><![CDATA[<p>无意中翻博客草稿的时候，发现了 2018 的总结还在停留在草稿阶段，现在就已经要写 2019 年度总结了，不禁感叹时间流逝之快。</p>
-]]></description><pubDate>2019-12-31 21:34:22 +08:00</pubDate><content:encoded><![CDATA[<p>无意中翻博客草稿的时候，发现了 2018 的总结还在停留在草稿阶段，现在就已经要写 2019 年度总结了，不禁感叹时间流逝之快。</p>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:dc="http://purl.org/dc/elements/1.1/"><channel><title>你好，耳先生</title><link>https://www.kilerd.me/</link><description>先生贵姓？耳东陈。好的，这边请，耳先生。</description><generator>Staple</generator><item><title>2019 个人总结</title><link>https://www.kilerd.me/summaries-my-2019</link><description><![CDATA[<p>无意中翻博客草稿的时候，发现了 2018 的总结还在停留在草稿阶段，现在就已经要写 2019 年度总结了，不禁感叹时间流逝之快。</p>
+]]></description><guid>https://www.kilerd.me/summaries-my-2019</guid><pubDate>Tue, 31 Dec 2019 21:34:22 +0800</pubDate><content:encoded><![CDATA[<p>无意中翻博客草稿的时候，发现了 2018 的总结还在停留在草稿阶段，现在就已经要写 2019 年度总结了，不禁感叹时间流逝之快。</p>
 <!--more-->
 <h2>R.I.P Python 2</h2>
 <p>Python 2 停止维护，这绝对是一件所有 Pythonista 值得写入 2020 第一篇文章内的描述。我大概从2014年开始接触Python，但是就已经开始用 Python 3来写项目了。从 14 年到现在，除了写项目逻辑之外更多的时间是花费在 2 与 3 的兼容上面。虽然说 <code>six</code> 这种专门用来做兼容性库的存在极大的简化了兼容的实现，我还是十分希望能免去这些工作量。</p>
@@ -25,7 +25,7 @@
 <p>一年来，虽说工作不如意，学习上没啥进步，也开始慢慢接受自己的平庸。但是我始终坚信着「勤能补拙」这个朴实的道理。</p>
 ]]></content:encoded></item><item><title>我的技术断离舍</title><link>https://www.kilerd.me/learnning-zen-of-tech</link><description><![CDATA[<p>在工作了一年多后，脑子里面满是想离职的事情。在此之前，我还在持续构思这一年多学习到内容的总结，然后品了品，这一年内，为了柴米油盐持续奔波，并没有留下过多的时间来学习新的技术，反而相比于刚刚毕业的那个时候，这时的我忘记的知识远远多于我学习到的。</p>
 <p>然而又尽力过一段时间的沉思，我才意识到这可能并不是一件坏事，反而让我可以更好地学习下去。</p>
-]]></description><pubDate>2019-11-08 16:52:13 +08:00</pubDate><content:encoded><![CDATA[<p>在工作了一年多后，脑子里面满是想离职的事情。在此之前，我还在持续构思这一年多学习到内容的总结，然后品了品，这一年内，为了柴米油盐持续奔波，并没有留下过多的时间来学习新的技术，反而相比于刚刚毕业的那个时候，这时的我忘记的知识远远多于我学习到的。</p>
+]]></description><guid>https://www.kilerd.me/learnning-zen-of-tech</guid><pubDate>Fri, 08 Nov 2019 16:52:13 +0800</pubDate><content:encoded><![CDATA[<p>在工作了一年多后，脑子里面满是想离职的事情。在此之前，我还在持续构思这一年多学习到内容的总结，然后品了品，这一年内，为了柴米油盐持续奔波，并没有留下过多的时间来学习新的技术，反而相比于刚刚毕业的那个时候，这时的我忘记的知识远远多于我学习到的。</p>
 <p>然而又尽力过一段时间的沉思，我才意识到这可能并不是一件坏事，反而让我可以更好地学习下去。</p>
 <!--more-->
 <h2>别让你练手的项目成为前进的阻碍</h2>
@@ -54,7 +54,7 @@
 ]]></content:encoded></item><item><title>简单几步打造个人集群和自动化流水线</title><link>https://www.kilerd.me/personal-docker-cluster-and-ci-package-pipeline</link><description><![CDATA[<p>在认识的小伙伴发了他做的项目部署文档出来之后，我便决定开始写这篇文章，原因是他使用的部署方式太麻烦，而且太不自动化，同时有时候也会因为开发任务繁忙导致没能部署好等等。</p>
 <p>这篇文章是介绍了一个极度适合用于个人或者几个人的小团队使用的集群搭建方式，在保证了安全性的同时，提供了几乎全自动的部署方式，在手动配置一次之后，每次服务更新都是自动触发的，极大地减少了部署的时间。</p>
 <p>本篇文章适用于 GIT-FLOW 类似的「master 即 生产代码」的一切工作模式（或者某一个分支为生产代码）。如果您的开发模式不符合这个特征，那么可以关闭网页了。</p>
-]]></description><pubDate>2019-06-13 13:16:33 +08:00</pubDate><content:encoded><![CDATA[<p>在认识的小伙伴发了他做的项目部署文档出来之后，我便决定开始写这篇文章，原因是他使用的部署方式太麻烦，而且太不自动化，同时有时候也会因为开发任务繁忙导致没能部署好等等。</p>
+]]></description><guid>https://www.kilerd.me/personal-docker-cluster-and-ci-package-pipeline</guid><pubDate>Thu, 13 Jun 2019 13:16:33 +0800</pubDate><content:encoded><![CDATA[<p>在认识的小伙伴发了他做的项目部署文档出来之后，我便决定开始写这篇文章，原因是他使用的部署方式太麻烦，而且太不自动化，同时有时候也会因为开发任务繁忙导致没能部署好等等。</p>
 <p>这篇文章是介绍了一个极度适合用于个人或者几个人的小团队使用的集群搭建方式，在保证了安全性的同时，提供了几乎全自动的部署方式，在手动配置一次之后，每次服务更新都是自动触发的，极大地减少了部署的时间。</p>
 <p>本篇文章适用于 GIT-FLOW 类似的「master 即 生产代码」的一切工作模式（或者某一个分支为生产代码）。如果您的开发模式不符合这个特征，那么可以关闭网页了。</p>
 <!--more-->
@@ -394,7 +394,7 @@ networks:
                 )
 </code></pre>
 <p>不难发现，根据业务的不同，传入 <code>to</code> 方法中的函数签名必然会不同，那么 Actix 是怎么处理的呢？或者说是怎么实现这个功能的。接下来我们将一步一步实现这一个类似的需求。</p>
-]]></description><pubDate>2019-05-13 08:40:47 +08:00</pubDate><content:encoded><![CDATA[<p>如果你写过 <code>actix-web</code> 1.0 的代码，会发现在路由注册的函数中，你可以传入各种不同签名的函数题。</p>
+]]></description><guid>https://www.kilerd.me/rust-how-actix-register-route-in-rust</guid><pubDate>Mon, 13 May 2019 08:40:47 +0800</pubDate><content:encoded><![CDATA[<p>如果你写过 <code>actix-web</code> 1.0 的代码，会发现在路由注册的函数中，你可以传入各种不同签名的函数题。</p>
 <pre><code class="language-rust">App::new()
         .service(
             web::scope(&quot;/admin/&quot;)
@@ -603,7 +603,7 @@ error: aborting due to previous error
 <p>YEAH，预期地报错了✌️</p>
 ]]></content:encoded></item><item><title>优化 Rust 的项目 Docker 打包流程.Rust</title><link>https://www.kilerd.me/rust-auto-optimize-dockerize-procedure</link><description><![CDATA[<p>在把 Project Rubble 从 Rocket 框架迁移到 Actix-web 的过程中，我顺便把困惑已久的 Docker 打包流程优化了不少。</p>
 <p>这篇文章适用于那些在项目中带有 <code>Denpendencies.lock</code> 类似的固定依赖版本的 LOCK 文件。</p>
-]]></description><pubDate>2019-04-28 15:52:05 +08:00</pubDate><content:encoded><![CDATA[<p>在把 Project Rubble 从 Rocket 框架迁移到 Actix-web 的过程中，我顺便把困惑已久的 Docker 打包流程优化了不少。</p>
+]]></description><guid>https://www.kilerd.me/rust-auto-optimize-dockerize-procedure</guid><pubDate>Sun, 28 Apr 2019 15:52:05 +0800</pubDate><content:encoded><![CDATA[<p>在把 Project Rubble 从 Rocket 框架迁移到 Actix-web 的过程中，我顺便把困惑已久的 Docker 打包流程优化了不少。</p>
 <p>这篇文章适用于那些在项目中带有 <code>Denpendencies.lock</code> 类似的固定依赖版本的 LOCK 文件。</p>
 <!--more-->
 <p>一般的构建流程可以分为以下几个步骤：<strong>拉取最新代码</strong> -&gt; <strong>构建</strong> -&gt; <strong>打包</strong> 。拉取代码一般都交由 CI 来完成。下文会着重讲我是怎么优化构建流程的，同时我会依照 Project Rubble 来做真实场景说明，技术栈如下： <code>Rust + Travis CI</code></p>
@@ -753,7 +753,7 @@ class Extend(Base):
 <p>这一套在 Rust 并不适用，在 Rust 中时采用 Struct + Trait 来抽象对象化。所以若想对结构体进行扩展，那么就只能再用一层结构体去包（wrap）住原来的结构体。</p>
 <pre><code class="language-rust">struct MyOwnDerefStruct(String);
 </code></pre>
-]]></description><pubDate>2019-04-18 06:11:25 +08:00</pubDate><content:encoded><![CDATA[<p>解引用应该说是 Rust 为了解决不采用 Class 来实现对象化编程的一个解决方案。假想一下如果 Python 或者 Java 之流，需要对一个结构体（准确来说应该是类）进行自定义扩展：增加字段，增加方法，重写方法等等，我们可以直接用继承的方式来实现</p>
+]]></description><guid>https://www.kilerd.me/rust-auto-deref</guid><pubDate>Thu, 18 Apr 2019 06:11:25 +0800</pubDate><content:encoded><![CDATA[<p>解引用应该说是 Rust 为了解决不采用 Class 来实现对象化编程的一个解决方案。假想一下如果 Python 或者 Java 之流，需要对一个结构体（准确来说应该是类）进行自定义扩展：增加字段，增加方法，重写方法等等，我们可以直接用继承的方式来实现</p>
 <pre><code class="language-python">class Base:
 	a: int = 2
 
@@ -844,7 +844,7 @@ fn main() {
 </ul>
 <p>所以，简单来说 <code>variable.deref()</code> 就等价于 <code>&amp;*variable</code></p>
 ]]></content:encoded></item><item><title>科技的未来到底在哪里？</title><link>https://www.kilerd.me/thought-after-reading-the-electric-state</link><description><![CDATA[<p>最近把电幻国度看完了，同样主题的书籍和电影有黑镜和玩家一号。但是这几个作品表达的未来都不太一样，各自导演和作者表达了对这种技术前景的担忧和喜悦。</p>
-]]></description><pubDate>2019-02-11 08:58:38 +08:00</pubDate><content:encoded><![CDATA[<p>最近把电幻国度看完了，同样主题的书籍和电影有黑镜和玩家一号。但是这几个作品表达的未来都不太一样，各自导演和作者表达了对这种技术前景的担忧和喜悦。</p>
+]]></description><guid>https://www.kilerd.me/thought-after-reading-the-electric-state</guid><pubDate>Mon, 11 Feb 2019 08:58:38 +0800</pubDate><content:encoded><![CDATA[<p>最近把电幻国度看完了，同样主题的书籍和电影有黑镜和玩家一号。但是这几个作品表达的未来都不太一样，各自导演和作者表达了对这种技术前景的担忧和喜悦。</p>
 <!--more-->
 <p>玩家一号是一个彻底的乐观派。在电影里面主角和绿洲世界的创造者共同表现出了人们玩家对这个新鲜事物的接受，但是电影里面也表现出了不少预料之中的负面情绪，比如像那家专门为了寻找彩蛋而生的公司。这个专门用于寻找彩蛋的公司彻彻底底地把这个虚构出来的美好世界变成了一个追求财富的过程。</p>
 <p>而对于主角来说，这个世界代表了一切，甚至对于其他人们普通老百姓而言，这个世界带来的也是利大于弊，他们把精神世界完全寄托于其中，而对于现实，他们只满足了其最基本的物质需求。在电影里面，人们甚至只居住在类似贫民窟的地方，这显然跟当前的社会发展是不一样的。</p>
@@ -860,7 +860,7 @@ fn main() {
 <p>当你不知道要干什么的时候，那就写个博客程序吧。 —— 鲁迅</p>
 </blockquote>
 <p>是的，鲁迅曾经这么说过。当你的编程能力出现停滞的时候就写一个博客吧，尤其是入门阶段。更具体而言是写一个 CMS 系统，这也是我平时学习的习惯，我会一步一步解释清楚为什么我会选择这样的学习路线。</p>
-]]></description><pubDate>2018-12-28 15:03:59 +08:00</pubDate><content:encoded><![CDATA[<blockquote>
+]]></description><guid>https://www.kilerd.me/rust-how-to-learn-it</guid><pubDate>Fri, 28 Dec 2018 15:03:59 +0800</pubDate><content:encoded><![CDATA[<blockquote>
 <p>当你不知道要干什么的时候，那就写个博客程序吧。 —— 鲁迅</p>
 </blockquote>
 <p>是的，鲁迅曾经这么说过。当你的编程能力出现停滞的时候就写一个博客吧，尤其是入门阶段。更具体而言是写一个 CMS 系统，这也是我平时学习的习惯，我会一步一步解释清楚为什么我会选择这样的学习路线。</p>
@@ -888,7 +888,7 @@ fn main() {
 <p>那么热的夏天，少年的后背被女孩的悲伤烫出一个洞，一直贯穿到心脏，无数个季节的风穿越这条通道，有一只萤火虫在风里飞舞，忽明忽暗。</p>
 <p>——《云边有个小卖部》</p>
 </blockquote>
-]]></description><pubDate>2018-12-24 15:31:19 +08:00</pubDate><content:encoded><![CDATA[<p>如果你能重遇一个很久之前遇见过的人，你会想对她说什么。如果命运决定你只能走那么远，你会不会奋力再拼搏一下，再努力往前走两步？</p>
+]]></description><guid>https://www.kilerd.me/fine-to-break-up-with-you</guid><pubDate>Mon, 24 Dec 2018 15:31:19 +0800</pubDate><content:encoded><![CDATA[<p>如果你能重遇一个很久之前遇见过的人，你会想对她说什么。如果命运决定你只能走那么远，你会不会奋力再拼搏一下，再努力往前走两步？</p>
 <blockquote>
 <p>那么热的夏天，少年的后背被女孩的悲伤烫出一个洞，一直贯穿到心脏，无数个季节的风穿越这条通道，有一只萤火虫在风里飞舞，忽明忽暗。</p>
 <p>——《云边有个小卖部》</p>
@@ -929,7 +929,7 @@ fn main() {
 <blockquote>
 <p>PS: 这一系列的文章都是以 MacOS 为基础，不会过多涉及 自编译 Rust、环境折腾等等内容，更加注重在如何高效地进行 Rust 开发和 Rust学习技巧。</p>
 </blockquote>
-]]></description><pubDate>2018-12-11 02:51:19 +08:00</pubDate><content:encoded><![CDATA[<p>这段时间一直忙于折腾 Rust，自从 Rust 2018 Edition 出来之后，一个很明显的感受就是写起来更加符合一个现代化编程语言的样子，当然也有可能是我的水平太低了，还不足以体验到 Rust 那种非人类的写法和特性。</p>
+]]></description><guid>https://www.kilerd.me/rust-better-ide</guid><pubDate>Tue, 11 Dec 2018 02:51:19 +0800</pubDate><content:encoded><![CDATA[<p>这段时间一直忙于折腾 Rust，自从 Rust 2018 Edition 出来之后，一个很明显的感受就是写起来更加符合一个现代化编程语言的样子，当然也有可能是我的水平太低了，还不足以体验到 Rust 那种非人类的写法和特性。</p>
 <p>这一系列文章会是我记录 Rust 学习路程的文章，那么自然而然地就是从环境配置开始了。</p>
 <blockquote>
 <p>PS: 这一系列的文章都是以 MacOS 为基础，不会过多涉及 自编译 Rust、环境折腾等等内容，更加注重在如何高效地进行 Rust 开发和 Rust学习技巧。</p>
