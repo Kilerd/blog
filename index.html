@@ -41,12 +41,12 @@
                href="/rust-proc-macro-101">Rust 过程宏 101</a>
             
             <section class="yue desc">
-                <p>在 Rust 1.45 中，Rust 的{卫生宏}(Hy<ruby>卫生宏}(Hygienic macro)迎来了 stable 版本，这意味着{过程宏}(Procedural macro)和{声明宏<rp>(</rp><rt>Declare macro</rt><rp>)</rp></ruby></p>
+                <p>在 Rust 1.45 中，Rust 的<ruby>卫生宏<rp>(</rp><rt>Hygienic macro</rt><rp>)</rp></ruby>迎来了 stable 版本，这意味着<ruby>过程宏<rp>(</rp><rt>Procedural macro</rt><rp>)</rp></ruby>和<ruby>声明宏<rp>(</rp><rt>Declare macro</rt><rp>)</rp></ruby>板块全面稳定。那么是时候该认真学习一边过程宏的内容了。</p>
 <p>过程宏相比于声明宏的灵活度更加高，其本质是输入一段 Rust 的 AST 产生一段 AST 的函数，同时 Rust 提供了三种不一样的语法糖来满足不同的使用场景。</p>
 <ul>
-<li><ruby>函数式<rp>(</rp><rt>Function-like</rt><rp>)</rp></ruby>跟声明宏很类似</li>
+<li><ruby>函数式<rp>(</rp><rt>Function-like</rt><rp>)</rp></ruby>的宏 - 这跟声明宏很类似</li>
 <li>Derive 宏 - <code>#[derive(CustomDerive)] </code> - 一个用于结构体和枚举类型的宏</li>
-<li><ruby>参数宏<rp>(</rp><rt>Attribute macros</rt><rp>)</rp></ruby><code>#[CustomAttribute]</code> </li>
+<li><ruby>参数宏<rp>(</rp><rt>Attribute macros</rt><rp>)</rp></ruby> - <code>#[CustomAttribute]</code> </li>
 </ul>
 
             </section>

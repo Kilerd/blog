@@ -32,16 +32,16 @@
                 <p class="mate">June 11, 2020</p>
                 <h2>Rust 过程宏 101</h2>
                 <section class="content yue">
-                    <p>在 Rust 1.45 中，Rust 的{卫生宏}(Hy<ruby>卫生宏}(Hygienic macro)迎来了 stable 版本，这意味着{过程宏}(Procedural macro)和{声明宏<rp>(</rp><rt>Declare macro</rt><rp>)</rp></ruby></p>
+                    <p>在 Rust 1.45 中，Rust 的<ruby>卫生宏<rp>(</rp><rt>Hygienic macro</rt><rp>)</rp></ruby>迎来了 stable 版本，这意味着<ruby>过程宏<rp>(</rp><rt>Procedural macro</rt><rp>)</rp></ruby>和<ruby>声明宏<rp>(</rp><rt>Declare macro</rt><rp>)</rp></ruby>板块全面稳定。那么是时候该认真学习一边过程宏的内容了。</p>
 <p>过程宏相比于声明宏的灵活度更加高，其本质是输入一段 Rust 的 AST 产生一段 AST 的函数，同时 Rust 提供了三种不一样的语法糖来满足不同的使用场景。</p>
 <ul>
-<li><ruby>函数式<rp>(</rp><rt>Function-like</rt><rp>)</rp></ruby>跟声明宏很类似</li>
+<li><ruby>函数式<rp>(</rp><rt>Function-like</rt><rp>)</rp></ruby>的宏 - 这跟声明宏很类似</li>
 <li>Derive 宏 - <code>#[derive(CustomDerive)] </code> - 一个用于结构体和枚举类型的宏</li>
-<li><ruby>参数宏<rp>(</rp><rt>Attribute macros</rt><rp>)</rp></ruby><code>#[CustomAttribute]</code> </li>
+<li><ruby>参数宏<rp>(</rp><rt>Attribute macros</rt><rp>)</rp></ruby> - <code>#[CustomAttribute]</code> </li>
 </ul>
 <!--more-->
 <h2>行为影响</h2>
-<p>这三种宏的的效果也不完全一致。 {函数式宏}(Function-like macro) 和 <ruby>函数式宏}(Function-like macro) 和 {参数宏<rp>(</rp><rt>Attribute macros</rt><rp>)</rp></ruby><strong>修改原AST</strong>的能力，而Derive 宏就只能做追加的工作。</p>
+<p>这三种宏的的效果也不完全一致。 <ruby>函数式宏<rp>(</rp><rt>Function-like macro</rt><rp>)</rp></ruby> 和 <ruby>参数宏<rp>(</rp><rt>Attribute macros</rt><rp>)</rp></ruby> 拥有<strong>修改原AST</strong>的能力，而Derive 宏就只能做追加的工作。</p>
 <h3><ruby>函数式宏<rp>(</rp><rt>Function-like macro</rt><rp>)</rp></ruby></h3>
 <pre><code class="language-rust">#[proc_macro]
 pub fn my_macro(INPUT_TOKEN_STREAM) -&gt; TokenStream {
@@ -114,7 +114,7 @@ fn method() {...}
 }
 </code></pre>
 <p>在这种情况下需要增加错误类型的时候，只需要在 4L 处新增即可，影响的范围不大。</p>
-<p>而对于Rust来说，{枚举类型}(enum)<ruby>枚举类型<rp>(</rp><rt>enum</rt><rp>)</rp></ruby>a 一样在 3-4L 里面储存这样的信息，为了达成同样的效果，我们需要在函数里面自己实现返回的内容：</p>
+<p>而对于Rust来说，<ruby>枚举类型<rp>(</rp><rt>enum</rt><rp>)</rp></ruby>更加像是一种数据结构，所以无法像 Java 一样在 3-4L 里面储存这样的信息，为了达成同样的效果，我们需要在函数里面自己实现返回的内容：</p>
 <pre><code class="language-rust">pub enum BusinessError {
     InvalidEmail,
     InvalidPassword
@@ -335,7 +335,7 @@ let detail_error: DetailErrorEnum = DetailErrorEnum::from_derive_input(&amp;deri
 </code></pre>
 <p>这样的结果和过程都比直接操作 <code>TokenStream</code> 更加直观和可靠。</p>
 <blockquote>
-<p>但是至今我还不知道对于 <code>#[detail(code=400, message(&quot;password {} is invalid&quot;, p1))]</code> 这种 <code>message</code> 是{一<ruby>一组的数据<rp>(</rp><rt>group token stream</rt><rp>)</rp></ruby><code>darling</code> 来写</p>
+<p>但是至今我还不知道对于 <code>#[detail(code=400, message(&quot;password {} is invalid&quot;, p1))]</code> 这种 <code>message</code> 是<ruby>一组的数据<rp>(</rp><rt>group token stream</rt><rp>)</rp></ruby>怎么用 <code>darling</code> 来写</p>
 </blockquote>
 <p>这个时候就可以遍历 <code>detail_error.data[]</code> 来完成 <code>get_http_code </code>的 AST 生成</p>
 <pre><code class="language-rust">let ident = &amp;detail_error.ident;
@@ -398,7 +398,7 @@ fn handler(input: proc_macro2::TokenStream) -&gt; proc_macro2::TokenStream {
 <p>这点很正常，因为<code>impl BusinessError {...}</code> 里面的内容是编译时生产的，确实是没有办法做到代码提示。试想下有了代码提示又跳转到哪里呢？</p>
 <p>其实这个问题也不是无解的。通常的做法是建立一个 <code>Trait DetailError</code> 里面定义好我们需要的三个函数，然后再通过过程宏为 <code>BusinessError</code> 实现 <code>impl DetailError for Business {...}</code>。 这样代码提示和跳转就可以跳到 <code>DetailError</code>的定义里面去了。</p>
 <p>为此我们需要把原来 <code>detail_error</code> 这个lib 改名成 <code>detail_error_macro</code> ，再创建一个新的lib 叫 <code>detail_error</code> 来定义 Trait <code>DetailError</code>。 </p>
-<p>这点其实是 Rust 的限制，因为过程宏库无法再{暴露})(expose) 出其他的任何 Trait 和结构体。</p>
+<p>这点其实是 Rust 的限制，因为过程宏库无法再<ruby>暴露<rp>(</rp><rt>expose</rt><rp>)</rp></ruby>出其他的任何 Trait 和结构体。</p>
 <h3>注意 ident 和非ident 的处理</h3>
 <p><code>quote::quote!</code> 这个宏在处理 <code>String</code> 类型的时候会自动加上<code>&quot;</code> 形成 <code>&quot;content&quot;</code> ，正如数字类型会在后面追加具体的类型一样<code>400u16</code>。 所以如果通过<code>format!</code> 拼凑出一个 ident 之后需要用 <code>quote::format_ident!</code> 转换成 ident 类型，或者直接用 <code>format_ident! </code> 代替 <code>format!</code> 。</p>
 
