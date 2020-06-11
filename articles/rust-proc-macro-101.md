@@ -483,7 +483,7 @@ fn handler(input: proc_macro2::TokenStream) -> proc_macro2::TokenStream {
 
 为此我们需要把原来 `detail_error` 这个lib 改名成 `detail_error_macro` ，再创建一个新的lib 叫 `detail_error` 来定义 Trait `DetailError`。 
 
-这点其实是 Rust 的限制，因为过程宏库无法再{暴露})(expose) 出其他的任何 Trait 和结构体。
+这点其实是 Rust 的限制，因为过程宏库无法再{暴露}(expose)出其他的任何 Trait 和结构体。
 
 ### 注意 ident 和非ident 的处理
 
