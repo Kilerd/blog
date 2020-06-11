@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="keywords" content="" />
+    <link rel="stylesheet" href="/statics/style.css">
+    <link rel="alternate" type="application/rss+xml" title="你好，耳先生" href="/rss.xml" />
+    <title>Rust 过程宏 101</title>
+</head>
+
+<body>
+
+
+    <section class="full-page">
+        <section class="container">
+            <nav>
+                <a href="/">HOMEPAGE</a>
+                
+                
+                <a href="/portfolios">PORTFOLIOS</a>
+                
+                <a href="/my-read">READINGS</a>
+                
+                <a href="/about">ABOUTME</a>
+                
+                
+            </nav>
+            <section class="single article">
+                <p class="mate">June 11, 2020</p>
+                <h2>Rust 过程宏 101</h2>
+                <section class="content yue">
+                    <p>在 Rust 1.45 中，Rust 的{卫生宏}(Hy<ruby>卫生宏}(Hygienic macro)迎来了 stable 版本，这意味着{过程宏}(Procedural macro)和{声明宏<rp>(</rp><rt>Declare macro</rt><rp>)</rp></ruby></p>
+<p>过程宏相比于声明宏的灵活度更加高，其本质是输入一段 Rust 的 AST 产生一段 AST 的函数，同时 Rust 提供了三种不一样的语法糖来满足不同的使用场景。</p>
+<ul>
+<li><ruby>函数式<rp>(</rp><rt>Function-like</rt><rp>)</rp></ruby>跟声明宏很类似</li>
+<li>Derive 宏 - <code>#[derive(CustomDerive)] </code> - 一个用于结构体和枚举类型的宏</li>
+<li><ruby>参数宏<rp>(</rp><rt>Attribute macros</rt><rp>)</rp></ruby><code>#[CustomAttribute]</code> </li>
+</ul>
+<!--more-->
+<h2>行为影响</h2>
+<p>这三种宏的的效果也不完全一致。 {函数式宏}(Function-like macro) 和 <ruby>函数式宏}(Function-like macro) 和 {参数宏<rp>(</rp><rt>Attribute macros</rt><rp>)</rp></ruby><strong>修改原AST</strong>的能力，而Derive 宏就只能做追加的工作。</p>
+<h3><ruby>函数式宏<rp>(</rp><rt>Function-like macro</rt><rp>)</rp></ruby></h3>
+<pre><code class="language-rust">#[proc_macro]
+pub fn my_macro(INPUT_TOKEN_STREAM) -&gt; TokenStream {
+    OUTPUT_TOKEN_STREAM
+}
+
+my_macro!(INPUT_TOKEN_STREAM)
+</code></pre>
+<p>经过编译之后，6L 就会被<strong>替换</strong>成 <code>OUTPUT_TOKEN_STREAM</code></p>
+<h3>Derive 宏</h3>
+<pre><code class="language-rust">#[proc_macro_derive(MyMacro)]
+pub fn derive_my_macro(INPUT_TOKEN_STREAM) -&gt; TokenStream {
+	OUTPUT_TOKEN_STREAM
+}
+
+#[derive(MyMacro)]
+struct MyStruct {...}
+</code></pre>
+<p>经过编译之后， 6-7L 就会被编译成以下：</p>
+<pre><code class="language-rust">#[derive(MyMacro)]
+struct MyStruct {...}
+
+OUTPUT_TOKEN_STREAM
+</code></pre>
+<p>可见，原来的 <code>MyStruct</code> 并不会被影响，也无法改变，而能做的只是在其后追加新的AST，通常用来生成 <code>Builder</code> 和 <code>impl Blabla for MyStruct</code> 从而改变<code>MyStruct</code> 的行为。</p>
+<h3><ruby>参数宏<rp>(</rp><rt>Attribute macros</rt><rp>)</rp></ruby></h3>
+<pre><code class="language-rust">#[proc_macro_attribute]
+pub fn my_macro(ATTR_TOKEN_STREAM, INPUT_TOKEN_STREAM) -&gt; TokenStream {
+    OUTPUT_TOKEN_STREAM
+}
+
+#[my_macro(a=1,b=2)]
+fn method() {...}
+</code></pre>
+<p>在这个例子中</p>
+<ul>
+<li><code>ATTR_TOKEN_STREAM</code> 为 <code>a=1, b=2</code></li>
+<li><code>INPUT_TOKEN_STREAM</code> 为 <code>fn method() {...}</code></li>
+</ul>
+<p>而编译之后， 6-7L 编译成 <code>OUTPUT_TOKEN_STREAM</code></p>
+<h2>入门例子使用</h2>
+<p>了解了过程宏的相关基本知识之后呢，就可以根据自己的需求选择不同的实现方式来简化代码。下面会以一个例子来介绍怎么设计一个 Derive 宏，不感兴趣的可以跳过这个章节。</p>
+<h3>非过程宏实现</h3>
+<p>在一次业务实现中，需要根据错误类型返回前端不同的错误码和消息。这意味着我们对于不同的错误需要三个不同的字段</p>
+<ul>
+<li>HTTP <ruby>返回码<rp>(</rp><rt>status code</rt><rp>)</rp></ruby></li>
+<li>错误的 Code</li>
+<li>错误的具体描述内容</li>
+</ul>
+<p>返回给前端的结构是这样的</p>
+<pre><code class="language-json">{
+    &quot;code&quot;: &quot;INVALID_EMAIL&quot;,
+    &quot;message&quot;: &quot;Invalid email&quot;
+}
+</code></pre>
+<p>对于Java来说，这很容易用一个枚举类型来描述这样的需求：</p>
+<pre><code class="language-java">public enum BusinessError {
+
+    InvalidEmail(400, &quot;INVALID_EMAIL&quot;, &quot;Invalid email&quot;),
+    InvalidPassword(400, &quot;INVALID_Password&quot;, &quot;Invalid password&quot;);
+
+    int httpCode;
+    String code;
+    String message;
+    BusinessError(int httpCode, String code, String message) {
+        this.httpCode = httpCode;
+        this.code = code;
+        this.message = message;
+    }
+}
+</code></pre>
+<p>在这种情况下需要增加错误类型的时候，只需要在 4L 处新增即可，影响的范围不大。</p>
+<p>而对于Rust来说，{枚举类型}(enum)<ruby>枚举类型<rp>(</rp><rt>enum</rt><rp>)</rp></ruby>a 一样在 3-4L 里面储存这样的信息，为了达成同样的效果，我们需要在函数里面自己实现返回的内容：</p>
+<pre><code class="language-rust">pub enum BusinessError {
+    InvalidEmail,
+    InvalidPassword
+}
+
+impl BusinessError {
+    pub fn get_http_code(&amp;self) -&gt; u16 {
+        match self {
+            BusinessError::InvalidEmail =&gt; 400,
+            BusinessError::InvalidPassword =&gt; 400,
+        }
+    }
+    pub fn get_code(&amp;self) -&gt; String {
+        match self {
+            BusinessError::InvalidEmail =&gt; String::from(&quot;INVALID_EMAIL&quot;),
+            BusinessError::InvalidPassword =&gt; String::from(&quot;INVALID_PASSWORD&quot;),
+        }
+    }
+    pub fn get_message(&amp;self) -&gt; String {
+        match self {
+            BusinessError::InvalidEmail =&gt; String::from(&quot;Invalid email&quot;),
+            BusinessError::InvalidPassword =&gt; String::from(&quot;Invalid password&quot;),
+        }
+    }
+}
+</code></pre>
+<p>实际看起来问题也不是很大，可以很好的完成业务需求，但是考虑一下增加错误类型这个业务场景，那么就需要在 3L，10L，16L，22L处做修改，影响的范围就很大了。</p>
+<p>同时我们可以很轻松的看得出来对于 <code>get_code</code> 和 <code>get_message</code> 都是对枚举值进行简单的字面格式转换，那么人工做这么一件事件是很耗时的。这个时候就可以让过程宏代替我们实现 <code>impl BusinessError {...}</code> 里面的所有内容。</p>
+<h3>Derive 宏的建立</h3>
+<p>为了简化代码，我们决定把 <code>BusinessError</code> 改造成以下的格式：</p>
+<pre><code class="language-rust">#[derive(DetailError)]
+pub enum BusinessError {
+    InvalidEmail,
+    #[detail(code=400, message=&quot;this is an invalid password&quot;)]
+    InvalidPassword
+}
+</code></pre>
+<p>对于错误类型 <code>InvalidEmail</code> ，我们默认返回 httpCode <code>400</code>， code <code>INVALID_EMAIL</code> ， message <code>Invalid email</code>。但是我们可以通过 <code>#[detail(code, message)]</code> 来定制化 <code>httpCode</code> 和 <code>message</code>。</p>
+<p>我们先拟定需要创建的宏的名称为 <code>DetailError</code> 。那么第一步先把项目改成 workspace 的目录结构。然后在其下面新增一个 <code>detail_error </code>的lib。</p>
+<pre><code class="language-toml">[workspace]
+members = [&quot;.&quot;, &quot;detail_error&quot;]
+
+[dependencies]
+detail_error = {path=&quot;./detail_error&quot;}
+</code></pre>
+<p>通过 <code>cargo new detail_error --lib</code> 创建好 lib 后，需要对 <code>detail_error/Cargo.toml</code> 增加「这个库是过程宏库」才可以访问到 <code>proc_macro</code> 这么一个特殊的库。</p>
+<pre><code class="language-toml">[lib]
+proc-macro = true
+</code></pre>
+<p>其后，在 <code>detail_error/lib.rs</code> 中声明过程宏处理函数：</p>
+<pre><code class="language-rust">use proc_macro::TokenStream;
+
+#[proc_macro_derive(DetailError, attributes(detail))]
+pub fn detail_error_fn(input: TokenStream) -&gt; TokenStream {
+    &quot;&quot;.parse().unwrap()
+}
+</code></pre>
+<p>自此，我们的代码就不会报错了，但是我们还没有在<code>detail_error_fn</code> 里面返回我们期望的 <code>impl BusinessError{...}</code> 的 AST。实际上这个宏没有做任何事情。</p>
+<h3>实现 <code>get_http_code</code> 方法</h3>
+<p>第一步，我们需要先把<code>TokenStream</code> 格式化成我们期望的枚举结构。那么就用到了 <code>syn</code> 库，这个库提供了<code>parse_macro_input!</code> 这个宏来更加方便得访问 AST，在我们把 <code>TokenStream</code> 格式化成 <code>ItemEnum</code> 后就可以用<code>dbg!</code> 来查看其内部的数据了。</p>
+<pre><code class="language-rust">let enum_struct = parse_macro_input!(input as syn::ItemEnum);
+dbg!(enum_struct);
+</code></pre>
+<pre><code class="language-rust">enum_struct = ItemEnum {
+    attrs: [],
+    vis: Public(...),
+    enum_token: Enum,
+    ident: Ident { ident: &quot;BusinessError&quot;, span: #0 bytes(64..77),},
+    generics: Generics {...},
+    brace_token: Brace,
+    variants: [
+        Variant {
+            attrs: [],
+            ident: Ident {ident: &quot;InvalidEmail&quot;, span: #0 bytes(84..96),},
+        },
+        Comma,
+        Variant {
+            attrs: [...],
+            ident: Ident { ident: &quot;InvalidPassword&quot;, span: #0 bytes(165..180),},
+        },
+    ],
+}
+
+</code></pre>
+<p>在这里我们先 hardcode 所有的返回值是 <code>400</code>，先不理会在 <code>#[detail]</code> 中的配置，那么我们最关心的是</p>
+<ul>
+<li><code>.ident</code> - 枚举的名字</li>
+<li><code>.variants[].ident</code> - 枚举里面有多少成员，以及成员的名字</li>
+</ul>
+<p>那么我们可以很轻松的拿到这些值：</p>
+<pre><code class="language-rust">let ident = &amp;enum_struct.ident;
+let variants_ident:Vec&lt;&amp;Ident&gt; = enum_struct.variants.iter().map(|variant| &amp;variant.ident).collect();
+</code></pre>
+<p>但是拿到这些值之后，我们的期望还不够，我们期望的是构建出以下的代码： </p>
+<pre><code class="language-rust">impl BusinessError {
+    pub fn get_http_code(&amp;self) -&gt; u16 {
+        match self {
+            BusinessError::InvalidEmail =&gt; 400,
+            BusinessError::InvalidPassword =&gt; 400,
+        }
+    }
+}
+</code></pre>
+<p>想比如手动拼 <code>TokenStream</code> ，<code>quote</code> 这个库提供了更加人性化的方式来生成<code>TokenStream</code>。我们可以通过以下的代码来生产我们期望的那个函数：</p>
+<pre><code class="language-rust">let output = quote! {
+    impl #ident {
+        pub fn get_http_code(&amp;self) -&gt; u16 {
+            match self {
+                #(#ident::#variants_ident =&gt; 400,)*
+            }
+        }
+    }
+};
+</code></pre>
+<p>这里面一些 <code>quote</code> 特定的文法</p>
+<ul>
+<li><code>#VARIABLE</code> 可以访问到当前作用域下的同名变量</li>
+<li><code>#(   )*</code> 用于展开循环</li>
+</ul>
+<p>自此，我们完成了<code>get_http_code</code>的方法实现。</p>
+<h3>实现 <code>get_code</code> 方法</h3>
+<p>在<code>get_http_code</code> 中我们了解了怎么输出一整个函数，对于 <code>get_code</code> 来说，每一个枚举分支类型返回的值都是不同的，这意味着我们在 <code>let variants_ident:Vec&lt;&amp;Ident&gt; = enum_struct.variants.iter().map(|variant| &amp;variant.ident).collect();</code> 这里就不能简单的拿到枚举成员的 <code>Ident</code> 了，我们需要在循环内构件出类似 <code>BusinessError::InvalidEmail =&gt; String::from(&quot;INVALID_EMAIL&quot;)</code> 这样的完整分支语句。这里其实也是很简单的。</p>
+<pre><code class="language-rust">let code_fn_codegen:Vec&lt;proc_macro2::TokenStream&gt; = enum_struct.variants.iter().map(|variant| {
+        let variant_ident = &amp;variant.ident;
+        let content = inflector::cases::screamingsnakecase::to_screaming_snake_case(&amp;variant_ident.to_string());
+        quote! {
+            #ident::#variant_ident =&gt; String::from(content)
+        }
+    }).collect();
+</code></pre>
+<blockquote>
+<ol>
+<li>这里为了简单的演示效果，才用了 <code>inflector</code> 这个字符串格式转换库</li>
+<li>这里用到了 <code>proc_macro2</code> 这个库，下文会讲为什么需要和其与<code>proc_macro</code>的区别</li>
+</ol>
+</blockquote>
+<p>然后再拼凑 <code>get_code</code> 方法签名：</p>
+<pre><code class="language-rust">pub fn get_code(&amp;self) -&gt; String {
+    match self {
+        #(#code_fn_codegen,)*
+    }
+}
+</code></pre>
+<p><code>get_message</code>的方法也是同样的道理这里就不重复描述了。</p>
+<h3>从 <code>#[detail]</code> 中读取数据实现配置化</h3>
+<p>对于每一个 Variant 的 attr 数据都会储存在 <code>attrs</code> 这个字段中。 <code>#[detail(code=400, message=&quot;this is an invalid password&quot;)]</code> 就会被格式化成以下的AST： (省略了很多没必要的字段)</p>
+<pre><code class="language-rust">attrs: [
+    Attribute {
+        path: Path { segments: [ PathSegment { ident: Ident { ident: &quot;detail&quot;,}},],},
+        tokens: TokenStream [
+            Group {
+                stream: TokenStream [
+                    Ident { ident: &quot;code&quot;, },
+                    Punct { ch: '=', },
+                    Literal { lit: Lit { kind: Integer, symbol: &quot;400&quot; }},
+                    Ident { ident: &quot;message&quot;, },
+                    Punct { ch: '=', },
+                    Literal { lit: Lit { kind: Str, symbol: &quot;this is an invalid password&quot; }},
+                ],
+            },
+        ],
+    },
+],
+</code></pre>
+<p>可以看到 <code>code=400, message=&quot;this is an invalid password&quot;</code> 一样被格式化成了 <code>TokenStream</code> 。然而取数据出来也不是一件很简单的事情。所以为了解决这个问题，<code>darling</code> 应运而生，其借鉴了 <code>serde</code> 的思想，把<code>TokenStream</code> 反序列化成自定义的结构。</p>
+<p>根据 <code>darling</code> 的写法，我们需要把我们期望的数据写成结构体：</p>
+<pre><code class="language-rust">// derive FromDeriveInput, 表示这个结构体可以用 `syn::DeriveInput` 转换过来
+#[derive(Debug, FromDeriveInput)]
+// darling 自身的配置，接受 `detail` attr的数据，只允许 enum 的结构体，struct 报错。
+#[darling(attributes(detail), supports(enum_any))]
+struct DetailErrorEnum {
+    // enum 的名称
+    ident: syn::Ident,
+    // enum 的枚举成员格式化成 DetailErrorVariant 
+    data: darling::ast::Data&lt;DetailErrorVariant, darling::util::Ignored&gt;,
+}
+
+#[derive(Debug, FromVariant)]
+#[darling(attributes(detail))]
+struct DetailErrorVariant {
+    ident: syn::Ident,
+    // fields 的数据， 指的是 `InvalidEmail(String)` 里面的 `String`
+    fields: darling::ast::Fields&lt;syn::Field&gt;,
+    // 这里表示从 `FromMeta` 中取数据，这里特指 `#[detail(code=400)]`
+    #[darling(default)]
+    code: Option&lt;u16&gt;,
+    // 这里表示从 `FromMeta` 中取数据，这里特指 `#[detail(message=&quot;detail message&quot;)]`
+    #[darling(default)]
+    message: Option&lt;String&gt;,
+}
+</code></pre>
+<p>接着我们需要把 <code>proc_macro::TokenStream</code> 转换成 <code>proc_macro2::TokenStream</code> 再转换成 <code>syn::DeriveInput</code> 再转换成 <code>DetailErrorEnum</code></p>
+<pre><code class="language-rust">let proc_macro2_token = proc_macro2::TokenStream::from(input);
+let derive_input = syn::parse2::&lt;DeriveInput&gt;(input).unwrap();
+let detail_error: DetailErrorEnum = DetailErrorEnum::from_derive_input(&amp;derive_input).unwrap();
+</code></pre>
+<p>通过<code>dbg!()</code> 可以看到反序列化之后的结果：</p>
+<pre><code class="language-rust">[detail_error/src/lib.rs:39] &amp;detail_error = DetailErrorEnum {
+    ident: Ident { ident: &quot;BusinessError&quot;, },
+    data: Enum(
+        [
+            DetailErrorVariant {
+                ident: Ident { ident: &quot;InvalidEmail&quot;, },
+                fields: Fields { style: Unit, fields: [], },
+                code: None,
+                message: None,
+            },
+            DetailErrorVariant {
+                ident: Ident { ident: &quot;InvalidPassword&quot;, },
+                fields: Fields { style: Unit, fields: [], },
+                code: Some( 500, ),
+                message: Some(  &quot;this is an invalid password&quot;, ),
+            },
+        ],
+    ),
+}
+
+</code></pre>
+<p>这样的结果和过程都比直接操作 <code>TokenStream</code> 更加直观和可靠。</p>
+<blockquote>
+<p>但是至今我还不知道对于 <code>#[detail(code=400, message(&quot;password {} is invalid&quot;, p1))]</code> 这种 <code>message</code> 是{一<ruby>一组的数据<rp>(</rp><rt>group token stream</rt><rp>)</rp></ruby><code>darling</code> 来写</p>
+</blockquote>
+<p>这个时候就可以遍历 <code>detail_error.data[]</code> 来完成 <code>get_http_code </code>的 AST 生成</p>
+<pre><code class="language-rust">let ident = &amp;detail_error.ident;
+let variants = detail_error.data.take_enum().unwrap();
+let http_code_fn_codegen: Vec&lt;proc_macro2::TokenStream&gt; = variants.iter().map(|variant| {
+    let variant_ident = &amp;variant.ident;
+    let http_code = variant.code.unwrap_or(400);
+    quote! {
+        #ident::#variant_ident =&gt; #http_code
+    }
+}).collect();
+</code></pre>
+<p>相比于之前的hardcode，现在我们在 5L 取出了在 <code>#[detail(code=500)]</code> 中的值。</p>
+<p>同理 <code>get_message</code> 也可以用同样的方法生成：</p>
+<pre><code class="language-rust">let message = variant.message.clone().unwrap_or_else(|| {
+    inflector::cases::sentencecase::to_sentence_case(&amp;variant_ident.to_string())
+});
+</code></pre>
+<p>自此整个 <code>BusinessError</code> 就用过程宏改造完成了。但是真实的业务还没有那么简单，举个例子说，对于认证错误(<code>AuthenticationError</code>)，通常需要返回具体的错误内容，这意味着 <code>message</code> 需要跟随着变化。也就是说真正的代码是长这个样子的：</p>
+<pre><code class="language-rust">enum BusinessError {
+    AuthenticationError(String)
+}
+fn get_message(&amp;self) {
+    match self {
+        BusinessError:AuthenticationError(p1) =&gt; format!(&quot;with detail {}&quot;, p1),
+    }
+}
+</code></pre>
+<p>那么我们之前的过程宏并不支持这样的特性，其实改造也很简单，在 darling 的 <code>DetailErrorVariant</code> 的 <code>fields</code> 里面就存有着 <code>String</code> 这个信息，那么我们只需要在循环体中构建出类似 <code>#ident::#variant_ident#fields =&gt; format!(#message, #fields)</code> 的语句即可。 感兴趣的读者可以试着让这个demo 支持该功能。</p>
+<blockquote>
+<p>在我的真实业务场景用使用 <code>#[detail(message=&quot;with detail {0}&quot;)]</code> 这样的方法来访问具体的字段的</p>
+</blockquote>
+<h2>关于过程宏的一些实践和认知</h2>
+<h3><code>proc_macro</code> 和 <code>proc_macro2</code> 的区别</h3>
+<p>前者是 rust 中为 过程宏库（在 <code>Cargo.toml</code> 中声明了 <code>#[lib] proc_macro=true</code>）中才能访问的特殊库， 而 <code>proc_macro2</code> 是与 <code>proc_macro</code> 基本一致，但是只是一个普通的库，所以 <code>syn</code> , <code>quote</code> , <code>darling</code> 这些都是建立在 <code>proc_macro2</code> 之上的， 所以在我们编写过程宏的时候基本上都是先把 <code>proc_macro::TokenStream</code> 转换成 <code>proc_macro2::TokenStream</code> 进行各种处理，最后才转换成 <code>proc_macro::TokenStream</code> 交回给 rustc。</p>
+<h3>关于测试</h3>
+<p>根据第一点的前提下，在转换成 <code>proc_macro2::TokenStream</code> 之后其实就跟过程宏没任何关系了，在抽象出一个独立的函数来处理和生成 <code>proc_macro2::TokenStream</code> ，我们就可以很轻松的对这个方法进行测试：</p>
+<pre><code class="language-rust">#[proc_macro_derive(DetailError, attributes(detail))]
+pub fn detail_error_fn(input: TokenStream) -&gt; TokenStream {
+    handler(input.into()).into()
+}
+
+fn handler(input: proc_macro2::TokenStream) -&gt; proc_macro2::TokenStream {
+    // real handler
+}
+</code></pre>
+<p>简单来说，我们可以通过 <code>quote::quote!</code>来生成 <code>input</code> 对 <code>handler</code> 测试：</p>
+<pre><code class="language-rust">#[test]
+    fn it_works() {
+        let input = quote! {...};
+        let expected_output = quote! {...};
+        let output = handler(input);
+        assert_eq!(expected_output.to_string(), output.to_string());
+    }
+</code></pre>
+<blockquote>
+<p>7L 里面简单的用了 <code>to_string()</code> 来判断是否一致，导致输出的代码其实并没有带缩进，如果有需要可以用 <code>syn::visit</code>模块进行更加友善的结果输出。</p>
+</blockquote>
+<h3>用了过程宏之后，为什么就没有代码提示了</h3>
+<p>这点很正常，因为<code>impl BusinessError {...}</code> 里面的内容是编译时生产的，确实是没有办法做到代码提示。试想下有了代码提示又跳转到哪里呢？</p>
+<p>其实这个问题也不是无解的。通常的做法是建立一个 <code>Trait DetailError</code> 里面定义好我们需要的三个函数，然后再通过过程宏为 <code>BusinessError</code> 实现 <code>impl DetailError for Business {...}</code>。 这样代码提示和跳转就可以跳到 <code>DetailError</code>的定义里面去了。</p>
+<p>为此我们需要把原来 <code>detail_error</code> 这个lib 改名成 <code>detail_error_macro</code> ，再创建一个新的lib 叫 <code>detail_error</code> 来定义 Trait <code>DetailError</code>。 </p>
+<p>这点其实是 Rust 的限制，因为过程宏库无法再{暴露})(expose) 出其他的任何 Trait 和结构体。</p>
+<h3>注意 ident 和非ident 的处理</h3>
+<p><code>quote::quote!</code> 这个宏在处理 <code>String</code> 类型的时候会自动加上<code>&quot;</code> 形成 <code>&quot;content&quot;</code> ，正如数字类型会在后面追加具体的类型一样<code>400u16</code>。 所以如果通过<code>format!</code> 拼凑出一个 ident 之后需要用 <code>quote::format_ident!</code> 转换成 ident 类型，或者直接用 <code>format_ident! </code> 代替 <code>format!</code> 。</p>
+
+                </section>
+            </section>
+        </section>
+    </section>
+
+
+    <footer>
+        <section class="container">
+            <p> 自豪地使用 <a href="https://github.com/Kilerd/rubble">Project Rubble</a> 运行。 </p>
+            <div style="display:none"><script async src="https://www.googletagmanager.com/gtag/js?id=UA-68997851-1"></script> <script>   window.dataLayer = window.dataLayer || [];   function gtag(){dataLayer.push(arguments);}   gtag('js', new Date());    gtag('config', 'UA-68997851-1'); </script>
+</div>
+        </section>
+    </footer>
+    <script src="/statics/prism.js" type="text/javascript"></script>
+</body>
+
+</html>
