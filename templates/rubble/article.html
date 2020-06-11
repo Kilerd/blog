@@ -27,7 +27,7 @@
             <section class="single article">
                 <p class="mate">{{ article.meta.date | date(format="%B %d, %Y") }}</p>
                 <h2>{{ article.meta.title }}</h2>
-                <section class="content yue">
+                <section class="content yue line-numbers">
                     {{ article.content.html | safe }}
                 </section>
             </section>
