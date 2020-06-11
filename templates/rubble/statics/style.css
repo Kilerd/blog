@@ -3,12 +3,12 @@
     margin: 0;
     padding: 0;
     /*font: 300 1em/1.5 PingFangSC-Regular, Microsoft Yahei UI, Noto Sans CJK SC DemiLight, sans-serif;*/
-    font-family: PingFangSC-Regular, Microsoft Yahei UI, Noto Sans CJK SC DemiLight, sans-serif;
-
+    
 }
 
 html {
     font-size: 14px;
+    font-family: PingFangSC-Regular, Microsoft Yahei UI, Noto Sans CJK SC DemiLight, sans-serif;
 
 }
 
@@ -391,7 +391,6 @@ footer a:hover {
 .yue pre {
     padding: 16px;
     overflow: auto;
-    /*font-size: 95%;*/
     line-height: 1.45;
     background-color: #f7f7f7;
     border-radius: 3px
@@ -571,8 +570,6 @@ https://prismjs.com/download.html#themes=prism&languages=markup+css+clike+javasc
  .language-css .token.string,
  .style .token.string {
      color: #9a6e3a;
-     /* This background color was intended by the author of this theme. */
-     background: hsla(0, 0%, 100%, .5);
  }
  
  .token.atrule,
