@@ -1,0 +1,11 @@
+{
+  "title": "rss",
+  "url": "rss",
+  "template": "rss.xml",
+  "draw": false,
+  "datetime": "2020-08-12T19:42:34.641032+08:00",
+  "data": {
+    "page": "rss"
+  },
+  "content": ""
+}
