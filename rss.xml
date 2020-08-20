@@ -23,7 +23,7 @@
 ]]></description>
             
             <guid>https:&#x2F;&#x2F;www.kilerd.me/rust-proc-macro-101</guid>
-            <pubDate>Thu,11 Jun 2020 18:43:26 +0800</pubDate>
+            <pubDate>Thu, 11 Jun 2020 18:43:26 +0800</pubDate>
             <content:encoded><![CDATA[<p>在 Rust 1.45 中，Rust 的<ruby>卫生宏<rp>(</rp><rt>Hygienic macro</rt><rp>)</rp></ruby>迎来了 stable 版本，这意味着<ruby>过程宏<rp>(</rp><rt>Procedural macro</rt><rp>)</rp></ruby>和<ruby>声明宏<rp>(</rp><rt>Declare macro</rt><rp>)</rp></ruby>板块全面稳定。那么是时候该认真学习一边过程宏的内容了。</p>
 <p>过程宏相比于声明宏的灵活度更加高，其本质是输入一段 Rust 的 AST 产生一段 AST 的函数，同时 Rust 提供了三种不一样的语法糖来满足不同的使用场景。</p>
 <ul>
@@ -406,7 +406,7 @@ fn handler(input: proc_macro2::TokenStream) -&gt; proc_macro2::TokenStream {
 ]]></description>
             
             <guid>https:&#x2F;&#x2F;www.kilerd.me/summaries-my-2019</guid>
-            <pubDate>Tue,31 Dec 2019 21:34:22 +0800</pubDate>
+            <pubDate>Tue, 31 Dec 2019 21:34:22 +0800</pubDate>
             <content:encoded><![CDATA[<p>无意中翻博客草稿的时候，发现了 2018 的总结还在停留在草稿阶段，现在就已经要写 2019 年度总结了，不禁感叹时间流逝之快。</p>
 <!--more-->
 <h2>R.I.P Python 2</h2>
@@ -444,7 +444,7 @@ fn handler(input: proc_macro2::TokenStream) -&gt; proc_macro2::TokenStream {
 ]]></description>
             
             <guid>https:&#x2F;&#x2F;www.kilerd.me/learnning-zen-of-tech</guid>
-            <pubDate>Fri,08 Nov 2019 16:52:13 +0800</pubDate>
+            <pubDate>Fri, 08 Nov 2019 16:52:13 +0800</pubDate>
             <content:encoded><![CDATA[<p>在工作了一年多后，脑子里面满是想离职的事情。在此之前，我还在持续构思这一年多学习到内容的总结，然后品了品，这一年内，为了柴米油盐持续奔波，并没有留下过多的时间来学习新的技术，反而相比于刚刚毕业的那个时候，这时的我忘记的知识远远多于我学习到的。</p>
 <p>然而又尽力过一段时间的沉思，我才意识到这可能并不是一件坏事，反而让我可以更好地学习下去。</p>
 <!--more-->
@@ -485,7 +485,7 @@ fn handler(input: proc_macro2::TokenStream) -&gt; proc_macro2::TokenStream {
 ]]></description>
             
             <guid>https:&#x2F;&#x2F;www.kilerd.me/personal-docker-cluster-and-ci-package-pipeline</guid>
-            <pubDate>Thu,13 Jun 2019 13:16:33 +0800</pubDate>
+            <pubDate>Thu, 13 Jun 2019 13:16:33 +0800</pubDate>
             <content:encoded><![CDATA[<p>在认识的小伙伴发了他做的项目部署文档出来之后，我便决定开始写这篇文章，原因是他使用的部署方式太麻烦，而且太不自动化，同时有时候也会因为开发任务繁忙导致没能部署好等等。</p>
 <p>这篇文章是介绍了一个极度适合用于个人或者几个人的小团队使用的集群搭建方式，在保证了安全性的同时，提供了几乎全自动的部署方式，在手动配置一次之后，每次服务更新都是自动触发的，极大地减少了部署的时间。</p>
 <p>本篇文章适用于 GIT-FLOW 类似的「master 即 生产代码」的一切工作模式（或者某一个分支为生产代码）。如果您的开发模式不符合这个特征，那么可以关闭网页了。</p>
@@ -837,7 +837,7 @@ networks:
 ]]></description>
             
             <guid>https:&#x2F;&#x2F;www.kilerd.me/rust-how-actix-register-route-in-rust</guid>
-            <pubDate>Mon,13 May 2019 08:40:47 +0800</pubDate>
+            <pubDate>Mon, 13 May 2019 08:40:47 +0800</pubDate>
             <content:encoded><![CDATA[<p>如果你写过 <code>actix-web</code> 1.0 的代码，会发现在路由注册的函数中，你可以传入各种不同签名的函数题。</p>
 <pre><code class="language-rust">App::new()
         .service(
@@ -1058,7 +1058,7 @@ error: aborting due to previous error
 ]]></description>
             
             <guid>https:&#x2F;&#x2F;www.kilerd.me/rust-auto-optimize-dockerize-procedure</guid>
-            <pubDate>Sun,28 Apr 2019 15:52:05 +0800</pubDate>
+            <pubDate>Sun, 28 Apr 2019 15:52:05 +0800</pubDate>
             <content:encoded><![CDATA[<p>在把 Project Rubble 从 Rocket 框架迁移到 Actix-web 的过程中，我顺便把困惑已久的 Docker 打包流程优化了不少。</p>
 <p>这篇文章适用于那些在项目中带有 <code>Denpendencies.lock</code> 类似的固定依赖版本的 LOCK 文件。</p>
 <!--more-->
@@ -1220,7 +1220,7 @@ class Extend(Base):
 ]]></description>
             
             <guid>https:&#x2F;&#x2F;www.kilerd.me/rust-auto-deref</guid>
-            <pubDate>Thu,18 Apr 2019 06:11:25 +0800</pubDate>
+            <pubDate>Thu, 18 Apr 2019 06:11:25 +0800</pubDate>
             <content:encoded><![CDATA[<p>解引用应该说是 Rust 为了解决不采用 Class 来实现对象化编程的一个解决方案。假想一下如果 Python 或者 Java 之流，需要对一个结构体（准确来说应该是类）进行自定义扩展：增加字段，增加方法，重写方法等等，我们可以直接用继承的方式来实现</p>
 <pre><code class="language-python">class Base:
 	a: int = 2
@@ -1323,7 +1323,7 @@ fn main() {
 ]]></description>
             
             <guid>https:&#x2F;&#x2F;www.kilerd.me/thought-after-reading-the-electric-state</guid>
-            <pubDate>Mon,11 Feb 2019 08:58:38 +0800</pubDate>
+            <pubDate>Mon, 11 Feb 2019 08:58:38 +0800</pubDate>
             <content:encoded><![CDATA[<p>最近把电幻国度看完了，同样主题的书籍和电影有黑镜和玩家一号。但是这几个作品表达的未来都不太一样，各自导演和作者表达了对这种技术前景的担忧和喜悦。</p>
 <!--more-->
 <p>玩家一号是一个彻底的乐观派。在电影里面主角和绿洲世界的创造者共同表现出了人们玩家对这个新鲜事物的接受，但是电影里面也表现出了不少预料之中的负面情绪，比如像那家专门为了寻找彩蛋而生的公司。这个专门用于寻找彩蛋的公司彻彻底底地把这个虚构出来的美好世界变成了一个追求财富的过程。</p>
@@ -1351,7 +1351,7 @@ fn main() {
 ]]></description>
             
             <guid>https:&#x2F;&#x2F;www.kilerd.me/rust-how-to-learn-it</guid>
-            <pubDate>Fri,28 Dec 2018 15:03:59 +0800</pubDate>
+            <pubDate>Fri, 28 Dec 2018 15:03:59 +0800</pubDate>
             <content:encoded><![CDATA[<blockquote>
 <p>当你不知道要干什么的时候，那就写个博客程序吧。 —— 鲁迅</p>
 </blockquote>
@@ -1391,7 +1391,7 @@ fn main() {
 ]]></description>
             
             <guid>https:&#x2F;&#x2F;www.kilerd.me/fine-to-break-up-with-you</guid>
-            <pubDate>Mon,24 Dec 2018 15:31:19 +0800</pubDate>
+            <pubDate>Mon, 24 Dec 2018 15:31:19 +0800</pubDate>
             <content:encoded><![CDATA[<p>如果你能重遇一个很久之前遇见过的人，你会想对她说什么。如果命运决定你只能走那么远，你会不会奋力再拼搏一下，再努力往前走两步？</p>
 <blockquote>
 <p>那么热的夏天，少年的后背被女孩的悲伤烫出一个洞，一直贯穿到心脏，无数个季节的风穿越这条通道，有一只萤火虫在风里飞舞，忽明忽暗。</p>
