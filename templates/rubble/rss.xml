@@ -1,6 +1,6 @@
 <rss version="2.0" xmlns:media="http://search.yahoo.com/mrss/" xmlns:content="http://purl.org/rss/1.0/modules/content/"
      xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom">
-    <channel>
+    <channel rel="self">
         <title>{{ config.site.title }}</title>
         <link>{{ config.site.domain }}</link>
         <description>{{ config.site.description }}</description>
@@ -14,8 +14,8 @@
             <description><![CDATA[{{ one_page.description.html | safe }}]]></description>
             {% endif %}
             <guid>{{ config.site.domain }}/{{ one_page.url }}</guid>
-            <pubDate>{{one_page.datetime | date(format="%a, %e %h %Y %H:%M:%S %z")}}</pubDate>
-            <description><![CDATA[{{ cross_page.content.html | safe }}]]></description>
+            <pubDate>{{one_page.datetime | date(format="%a,%e %h %Y %H:%M:%S %z")}}</pubDate>
+            <content><![CDATA[{{ cross_page.content.html | safe }}]]></content>
         </item>
         {% endfor %}
     </channel>
