@@ -1,8 +1,9 @@
 <rss version="2.0" xmlns:media="http://search.yahoo.com/mrss/" xmlns:content="http://purl.org/rss/1.0/modules/content/"
      xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom">
-    <channel rel="self">
+    <channel>
         <title>你好，耳先生</title>
         <link>https:&#x2F;&#x2F;www.kilerd.me</link>
+        <atom:link href="https:&#x2F;&#x2F;www.kilerd.me/rss.xml" rel="self" type="application/rss+xml" />
         <description>先生贵姓？耳东陈。好的，这边请，耳先生。</description>
         <language>zh-CN</language>
         <generator>Staple</generator>
