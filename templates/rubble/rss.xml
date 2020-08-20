@@ -4,6 +4,7 @@
         <title>{{ config.site.title }}</title>
         <link>{{ config.site.domain }}</link>
         <description>{{ config.site.description }}</description>
+        <language>zh-CN</language>
         <generator>Staple</generator>
         {% for one_page in pages | not_field(attribute="data.page") | slice(end=10) %}
             {% set_global cross_page = page_detail(file=one_page.file) %}
