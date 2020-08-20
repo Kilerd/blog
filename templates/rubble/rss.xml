@@ -15,7 +15,7 @@
             {% endif %}
             <guid>{{ config.site.domain }}/{{ one_page.url }}</guid>
             <pubDate>{{one_page.datetime | date(format="%a,%e %h %Y %H:%M:%S %z")}}</pubDate>
-            <content><![CDATA[{{ cross_page.content.html | safe }}]]></content>
+            <content:encoded><![CDATA[{{ cross_page.content.html | safe }}]]></content:encoded>
         </item>
         {% endfor %}
     </channel>
