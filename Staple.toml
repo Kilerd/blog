@@ -7,39 +7,13 @@ author = ""
 email = ""
 utc_offset = 800
 theme = "rubble"
-
-[url]
-url = "https://www.kilerd.me"
-root = "/"
-
-[pagination]
-page_size = 10
-
-[[pages]]
-show_in_nav = true
-nav_title = "PORTFOLIOS"
-file = "portfolios.md"
-template = "page.html"
-
-[[pages]]
-show_in_nav = true
-nav_title = "READINGS"
-file = "read.md"
-template = "page.html"
-
-[[pages]]
-show_in_nav = true
-nav_title = "ABOUTME"
-file = "about.md"
-template = "page.html"
+domain = "https://www.kilerd.me"
+domain_root = ""
+default_template = "article.html"
 
 [[statics]]
 from = "CNAME"
 to = "CNAME"
-
-[rss]
-enable = true
-article_limited = 10
 
 [extra]
 ga = """

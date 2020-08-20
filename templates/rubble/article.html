@@ -8,7 +8,7 @@
     <meta name="keywords" content="" />
     <link rel="stylesheet" href="/statics/style.css">
     <link rel="alternate" type="application/rss+xml" title="{{ config.site.title }}" href="/rss.xml" />
-    <title>{{ article.meta.title }}</title>
+    <title>{{ page.title }}</title>
 </head>
 
 <body>
@@ -16,19 +16,12 @@
 
     <section class="full-page">
         <section class="container">
-            <nav>
-                <a href="/">HOMEPAGE</a>
-                {% if config.pages %}
-                {% for page in config.pages %}
-                <a href="/{{ page.meta.url }}">{{ page.nav_title}}</a>
-                {% endfor %}
-                {% endif %}
-            </nav>
+
             <section class="single article">
-                <p class="mate">{{ article.meta.date | date(format="%B %d, %Y") }}</p>
-                <h2>{{ article.meta.title }}</h2>
+                <p class="mate">{{ page.datetime | date(format="%B %d, %Y") }}</p>
+                <h2>{{ page.title }}</h2>
                 <section class="content yue line-numbers">
-                    {{ article.content.html | safe }}
+                    {{ page.content.html | safe }}
                 </section>
             </section>
         </section>
@@ -37,7 +30,7 @@
 
     <footer>
         <section class="container">
-            <p> 自豪地使用 <a href="https://github.com/Kilerd/rubble">Project Rubble</a> 运行。 </p>
+            <p> 自豪地使用 <a href="https://github.com/Kilerd/staple">Project Staple</a> 运行。 </p>
             <div style="display:none">{{ config.extra.ga | safe }}</div>
         </section>
     </footer>
