@@ -6,14 +6,16 @@
         <description>{{ config.site.description }}</description>
         <generator>Staple</generator>
         {% for one_page in pages | not_field(attribute="data.page") | slice(end=10) %}
+            {% set_global cross_page = page_detail(file=one_page.file) %}
         <item>
             <title>{{ one_page.title }}</title>
             <link>{{ config.site.domain }}/{{ one_page.url }}</link>
             {% if one_page.description %}
-            <description><![CDATA[{{ one_page.description.html }}]]></description>
+            <description><![CDATA[{{ one_page.description.html | safe }}]]></description>
             {% endif %}
             <guid>{{ config.site.domain }}/{{ one_page.url }}</guid>
-            <pubDate>Thu, 11 Jun 2020 18:43:26 +0800</pubDate>
+            <pubDate>{{one_page.datetime | date(format="%a, %e %h %Y %H:%M:%S %z")}}</pubDate>
+            <description><![CDATA[{{ cross_page.content.html | safe }}]]></description>
         </item>
         {% endfor %}
     </channel>
