@@ -1300,7 +1300,7 @@ fn main() {
 }
 </code></pre>
 <p>在上述代码中，我们告诉 Rust 编译器：「我们期望 <code>MyOwnDerefStruct</code> 被解到 <code>String</code>」，那么在编译过程中碰到需要 <code>&amp;String</code> 时，编译器会自动帮我们转换。而且我们还能写出以下相当 tricky 的代码 <code>print(&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;deref_struct);</code>（这代码能跑的原因，可以自行去看看 Rust 内部对 &amp; 的处理）</p>
-<p>自动解引用还有一个好处就是，他可以直接寻址到 <code>Target</code> 的方法。在我们的场景里面，<code>String</code> 中有判断两个字符串是否相等的方法 <code>eq</code> 。因为自动解引用的存在，我们并不需要 <code>deref_struct.0.eq(String::from(&quot;hello world))</code> 的写法。  <code>MyOwnDerefStruct</code> 可以直接调用 <code>eq</code> 方法。</p>
+<p>自动解引用还有一个好处就是，他可以直接寻址到 <code>Target</code> 的方法。在我们的场景里面，<code>String</code> 中有判断两个字符串是否相等的方法 <code>eq</code> 。因为自动解引用的存在，我们并不需要 <code>deref_struct.0.eq(&quot;hello world&quot;)</code> 的写法。  <code>MyOwnDerefStruct</code> 可以直接调用 <code>eq</code> 方法。</p>
 <pre><code class="language-rust">assert_eq!(true, deref_struct.eq(&quot;hello world&quot;));
 </code></pre>
 <p>这样就避免了在使用智能指针的时候在代码中出现大量的 <code>variable_box.0.method()</code> 。避免了 <code>.0</code> 的出现，大大地简化了代码，同时也增加了代码的可读性。</p>
