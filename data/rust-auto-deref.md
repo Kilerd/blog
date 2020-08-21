@@ -115,7 +115,7 @@ impl Deref for MyOwnDerefStruct {
 
 
 
-自动解引用还有一个好处就是，他可以直接寻址到 `Target` 的方法。在我们的场景里面，`String` 中有判断两个字符串是否相等的方法 `eq` 。因为自动解引用的存在，我们并不需要 `deref_struct.0.eq(String::from("hello world))` 的写法。  `MyOwnDerefStruct` 可以直接调用 `eq` 方法。
+自动解引用还有一个好处就是，他可以直接寻址到 `Target` 的方法。在我们的场景里面，`String` 中有判断两个字符串是否相等的方法 `eq` 。因为自动解引用的存在，我们并不需要 `deref_struct.0.eq("hello world")` 的写法。  `MyOwnDerefStruct` 可以直接调用 `eq` 方法。
 
 ```rust
 assert_eq!(true, deref_struct.eq("hello world"));
