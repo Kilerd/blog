@@ -20,7 +20,7 @@
             <nav>
                 <a href="/">HOMEPAGE</a>
                 
-                {% for page in pages | filter(attribute="data.page", value="true") | sort(attribute="datetime") | reverse %}
+                {% for page in pages | filter(attribute="data.page", value=true) | sort(attribute="datetime") | reverse %}
                 <a href="/{{ page.url }}">{{ page.title}}</a>
                 {% endfor %}
                 
