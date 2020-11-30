@@ -1,4 +1,4 @@
- - title = 作品集 / 垃圾堆
+ - title = 作品集
  - url = portfolios
  - tags = 
  - datetime = 2015-06-18T21:16:11.000000+08:00
