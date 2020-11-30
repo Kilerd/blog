@@ -8,61 +8,10 @@
 这些都是我在做的，已经不在维护的，准备做的项目，如果有兴趣，可以联系我，我会考虑把你加入项目组。当然我的大部分项目都是开源，并且使用 MIT 协议的，欢迎任意使用。
 
 <!--more-->
-
-## Rubble
-
-[GITHUB](<https://github.com/Kilerd/rubble>)
-
-这是一个用 Rust 写的博客程序，也就是我这个博客正在使用中的程序。算是我入门Rust后真正写的一个项目。
-
-- Docker 镜像大小 10 M，运行所需内存 5 M。
-
-- 采用了 actix-web 和 diesel 的技术方案。
-- 提供了标准的 Restful API 接口供外部调用。
-- 完善的后台管理面板。
-- RSS 订阅支持。
-
-
-
-## Project Spend
-
-[WEBSITE](https://spend.kilerd.me/)
-
-在不满足市面上的任何记账软件后，我自己胡搞了一个记账的最小化实现。后端采用了 Rust 实现，前端采用了 React + TypeScript 的方案。由于本人不是比较专业的前端，所以界面并不是十分靠谱。
-
-> 这个完全是个人需求驱动的项目，所以基本上都是根据我个人需求进行设计和更新。
->
-> 而且目前还没有其他人使用该项目，所以更新的频率和方向都是未知情况
-
-- 后端采用了 Rocket 和 diesel 的技术方案。
-- 目前只支持支出和收入两个比较简单的 Feature，预算功能正在火(gui)热(su)开发中。
-
-
-
-项目没有开源是因为代码还很乱（从 GraphQL 迁移回 Restful API 的历史代码还没重构），并且因为设计CI/CD的配置还没有开源，不过在不久的将来会开源
-
-
-
-## Bearnote
-
-[WEBSITE](https://www.bearnote.com/)  [CLI GITHUB](<https://github.com/Kilerd/bearnote_cli>)
-
-很久之前注册的一个域名，并且打算拿来做一个笔记的网站，但是发现竞争太大就停下来了。
-
-现在拿来做了一个很简单的 Pastebin 网页，但是他不是比较传统的 pastebin。我用 Rust 为他写了一个 CLI 工具，用来上传文件，同时可以打 tag，还支持了删除功能以避免隐私泄露。
-
-同时为了更加好的阅读体验，它是支持指定后缀的方式来高亮文本内容的。当然目前只支持简单的 Markdown 文件的高亮，下一步将准备做 json 和 shell 内容的高亮。
-
-这个网站的目的在于分享长文本的同时，提供比较好的阅读体验。同时还在努力的克服技术难点，希望能做到这样的效果 `bearnote cargo build` 就可以把编译失败的内容记录到 bearnote 网站上面，实时分享出去。
-
-
-
-嗯，这个项目也是因为共用一套 CI/CD 配置的原因没有开源，也准备开源了。当然了 CLI 工具现在已经是开源状态了，毕竟这是要跑在客户端的东西，不开源没人敢用。 
-
-
-
-## Resource.rs
-
-[GITHUB](<https://github.com/kilerd/resource>) [WEBSITE](<https://resource.rs/>)
-
-一份希望能够提供中文化的Rust学习资源。
+ - [beancount](<https://github.com/Kilerd/beancount>) rust 写的 beancount 文件语法解析器。![GitHub last commit](https://img.shields.io/github/last-commit/kilerd/beancount?color=%23327ba8&label=%E6%9C%80%E8%BF%91%E6%9B%B4%E6%96%B0&style=flat-square)
+ - [miser](<https://miser-web.vercel.app>) 目标是高度兼容 beancount 复式记账的记账软件，旨在还原复式记账的同时，提供更多beancount 没有的人性化功能，**目前高度不可用**，前端苦手，免费的前端劳动力可以PM我。前端使用 svelte，后端 actix-web + sqlx。
+ - [resource.rs](<https://www.resource.rs>) 一份希望能够提供一站式 Rust 中文资源的网站。 如果你对构建 rust 中文社区也有兴趣，那么可以加入[我们](<https://github.com/kilerd/resource>)，一起维护。 ![GitHub last commit](https://img.shields.io/github/last-commit/kilerd/resource?color=%23327ba8&label=%E6%9C%80%E8%BF%91%E6%9B%B4%E6%96%B0&style=flat-square)
+ - [rubble](<https://github.com/Kilerd/rubble>)  Rust 写的动态博客程序，采用了 actix-web 和 diesel 技术。 ![GitHub last commit](https://img.shields.io/github/last-commit/kilerd/rubble?color=%23327ba8&label=%E6%9C%80%E8%BF%91%E6%9B%B4%E6%96%B0&style=flat-square)
+ - [staple](<https://github.com/Kilerd/staple>)  在厌倦了动态博客之后写的静态网站生成器，Staple 提供了比较 general 的页面构建能力，不仅仅是构建博客。当前博客就是构建于 staple。 ![GitHub last commit](https://img.shields.io/github/last-commit/kilerd/staple?color=%23327ba8&label=%E6%9C%80%E8%BF%91%E6%9B%B4%E6%96%B0&style=flat-square)
+ - [starManager](<https://chrome.google.com/webstore/detail/star-manager/klajgkhhnnipjkilfgkkjofidahjfobh>) 一份超级轻量级的 github star 检索 Chrome 插件。 ![GitHub last commit](https://img.shields.io/github/last-commit/kilerd/StarManager?color=%23327ba8&label=%E6%9C%80%E8%BF%91%E6%9B%B4%E6%96%B0&style=flat-square)
+ - [typhoon](<https://github.com/Kilerd/typhoon>) [highly WIP] 语法看起来会很像 rust 和 python 的静态类型编译型语言，对接到 LLVM，提供GC。目前还在接入 rust 的语法，在疯狂重构中，**高度不可用**。 ![GitHub last commit](https://img.shields.io/github/last-commit/kilerd/typhoon?color=%23327ba8&label=%E6%9C%80%E8%BF%91%E6%9B%B4%E6%96%B0&style=flat-square)
