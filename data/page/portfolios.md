@@ -7,6 +7,8 @@
 
 这些都是我在做的，已经不在维护的，准备做的项目，如果有兴趣，可以联系我，我会考虑把你加入项目组。当然我的大部分项目都是开源，并且使用 MIT 协议的，欢迎任意使用。
 
+我的 side project 动态都会实时更新在[trello personal](<https://trello.com/b/UZxM7CLg>)， 如果你感兴趣可以关注我在干什么。
+
 <!--more-->
  - [beancount](<https://github.com/Kilerd/beancount>) rust 写的 beancount 文件语法解析器。![GitHub last commit](https://img.shields.io/github/last-commit/kilerd/beancount?color=%23327ba8&label=%E6%9C%80%E8%BF%91%E6%9B%B4%E6%96%B0&style=flat-square)
  - [miser](<https://miser-web.vercel.app>) 目标是高度兼容 beancount 复式记账的记账软件，旨在还原复式记账的同时，提供更多beancount 没有的人性化功能，**目前高度不可用**，前端苦手，免费的前端劳动力可以PM我。前端使用 svelte，后端 actix-web + sqlx。
