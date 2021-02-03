@@ -4,6 +4,7 @@
  - datetime = 2015-05-18T21:16:11.000000+08:00
  - template = article.html
  - page = true
+ - page_index = 3
 
 我是 Kilerd，全网唯一通用 ID，至于为啥叫这个名字，我也不知道，就随便起了一个。Emmm，好吧实际上是拿两个单词各截了一半就组成了这样一个不会读的名字。
 

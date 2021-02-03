@@ -18,7 +18,7 @@
             <h1>{{ config.site.title }}</h1>
             <p>{{ config.site.description }}</p>
             <nav>
-                {% for page in pages | filter(attribute="data.page", value=true) | sort(attribute="datetime") | reverse %}
+                {% for page in pages | filter(attribute="data.page", value=true) | sort(attribute="data.page_index") %}
                 <a href="/{{ page.url }}">{{ page.title}}</a>
                 {% endfor %}
                 
