@@ -10,7 +10,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Install Staple
-      run: cargo install --git https://github.com/Kilerd/staple
+      run: cargo install staple
     - name: Build blog
       run: staple build
     - name: Deploy site to gh-pages branch
