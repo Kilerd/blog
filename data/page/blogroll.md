@@ -6,6 +6,9 @@
  - page = true
  - page_index = 2
 
-在？ 交个朋友？
+在？ 交个朋友？ 
+
+有趣的皮囊和好看的灵魂就应该碰撞在一起。
 
 - [Hackerchai Blog](https://blog.hackerchai.com/)
+- [某 Lolicon 的自白](https://blog.sgdylan.com/)
