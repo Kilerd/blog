@@ -7,3 +7,5 @@
  - page_index = 2
 
 在？ 交个朋友？
+
+- [Hackerchai Blog](https://blog.hackerchai.com/)
