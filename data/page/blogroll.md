@@ -12,3 +12,4 @@
 
 - [Hackerchai Blog](https://blog.hackerchai.com/)
 - [某 Lolicon 的自白](https://blog.sgdylan.com/)
+- [Manjusaka](https://manjusaka.itscoder.com/)
