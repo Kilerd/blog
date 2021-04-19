@@ -5,8 +5,7 @@
   "draw": false,
   "datetime": "2020-08-12T17:30:48.489005+08:00",
   "data": {
-    "page": false,
-    "page_index": 0
+    "page": "index"
   },
   "content": ""
 }
