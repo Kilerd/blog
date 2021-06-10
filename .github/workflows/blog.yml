@@ -14,6 +14,7 @@ jobs:
         repo: "Kilerd/staple"
         version: "latest"
         file: "staple-ubuntu.tar.gz"
+        token: ${{ secrets.GITHUB_TOKEN }}
     - name: Install Staple
       run: |
         mkdir -p $GITHUB_WORKSPACE/bin
