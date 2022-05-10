@@ -2,7 +2,7 @@
  - url = trip-of-dongao-island
  - datetime = 2022-05-05T17:38:36.221515+08:00
  - template = article.html
- - cover = /statics/images/trip-of-dongao-island-cover.png
+ - cover = /statics/images/trip-of-dongao-island-cover.jpg
  - draw = false
 
 4月29号，朋友问我五一去哪里玩，我想都没想就说了哪都不去。事实上也是这样，并没有任何出游的计划，但是回头仔细想想五一假期那么长，没理由那么多天都在家里吧。于是就挑了一个短程旅行，目标地点就是东澳岛。
@@ -37,13 +37,13 @@
 
 就是这20分钟的戏剧性，当我飞奔到渡口大厅的时候，在国内出发的那个区域，检票的小哥一直在重复喊「耳先生，在吗？ 耳先生，你到了吗？」。不了解的还以为是什么达官贵人要坐渡轮去哪里巡查游玩，殊不知只是一个即将要迟到、赶不上渡轮的倒霉蛋，原因竟是一条数据线引发的「血案」。
 
-![香港机场](/statics/images/hk-airport.png)
+![香港机场](/statics/images/hk-airport.jpg)
 
 当我踏上船的那一刻，渡轮的登船口也应声关闭，近乎1个小时的时间可以极致放松的躺在椅子上，看着外面的海浪和乌云。同时也没有想过疫情过后能以这样的方式再次见到香港机场，心里不禁一阵唏嘘。
 
 ### 露营
 
-![东澳岛码头](/statics/images/dongao-island-dock.png)
+![东澳岛码头](/statics/images/dongao-island-dock.jpg)
 
 踏上岛的那一刻，并没有我印象中对于海岛的那种「刻板印象」，我对海岛的印象还停留在了泰国普吉和台湾垦丁上，那广阔的海岸，一望无际的海平线，那条蜿蜒曲折的滨海小街。而东澳岛映入眼帘的却是寂寥和荒漠。基本上没有太多人影。
 
