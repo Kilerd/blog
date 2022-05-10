@@ -20,8 +20,19 @@
         <section class="container">
 
             <section class="single article">
-                <p class="mate">{{ page.datetime | date(format="%B %d, %Y") }}</p>
-                <h2>{{ page.title }}</h2>
+                {% if page.data.cover %}
+                <img src="{{ page.data.cover }}" alt="" style="width:100%">
+                {% endif%}
+                <p class="mate"
+                {% if page.data.cover %}
+                style="margin-top:-100px; padding: 3px 15px; color: {{ page.data.header_color | default(value="white") }}"
+                {% endif%}
+                >{{ page.datetime | date(format="%B %d, %Y") }}</p>
+                <h2
+                {% if page.data.cover %}
+                style="display: inline-block;padding: 3px 15px; background: {{ page.data.header_bg_color | default(value="black") }}; color: {{ page.data.header_color | default(value="white") }}"
+                {% endif%}
+                >{{ page.title }}</h2>
                 <section class="content yue line-numbers">
                     {{ page.content.html | safe }}
                 </section>
