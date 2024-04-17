@@ -12,6 +12,7 @@ WORKDIR /app
 
 COPY . /app
 RUN staple build
+RUN ll /app
 
 
 FROM busybox:1.35
