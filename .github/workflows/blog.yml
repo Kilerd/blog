@@ -6,7 +6,12 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-
+    permissions:
+      pages: write      # to deploy to Pages
+      id-token: write   # to verify the deployment originates from an appropriate source
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
     - uses: actions/checkout@v1
     - uses: dsaltares/fetch-gh-release-asset@master
@@ -27,5 +32,6 @@ jobs:
         path: public
     - name: Deploy to GitHub Pages
       uses: actions/deploy-pages@v4
+      id: deployment
       with:
         token: ${{ secrets.GH_PAT }}
