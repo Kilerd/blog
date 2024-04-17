@@ -26,5 +26,6 @@ WORKDIR /home/static
 # Use the .dockerignore file to control what ends up inside the image!
 COPY --from=BUILDER /app/public /home/static
 
+EXPOSE 3000
 # Run BusyBox httpd
 CMD ["busybox", "httpd", "-f", "-v", "-p", "3000"]
