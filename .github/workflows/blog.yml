@@ -27,7 +27,7 @@ jobs:
         chmod 777 $GITHUB_WORKSPACE/bin/staple
     - name: Build blog
       run: $GITHUB_WORKSPACE/bin/staple build
-    - uses: actions/upload-pages-artifact@v4
+    - uses: actions/upload-pages-artifact@v3
       with:
         name: "github-pages"
         path: public
