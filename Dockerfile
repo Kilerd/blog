@@ -24,7 +24,7 @@ WORKDIR /home/static
 
 # Copy the static website
 # Use the .dockerignore file to control what ends up inside the image!
-COPY --from=BUILDER /app/pulbic /home/static
+COPY --from=BUILDER /app/public /home/static
 
 # Run BusyBox httpd
 CMD ["busybox", "httpd", "-f", "-v", "-p", "3000"]
