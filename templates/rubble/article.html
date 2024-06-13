@@ -9,9 +9,9 @@
     <meta property="og:url"                content="https://www.kilerd.me/{{ page.url }}" />
     <meta property="og:type"               content="article" />
     <meta property="og:title"              content="{{ page.title }}" />
-    <meta property="og:description"               content="{{ page.description }}" />
+    <meta property="og:description"               content="{{ page.description.markdown }}" />
     {% if page.data.cover %}
-    <meta property="og:image"        content="https://www.kilerd.me/{{ page.data.cover }}" />
+    <meta property="og:image"        content="https://www.kilerd.me/{{ page.data.cover | safe }}" />
     {% endif%}
     <link rel="stylesheet" href="/statics/style.css">
     <link rel="alternate" type="application/rss+xml" title="{{ config.site.title }}" href="/rss.xml" />
