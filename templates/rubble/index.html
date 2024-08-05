@@ -4,17 +4,9 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-        <meta
-            name="keywords"
-            content="{{ config.site.keywords | join(sep=', ')}}"
-        />
+        <meta name="keywords" content="{{ config.site.keywords | join(sep=', ')}}" />
         <link rel="stylesheet" href="/statics/style.css" />
-        <link
-            rel="alternate"
-            type="application/rss+xml"
-            title="{{ config.site.title }}"
-            href="/rss.xml"
-        />
+        <link rel="alternate" type="application/rss+xml" title="{{ config.site.title }}" href="/rss.xml" />
         <title>{{ config.site.title }}</title>
     </head>
     <body>
@@ -25,8 +17,7 @@
                     <p>{{ config.site.description }}</p>
                     <nav>
                         <a href="/">首页</a>
-                        {% for page in pages | filter(attribute="data.page",
-                        value=true) | sort(attribute="data.page_index") %}
+                        {% for page in pages | filter(attribute="data.page", value=true) | sort(attribute="data.page_index") %}
                         <a href="/{{ page.url }}">{{ page.title}}</a>
                         {% endfor %}
                     </nav>
@@ -36,16 +27,10 @@
             <section class="container">
                 {% for one_page in pages | not_field(attribute="data.page") %}
                 <section class="article">
-                    <p class="mate">
-                        {{ one_page.datetime | date(format="%B %d, %Y") }}
-                    </p>
-                    <a class="title" href="/{{ one_page.url }}"
-                        >{{ one_page.title }}</a
-                    >
+                    <p class="mate">{{ one_page.datetime | date(format="%B %d, %Y") }}</p>
+                    <a class="title" href="/{{ one_page.url }}">{{ one_page.title }}</a>
                     {% if one_page.description %}
-                    <section class="yue desc">
-                        {{ one_page.description.html | safe }}
-                    </section>
+                    <section class="yue desc">{{ one_page.description.html | safe }}</section>
                     {% endif %}
                 </section>
                 {% endfor %}
@@ -56,20 +41,14 @@
             <section class="container">
                 <p>
                     自豪地使用
-                    <a href="https://github.com/Kilerd/staple"
-                        >Project Staple</a
-                    >
+                    <a href="https://github.com/Kilerd/staple">Project Staple</a>
                     运行。
                 </p>
                 <div style="display: none">{{ config.extra.ga | safe }}</div>
             </section>
         </footer>
         <script src="/statics/prism.js" type="text/javascript"></script>
-        <script
-            defer
-            src="https://analytics.kilerd.me/script.js"
-            data-website-id="e1460db3-d129-4059-a80b-64c8c2fe2651"
-        ></script>
+        <script defer src="https://umami.xinsoftware.top/script.js" data-website-id="a2f0acb9-5008-41c2-b6eb-a9b3d9207b77"></script>
         {{ develop.live_reload | safe }}
     </body>
 </html>
