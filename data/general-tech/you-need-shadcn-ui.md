@@ -12,7 +12,7 @@
 
 ## 我做过的蠢事
 人总是善变的，从接触到前端开发开始，我就一直在关注各式各样前端好看的框架。在变化万千的前端世界里面，总能一段时间就会涌出一个好看的框架。
-从一开始的(tabler)[https://tabler.io/admin-template]，后来到台湾人写的一个很小众的(tocas ui)[https://tocas-ui.com/5.0/zh-tw/index.html]，再到后来的 (mantine)[https://mantine.dev/]，到现在的 shadcn/ui。
+从一开始的[tabler](https://tabler.io/admin-template)，后来到台湾人写的一个很小众的[tocas ui](https://tocas-ui.com/5.0/zh-tw/index.html)，再到后来的 [mantine](https://mantine.dev/)，到现在的 shadcn/ui。
 
 ## 为什么一直换
 
@@ -31,10 +31,10 @@ Mantine 真的是我超级喜欢的一个框架，它基于了足够优秀的 UI
 
 同时 Matine 是我见过为数不多组件足够丰富、使用体感最舒服的框架。简单举几个例子：
 
- - 在表单里面带自动补全的输入框 (AutoComplete)[https://mantine.dev/core/autocomplete/]
+ - 在表单里面带自动补全的输入框 [AutoComplete](https://mantine.dev/core/autocomplete/)
   - 甚至它自带了 `onMissing` 的逻辑处理
- - 我们常常需要用来做标签输入的 (PillInput)[https://mantine.dev/core/pills-input/]
- - 多个值选一个的切换器 (SegmentedControl)[https://mantine.dev/core/segmented-control/]
+ - 我们常常需要用来做标签输入的 [PillInput](https://mantine.dev/core/pills-input/)
+ - 多个值选一个的切换器 [SegmentedControl](https://mantine.dev/core/segmented-control/)
 - ColorInput
 - PinInput
 
@@ -52,7 +52,7 @@ Mantine 真的是我超级喜欢的一个框架，它基于了足够优秀的 UI
  - 专门为开关/boolean管理的 use-disclosure
  - 检测用户是否离开页面的 use-page-leave
 
-(Mantine Hooks)[https://mantine.dev/hooks/use-click-outside/]的强大和完善真的很省事，它帮你解决了前端里面很多很常见的场景，避免了自己去写重复的代码、封装hooks。 真正地做到了开箱即用。
+[Mantine Hooks](https://mantine.dev/hooks/use-click-outside/)的强大和完善真的很省事，它帮你解决了前端里面很多很常见的场景，避免了自己去写重复的代码、封装hooks。 真正地做到了开箱即用。
 
 ## 我变了
 
@@ -64,8 +64,8 @@ Mantine 自带的水平布置控件 `Group` (等驾驭 tailwind 的 `flex item-c
 另外一个例子是Mantine的高度封装让你没办法深度定制。 在 Mantine 退出 Chart 系统时，我第一时间就跟进，把自己手搓的 Chart 系统给改了。
 结果是网站的样式得到了统一，毕竟mantine作者的css水平比我高到不知道哪里去。可是它功能出现了一定量的缺失。
 
-(Zhang)[https://github.com/zhang-accounting/zhang] 项目中首页是有一个复合表格的，一个线图来表示账户余额，一个柱状图用来显示每日的收入与支出。
-自己手搓的时候可以直接使用 `ComposeChart` 就可以完成功能了，但是 Mantine 迟迟没有引入这个集成。我大概在 5 月份的时候就这个问题(发了一个提问)[https://github.com/orgs/mantinedev/discussions/6230]，大概得 7 月底的时候才把(功能给实现)[https://github.com/mantinedev/mantine/commit/f5ef82fc33c2a9df7d2b28d710aeef6be90a30b9]
+[Zhang Accounting](https://github.com/zhang-accounting/zhang) 项目中首页是有一个复合表格的，一个线图来表示账户余额，一个柱状图用来显示每日的收入与支出。
+自己手搓的时候可以直接使用 `ComposeChart` 就可以完成功能了，但是 Mantine 迟迟没有引入这个集成。我大概在 5 月份的时候就这个问题[发了一个提问](https://github.com/orgs/mantinedev/discussions/6230)，大概得 7 月底的时候才把[功能给实现](https://github.com/mantinedev/mantine/commit/f5ef82fc33c2a9df7d2b28d710aeef6be90a30b9)
 
 在需要自己尝试去改一些东西的时候，Mantine 这种集成度很高的框架使用起来就很难受了。
 
