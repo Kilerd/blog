@@ -1,4 +1,4 @@
- - title = 你应该也只需一个 web UI 框架
+ - title = Shadcn/ui: 你应该只需一个 web UI 框架
  - url = you-need-shadcn-ui
  - tags =
  - datetime = 2024-10-12T23:37:27.000000+08:00
