@@ -208,12 +208,23 @@ footer a:hover {
     margin: 0;
     padding: 0
 }
+.yue h1, .yue p, .yue ul, .yue dl, .yue ol, .yue blockquote {
+    margin-top: 0;
+    margin-bottom: 2rem;
+}
+
+.yue h1, .yue h2, .yue h3, .yue h4, .yue h5, .yue h6 {
+    position: relative;
+}
+
 .yue h2 {
     font-size: 1.75rem;
     font-weight: 600;
     color: #2a2a2a;
     margin: 3.5rem 0 1.5rem 0;
     line-height: 1.4;
+    text-align: left;
+    text-decoration: none;
 }
 
 .yue h3 {
@@ -222,20 +233,6 @@ footer a:hover {
     color: #333;
     margin: 2.5rem 0 1rem 0;
     line-height: 1.4;
-}
-
-.yue h1, .yue p, .yue ul, .yue dl, .yue ol, .yue blockquote {
-    margin-top: 0;
-    margin-bottom: 2rem;
-}
-
-.yue h1, .yue h2, .yue h3, .yue h4, .yue h5, .yue h6 {
-    position: relative;
-    margin-bottom: 1.5rem
-}
-
-.yue h1, .yue h2 {
-    line-height: 1.5rem
 }
 
 .yue h1:before, .yue h2:before, .yue h3:before, .yue h4:before, .yue h5:before, .yue h6:before {
@@ -252,9 +249,6 @@ footer a:hover {
     }
 }
 
-
-.yue h2 {
-}
 
 .yue h3:before {
 }
