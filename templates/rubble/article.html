@@ -35,16 +35,16 @@
                 {% if page.data.cover %}
                 <img src="{{ page.data.cover }}" alt="" style="width:100%">
                 {% endif%}
-                <p class="mate"
-                {% if page.data.cover %}
-                style="margin-top:-100px; padding: 3px 15px; color: {{ page.data.header_color | default(value="white") }}"
-                {% endif%}
-                >{{ page.datetime | date(format="%B %d, %Y") }}</p>
                 <h2
                 {% if page.data.cover %}
-                style="display: inline-block;padding: 3px 15px; background: {{ page.data.header_bg_color | default(value="black") }}; color: {{ page.data.header_color | default(value="white") }}"
+                style="margin-top:-100px; display: inline-block;padding: 3px 15px; background: {{ page.data.header_bg_color | default(value="black") }}; color: {{ page.data.header_color | default(value="white") }}"
                 {% endif%}
                 >{{ page.title }}</h2>
+                <p class="mate"
+                {% if page.data.cover %}
+                style="padding: 3px 15px; color: {{ page.data.header_color | default(value="white") }}"
+                {% endif%}
+                >{{ page.datetime | date(format="%B %d, %Y") }}</p>
                 <section class="content yue line-numbers">
                     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9147137464451642"
                          crossorigin="anonymous"></script>
