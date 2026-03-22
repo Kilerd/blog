@@ -3,7 +3,7 @@ export const prerender = false
 
 import Comments from '../components/Comments.astro'
 import Layout from '../components/Layout.astro'
-import { findPostByPath, getDescription, getNavigationPages } from '../lib/content'
+import { findPostByPath, formatSectionName, getDescription, getNavigationPages } from '../lib/content'
 import { renderMarkdownToHtml } from '../lib/markdown'
 import { getPublishedPosts } from '../lib/sonic'
 
@@ -31,24 +31,12 @@ const canonicalPath = `/${post.data.path}`
   canonicalPath={canonicalPath}
   ogType="article"
 >
-  <section class="container">
-    <section class="single article">
+  <section class="container article-page">
+    <section class="single article article-card">
+      <p class="article-section">{formatSectionName(post.data.section)}</p>
       {post.data.cover && <img src={post.data.cover} alt="" style="width:100%" />}
-      <h2
-        style={post.data.cover
-          ? `margin-top:-100px; display:inline-block; padding:3px 15px; background:${post.data.headerBgColor ?? 'black'}; color:${post.data.headerColor ?? 'white'}`
-          : undefined}
-      >
-        {post.title}
-      </h2>
-      <p
-        class="mate"
-        style={post.data.cover
-          ? `padding:3px 15px; color:${post.data.headerColor ?? 'white'}`
-          : undefined}
-      >
-        {new Date(post.data.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
-      </p>
+      <h2>{post.title}</h2>
+      <p class="mate">{new Date(post.data.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
       <section class="content yue line-numbers">
         <script
           is:inline
@@ -83,6 +71,8 @@ const canonicalPath = `/${post.data.path}`
         </script>
       </section>
     </section>
-    <Comments />
+    <section class="comments">
+      <Comments />
+    </section>
   </section>
 </Layout>

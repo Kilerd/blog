@@ -1,6 +1,12 @@
 ---
 import Layout from '../components/Layout.astro'
-import { getArticlePosts, getExcerptHtml, getNavigationPages, getPostHref } from '../lib/content'
+import {
+  formatSectionName,
+  getArticlePosts,
+  getExcerptHtml,
+  getNavigationPages,
+  getPostHref
+} from '../lib/content'
 import { getPublishedPosts } from '../lib/sonic'
 
 const allPosts = await getPublishedPosts()
@@ -9,13 +15,28 @@ const pages = getNavigationPages(allPosts)
 ---
 
 <Layout showHeader={true} pages={pages}>
-  <section class="container">
-    {posts.map((post) => (
-      <section class="article">
-        <p class="mate">{new Date(post.data.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
-        <a class="title" href={getPostHref(post)}>{post.title}</a>
-        {post.data.excerpt && <section class="yue desc" set:html={getExcerptHtml(post)} />}
+  <section class="container home-shell">
+    {posts.length > 0 && (
+      <section class="story-list">
+        {posts.map((post) => (
+          <article class:list={['post-row', !post.data.cover && 'post-row-text-only']}>
+            {post.data.cover && (
+              <a class="post-row-media" href={getPostHref(post)}>
+                <img src={post.data.cover} alt="" />
+              </a>
+            )}
+
+            <div class="post-row-body">
+              <div class="meta-row">
+                <span class="section-pill">{formatSectionName(post.data.section)}</span>
+                <time>{new Date(post.data.publishedAt).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' })}</time>
+              </div>
+              <a class="post-row-title" href={getPostHref(post)}>{post.title}</a>
+              {post.data.excerpt && <section class="yue desc" set:html={getExcerptHtml(post)} />}
+            </div>
+          </article>
+        ))}
       </section>
-    ))}
+    )}
   </section>
 </Layout>

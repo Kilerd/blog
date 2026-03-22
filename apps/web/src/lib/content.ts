@@ -41,3 +41,33 @@ export function getTagList(post: PostRecord) {
     .map((tag) => tag.trim())
     .filter(Boolean)
 }
+
+export function formatSectionName(section: string) {
+  return section
+    .split('-')
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(' ')
+}
+
+export function getSectionSummaries(posts: PostRecord[]) {
+  const counts = new Map<string, number>()
+
+  for (const post of posts) {
+    const section = post.data.section.trim()
+    counts.set(section, (counts.get(section) ?? 0) + 1)
+  }
+
+  return Array.from(counts.entries())
+    .map(([slug, count]) => ({
+      slug,
+      count,
+      label: formatSectionName(slug)
+    }))
+    .sort((left, right) => {
+      if (right.count !== left.count) {
+        return right.count - left.count
+      }
+
+      return left.label.localeCompare(right.label)
+    })
+}

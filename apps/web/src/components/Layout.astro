@@ -19,6 +19,8 @@ const {
   canonicalPath = '/',
   ogType = 'website'
 } = Astro.props
+
+const isHome = showHeader
 ---
 
 <!doctype html>
@@ -42,26 +44,41 @@ const {
     <title>{title}</title>
   </head>
   <body>
-    <section class="full-page">
-      {showHeader && (
-        <header>
-          <section class="container">
+    <header class="site-header">
+      <section class="container">
+        <div class="topbar">
+          <a class="brand" href="/">
+            <span class="brand-mark">耳</span>
+            <span class="brand-copy">
+              <strong>{siteConfig.title}</strong>
+              <small>kilerd.me</small>
+            </span>
+          </a>
+
+          <nav class="site-nav">
+            <a class:list={[isHome && 'is-active']} href="/">Blog</a>
+            {pages.map((page) => (
+              <a href={`/${page.data.path}`}>{page.title}</a>
+            ))}
+            <a href="/rss.xml">RSS</a>
+          </nav>
+        </div>
+
+        {showHeader && (
+          <div class="home-intro-bar">
+            <p class="home-kicker">Writing archive</p>
             <h1>{siteConfig.title}</h1>
             <p>{siteConfig.description}</p>
-            <nav>
-              <a href="/">首页</a>
-              {pages.map((page) => (
-                <a href={`/${page.data.path}`}>{page.title}</a>
-              ))}
-            </nav>
-          </section>
-        </header>
-      )}
+          </div>
+        )}
+      </section>
+    </header>
 
+    <main class="page-main">
       <slot />
-    </section>
+    </main>
 
-    <footer>
+    <footer class="site-footer">
       <section class="container">
         <p>
           自豪地使用 <a href="https://sonicjs.com">SonicJS</a> 与 <a href="https://astro.build">Astro</a> 运行。
