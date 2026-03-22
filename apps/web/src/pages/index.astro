@@ -9,16 +9,41 @@ import {
 } from '../lib/content'
 import { getPublishedPosts } from '../lib/sonic'
 
+const PAGE_SIZE = 10
 const allPosts = await getPublishedPosts()
 const posts = getArticlePosts(allPosts)
 const pages = getNavigationPages(allPosts)
+const rawPage = Astro.url.searchParams.get('page')
+const parsedPage = rawPage ? Number.parseInt(rawPage, 10) : 1
+const currentPage = Number.isFinite(parsedPage) && parsedPage > 0 ? parsedPage : 1
+const totalPages = Math.max(1, Math.ceil(posts.length / PAGE_SIZE))
+
+if (posts.length > 0 && currentPage > totalPages) {
+  return new Response('Not Found', {
+    status: 404,
+    statusText: 'Not Found'
+  })
+}
+
+const startIndex = (currentPage - 1) * PAGE_SIZE
+const paginatedPosts = posts.slice(startIndex, startIndex + PAGE_SIZE)
+const visiblePageCount = 5
+const halfWindow = Math.floor(visiblePageCount / 2)
+const windowStart = Math.max(1, Math.min(currentPage - halfWindow, totalPages - visiblePageCount + 1))
+const windowEnd = Math.min(totalPages, windowStart + visiblePageCount - 1)
+const pageNumbers = Array.from({ length: windowEnd - windowStart + 1 }, (_, index) => windowStart + index)
+const canonicalPath = currentPage === 1 ? '/' : `/?page=${currentPage}`
+
+function getPageHref(pageNumber: number) {
+  return pageNumber === 1 ? '/' : `/?page=${pageNumber}`
+}
 ---
 
-<Layout showHeader={true} pages={pages}>
+<Layout showHeader={true} pages={pages} canonicalPath={canonicalPath}>
   <section class="container home-shell">
-    {posts.length > 0 && (
+    {paginatedPosts.length > 0 && (
       <section class="story-list">
-        {posts.map((post) => (
+        {paginatedPosts.map((post) => (
           <article class:list={['post-row', !post.data.cover && 'post-row-text-only']}>
             {post.data.cover && (
               <a class="post-row-media" href={getPostHref(post)}>
@@ -37,6 +62,38 @@ const pages = getNavigationPages(allPosts)
           </article>
         ))}
       </section>
+    )}
+
+    {totalPages > 1 && (
+      <nav class="pagination" aria-label="Homepage pagination">
+        <a
+          class:list={['pagination-link', currentPage === 1 && 'is-disabled']}
+          href={currentPage === 1 ? undefined : getPageHref(currentPage - 1)}
+          aria-disabled={currentPage === 1}
+        >
+          Previous
+        </a>
+
+        <div class="pagination-pages">
+          {pageNumbers.map((pageNumber) => (
+            <a
+              class:list={['pagination-link', 'pagination-number', pageNumber === currentPage && 'is-current']}
+              href={getPageHref(pageNumber)}
+              aria-current={pageNumber === currentPage ? 'page' : undefined}
+            >
+              {pageNumber}
+            </a>
+          ))}
+        </div>
+
+        <a
+          class:list={['pagination-link', currentPage === totalPages && 'is-disabled']}
+          href={currentPage === totalPages ? undefined : getPageHref(currentPage + 1)}
+          aria-disabled={currentPage === totalPages}
+        >
+          Next
+        </a>
+      </nav>
     )}
   </section>
 </Layout>
