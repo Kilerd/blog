@@ -6,6 +6,7 @@ node_modules
 dist
 .wrangler
 .dev.vars
+apps/web/.dev.vars
 .env
 .env.local
 generated/content

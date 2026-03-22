@@ -1,19 +1,31 @@
 ---
 import { siteConfig } from '../lib/site'
 
+const runtimeEnv = (Astro.locals as { runtime?: { env?: Record<string, string | undefined> } }).runtime?.env
+const gitalkConfigValue = {
+  clientId: runtimeEnv?.GITALK_CLIENT_ID ?? siteConfig.gitalk.clientId,
+  clientSecret: runtimeEnv?.GITALK_CLIENT_SECRET ?? siteConfig.gitalk.clientSecret,
+  repo: runtimeEnv?.GITALK_REPO ?? siteConfig.gitalk.repo,
+  owner: runtimeEnv?.GITALK_OWNER ?? siteConfig.gitalk.owner,
+  admin:
+    runtimeEnv?.GITALK_ADMIN?.split(',')
+      .map((value) => value.trim())
+      .filter(Boolean) ?? siteConfig.gitalk.admin
+}
+
 const gitalkEnabled =
-  siteConfig.gitalk.clientId &&
-  siteConfig.gitalk.clientSecret &&
-  siteConfig.gitalk.repo &&
-  siteConfig.gitalk.owner &&
-  siteConfig.gitalk.admin.length > 0
+  gitalkConfigValue.clientId &&
+  gitalkConfigValue.clientSecret &&
+  gitalkConfigValue.repo &&
+  gitalkConfigValue.owner &&
+  gitalkConfigValue.admin.length > 0
 
 const gitalkConfig = JSON.stringify({
-  clientID: siteConfig.gitalk.clientId,
-  clientSecret: siteConfig.gitalk.clientSecret,
-  repo: siteConfig.gitalk.repo,
-  owner: siteConfig.gitalk.owner,
-  admin: siteConfig.gitalk.admin,
+  clientID: gitalkConfigValue.clientId,
+  clientSecret: gitalkConfigValue.clientSecret,
+  repo: gitalkConfigValue.repo,
+  owner: gitalkConfigValue.owner,
+  admin: gitalkConfigValue.admin,
   distractionFreeMode: false
 })
 ---
