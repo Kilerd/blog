@@ -37,13 +37,16 @@ export default {
         maxLength: 80
       },
       excerpt: {
-        type: 'markdown',
-        title: 'Excerpt'
+        type: 'textarea',
+        title: 'Excerpt',
+        helpText: 'Optional summary in Markdown. This shows on the homepage and RSS.'
       },
       content: {
-        type: 'markdown',
+        type: 'richtext',
         title: 'Content',
-        required: true
+        required: true,
+        widget: 'easy-mdx',
+        helpText: 'Write Markdown here. SonicJS should open the EasyMDE editor for this field.'
       },
       tags: {
         type: 'string',
