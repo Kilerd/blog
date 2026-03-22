@@ -1,0 +1,21 @@
+---
+import Layout from '../components/Layout.astro'
+import { getArticlePosts, getExcerptHtml, getNavigationPages, getPostHref } from '../lib/content'
+import { getPublishedPosts } from '../lib/sonic'
+
+const allPosts = await getPublishedPosts()
+const posts = getArticlePosts(allPosts)
+const pages = getNavigationPages(allPosts)
+---
+
+<Layout showHeader={true} pages={pages}>
+  <section class="container">
+    {posts.map((post) => (
+      <section class="article">
+        <p class="mate">{new Date(post.data.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+        <a class="title" href={getPostHref(post)}>{post.title}</a>
+        {post.data.excerpt && <section class="yue desc" set:html={getExcerptHtml(post)} />}
+      </section>
+    ))}
+  </section>
+</Layout>

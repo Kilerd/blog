@@ -1,2 +1,11 @@
 public
 .DS_Store
+node_modules
+.pnpm-store
+.astro
+dist
+.wrangler
+.dev.vars
+.env
+.env.local
+generated/content

@@ -1,0 +1,35 @@
+---
+import { siteConfig } from '../lib/site'
+
+const gitalkEnabled =
+  siteConfig.gitalk.clientId &&
+  siteConfig.gitalk.clientSecret &&
+  siteConfig.gitalk.repo &&
+  siteConfig.gitalk.owner &&
+  siteConfig.gitalk.admin.length > 0
+
+const gitalkConfig = JSON.stringify({
+  clientID: siteConfig.gitalk.clientId,
+  clientSecret: siteConfig.gitalk.clientSecret,
+  repo: siteConfig.gitalk.repo,
+  owner: siteConfig.gitalk.owner,
+  admin: siteConfig.gitalk.admin,
+  distractionFreeMode: false
+})
+---
+
+{gitalkEnabled && (
+  <>
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css" />
+    <script is:inline src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <div id="gitalk-container"></div>
+    <script is:inline define:vars={{ gitalkConfig }}>
+      const parsedConfig = JSON.parse(gitalkConfig)
+      const gitalk = new Gitalk({
+        ...parsedConfig,
+        id: location.pathname
+      })
+      gitalk.render('gitalk-container')
+    </script>
+  </>
+)}

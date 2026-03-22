@@ -1,0 +1,88 @@
+---
+export const prerender = false
+
+import Comments from '../components/Comments.astro'
+import Layout from '../components/Layout.astro'
+import { findPostByPath, getDescription, getNavigationPages } from '../lib/content'
+import { renderMarkdownToHtml } from '../lib/markdown'
+import { getPublishedPosts } from '../lib/sonic'
+
+const allPosts = await getPublishedPosts()
+const pages = getNavigationPages(allPosts)
+const currentPath = Astro.params.slug ?? ''
+const post = findPostByPath(allPosts, currentPath)
+
+if (!post) {
+  return new Response('Not Found', {
+    status: 404,
+    statusText: 'Not Found'
+  })
+}
+
+const contentHtml = renderMarkdownToHtml(post.data.content)
+const description = getDescription(post)
+const canonicalPath = `/${post.data.path}`
+---
+
+<Layout
+  title={post.title}
+  description={description}
+  pages={pages}
+  canonicalPath={canonicalPath}
+  ogType="article"
+>
+  <section class="container">
+    <section class="single article">
+      {post.data.cover && <img src={post.data.cover} alt="" style="width:100%" />}
+      <h2
+        style={post.data.cover
+          ? `margin-top:-100px; display:inline-block; padding:3px 15px; background:${post.data.headerBgColor ?? 'black'}; color:${post.data.headerColor ?? 'white'}`
+          : undefined}
+      >
+        {post.title}
+      </h2>
+      <p
+        class="mate"
+        style={post.data.cover
+          ? `padding:3px 15px; color:${post.data.headerColor ?? 'white'}`
+          : undefined}
+      >
+        {new Date(post.data.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+      </p>
+      <section class="content yue line-numbers">
+        <script
+          is:inline
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9147137464451642"
+          crossorigin="anonymous"></script>
+        <ins
+          class="adsbygoogle"
+          style="display:block"
+          data-ad-client="ca-pub-9147137464451642"
+          data-ad-slot="7468657715"
+          data-ad-format="auto"
+          data-full-width-responsive="true"></ins>
+        <script is:inline>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+        <Fragment set:html={contentHtml} />
+        <script
+          is:inline
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9147137464451642"
+          crossorigin="anonymous"></script>
+        <ins
+          class="adsbygoogle"
+          style="display:block"
+          data-ad-client="ca-pub-9147137464451642"
+          data-ad-slot="6925468905"
+          data-ad-format="auto"
+          data-full-width-responsive="true"></ins>
+        <script is:inline>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+      </section>
+    </section>
+    <Comments />
+  </section>
+</Layout>

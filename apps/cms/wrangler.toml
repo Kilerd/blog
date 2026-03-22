@@ -1,0 +1,25 @@
+name = "kilerd-blog-cms"
+main = "src/index.ts"
+compatibility_date = "2026-03-17"
+compatibility_flags = ["nodejs_compat"]
+workers_dev = true
+
+[[d1_databases]]
+binding = "DB"
+database_name = "kilerd-blog-cms"
+database_id = "003199ec-d540-414d-a842-5bc999ce3541"
+migrations_dir = "./node_modules/@sonicjs-cms/core/migrations"
+
+[[r2_buckets]]
+binding = "BUCKET"
+bucket_name = "kilerd-blog-media"
+
+[vars]
+ENVIRONMENT = "development"
+
+[env.production]
+name = "kilerd-blog-cms-production"
+vars = { ENVIRONMENT = "production" }
+
+[observability]
+enabled = true

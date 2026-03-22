@@ -1,0 +1,75 @@
+---
+import { absoluteUrl, siteConfig } from '../lib/site'
+import type { PostRecord } from '../lib/sonic'
+
+interface Props {
+  title?: string
+  description?: string
+  pages?: PostRecord[]
+  showHeader?: boolean
+  canonicalPath?: string
+  ogType?: 'website' | 'article'
+}
+
+const {
+  title = siteConfig.title,
+  description = siteConfig.description,
+  pages = [],
+  showHeader = false,
+  canonicalPath = '/',
+  ogType = 'website'
+} = Astro.props
+---
+
+<!doctype html>
+<html lang="zh-Hans">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <meta name="keywords" content={siteConfig.keywords.join(', ')} />
+    <meta name="description" content={description} />
+    <meta name="monetag" content={siteConfig.monetag} />
+    <meta name="google-adsense-account" content={siteConfig.adsenseAccount} />
+    <meta property="og:site_name" content={siteConfig.title} />
+    <meta property="og:url" content={absoluteUrl(canonicalPath)} />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <link rel="canonical" href={absoluteUrl(canonicalPath)} />
+    <link rel="alternate" type="application/rss+xml" title={siteConfig.title} href="/rss.xml" />
+    <link rel="stylesheet" href="/statics/style.css" />
+    <title>{title}</title>
+  </head>
+  <body>
+    <section class="full-page">
+      {showHeader && (
+        <header>
+          <section class="container">
+            <h1>{siteConfig.title}</h1>
+            <p>{siteConfig.description}</p>
+            <nav>
+              <a href="/">首页</a>
+              {pages.map((page) => (
+                <a href={`/${page.data.path}`}>{page.title}</a>
+              ))}
+            </nav>
+          </section>
+        </header>
+      )}
+
+      <slot />
+    </section>
+
+    <footer>
+      <section class="container">
+        <p>
+          自豪地使用 <a href="https://sonicjs.com">SonicJS</a> 与 <a href="https://astro.build">Astro</a> 运行。
+        </p>
+      </section>
+    </footer>
+
+    <script is:inline src="/statics/prism.js" type="text/javascript"></script>
+    <script is:inline defer src={siteConfig.umamiSrc} data-website-id={siteConfig.umamiWebsiteId}></script>
+  </body>
+</html>

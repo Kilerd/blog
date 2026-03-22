@@ -1,0 +1,23 @@
+{
+  "name": "kilerd-blog",
+  "private": true,
+  "packageManager": "pnpm@10.6.3",
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "build:content": "tsx scripts/build-content-index.ts",
+    "import:content": "tsx scripts/import-to-sonicjs.ts",
+    "dev:cms": "pnpm --filter @kilerd/cms dev",
+    "dev:web": "pnpm --filter @kilerd/web dev",
+    "build:web": "pnpm --filter @kilerd/web build",
+    "check:web": "pnpm --filter @kilerd/web check",
+    "cms:db:migrate": "pnpm --filter @kilerd/cms db:migrate",
+    "cms:db:migrate:local": "pnpm --filter @kilerd/cms db:migrate:local"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  }
+}
