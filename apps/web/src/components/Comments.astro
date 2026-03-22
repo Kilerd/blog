@@ -24,10 +24,36 @@ const gitalkConfig = JSON.stringify({
     <script is:inline src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
     <div id="gitalk-container"></div>
     <script is:inline define:vars={{ gitalkConfig }}>
+      function normalizePath(pathname) {
+        const trimmed = pathname.replace(/\/+$/, '')
+        return trimmed === '' ? '/' : trimmed
+      }
+
+      function hashPath(pathname) {
+        let hash = 5381
+
+        for (const char of pathname) {
+          hash = (hash * 33) ^ char.charCodeAt(0)
+        }
+
+        return (hash >>> 0).toString(16)
+      }
+
+      function createIssueId(pathname) {
+        const normalized = normalizePath(pathname)
+
+        if (normalized.length <= 50) {
+          return normalized
+        }
+
+        const prefix = normalized.slice(0, 36).replace(/[^a-zA-Z0-9/_-]/g, '-')
+        return `${prefix}-${hashPath(normalized)}`.slice(0, 50)
+      }
+
       const parsedConfig = JSON.parse(gitalkConfig)
       const gitalk = new Gitalk({
         ...parsedConfig,
-        id: location.pathname
+        id: createIssueId(location.pathname)
       })
       gitalk.render('gitalk-container')
     </script>
