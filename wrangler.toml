@@ -1,0 +1,16 @@
+name = "kilerd-blog-web"
+compatibility_date = "2026-03-17"
+keep_vars = true
+
+[vars]
+GITALK_REPO = "blog"
+GITALK_OWNER = "Kilerd"
+GITALK_ADMIN = "Kilerd"
+PUBLIC_KEYSTATIC_GITHUB_APP_SLUG = "kilerd-keystatic"
+
+[secrets]
+required = [
+  "KEYSTATIC_GITHUB_CLIENT_ID",
+  "KEYSTATIC_GITHUB_CLIENT_SECRET",
+  "KEYSTATIC_SECRET",
+]

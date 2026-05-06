@@ -1,9 +1,0 @@
-{
-  "name": "kilerd-blog-web",
-  "compatibility_date": "2026-03-17",
-  "vars": {
-    "GITALK_REPO": "blog",
-    "GITALK_OWNER": "Kilerd",
-    "GITALK_ADMIN": "Kilerd"
-  }
-}
