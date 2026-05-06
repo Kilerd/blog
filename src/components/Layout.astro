@@ -1,4 +1,5 @@
 ---
+import '../styles/global.css'
 import { absoluteUrl, siteConfig } from '../lib/site'
 import type { PostRecord } from '../lib/posts'
 
@@ -21,6 +22,8 @@ const {
 } = Astro.props
 
 const isHome = showHeader
+const navLinkClass =
+  'inline-flex min-h-9 items-center rounded-lg border border-transparent px-3 text-sm font-medium text-zinc-600 transition hover:border-zinc-200 hover:bg-white hover:text-zinc-950'
 ---
 
 <!doctype html>
@@ -40,40 +43,43 @@ const isHome = showHeader
     <meta property="og:description" content={description} />
     <link rel="canonical" href={absoluteUrl(canonicalPath)} />
     <link rel="alternate" type="application/rss+xml" title={siteConfig.title} href="/rss.xml" />
-    <link rel="stylesheet" href="/vendors/han/han.min.css" />
-    <link rel="stylesheet" href="/statics/style.css" />
+    <link rel="stylesheet" href="/vendors/han/han.layer.css" />
     <title>{title}</title>
   </head>
-  <body>
-    <header class="site-header">
-      <section class="container">
-        <div class="topbar">
-          <a class="brand" href="/">
-            <span class="brand-mark">耳</span>
-            <span class="brand-copy">
-              <strong>{siteConfig.title}</strong>
-              <small>kilerd.me</small>
-            </span>
+  <body class="min-h-screen bg-zinc-50 font-sans text-zinc-950 antialiased">
+    <header class="sticky top-0 z-20 border-b border-zinc-200/80 bg-zinc-50/90 backdrop-blur-xl">
+      <section class="mx-auto w-[min(1120px,calc(100%_-_32px))] sm:w-[min(1120px,calc(100%_-_64px))]">
+        <div class="flex min-h-16 flex-col justify-center gap-3 py-3 md:flex-row md:items-center md:justify-between md:py-0">
+          <a class="inline-flex w-fit items-center text-zinc-950 no-underline" href="/">
+            <strong class="text-[15px] font-semibold leading-5">{siteConfig.title}</strong>
           </a>
 
-          <nav class="site-nav">
-            <a class:list={[isHome && 'is-active']} href="/">Blog</a>
+          <nav class="flex flex-wrap items-center gap-1">
+            <a
+              class:list={[
+                navLinkClass,
+                isHome && 'border-indigo-200 bg-white text-zinc-950 shadow-sm shadow-zinc-200/70'
+              ]}
+              href="/"
+            >
+              Blog
+            </a>
             {pages.map((page) => (
-              <a href={`/${page.data.path}`}>{page.title}</a>
+              <a class={navLinkClass} href={`/${page.data.path}`}>{page.title}</a>
             ))}
-            <a href="/rss.xml">RSS</a>
+            <a class={navLinkClass} href="/rss.xml">RSS</a>
           </nav>
         </div>
       </section>
     </header>
 
-    <main class="page-main">
+    <main class="py-8 md:py-12">
       <slot />
     </main>
 
-    <footer class="site-footer">
-      <section class="container">
-        <p>
+    <footer class="border-t border-zinc-200 bg-zinc-50 py-10">
+      <section class="mx-auto w-[min(1120px,calc(100%_-_32px))] text-center text-xs text-zinc-500 sm:w-[min(1120px,calc(100%_-_64px))]">
+        <p class="[&_a]:font-medium [&_a]:text-zinc-700 [&_a]:no-underline hover:[&_a]:text-indigo-600">
           自豪地使用 <a href="https://keystatic.com">Keystatic</a> 与 <a href="https://astro.build">Astro</a> 运行。
         </p>
       </section>

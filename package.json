@@ -26,8 +26,11 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.8",
+    "@tailwindcss/typography": "^0.5.19",
+    "@tailwindcss/vite": "^4.2.4",
     "@types/markdown-it": "^14.1.2",
     "@types/node": "^24.10.1",
+    "tailwindcss": "^4.2.4",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3"
   }
