@@ -6,11 +6,11 @@
   "scripts": {
     "migrate:legacy-content": "tsx scripts/migrate-keystatic-content.ts",
     "dev": "KEYSTATIC_DEV=true astro dev",
-    "build": "SKIP_KEYSTATIC=true astro build",
+    "build": "astro build",
     "deploy": "wrangler deploy --config dist/server/wrangler.json",
     "deploy:preview": "wrangler versions upload --config dist/server/wrangler.json",
     "preview": "astro preview",
-    "check": "SKIP_KEYSTATIC=true astro check"
+    "check": "astro check"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^13.1.3",

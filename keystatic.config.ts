@@ -2,7 +2,8 @@ import { collection, config, fields } from '@keystatic/core'
 
 export default config({
   storage: {
-    kind: 'local'
+    kind: 'github',
+    repo: 'Kilerd/blog'
   },
   ui: {
     brand: {
