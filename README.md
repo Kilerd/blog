@@ -1,10 +1,10 @@
-# kilerd blog migration
+# kilerd blog
 
-This repository now contains a Cloudflare-native blog stack:
+This repository contains an Astro blog with file-backed content editing through Keystatic.
 
-- `apps/cms`: SonicJS on Cloudflare Workers + D1 + R2
-- `apps/web`: Astro SSR on Cloudflare
-- `data/`: legacy Staple Markdown source kept intact for migration and backup
+- `src/content/posts`: Markdown posts and pages managed by Keystatic
+- `keystatic.config.ts`: Keystatic schema and local storage configuration
+- `data/`: legacy Staple Markdown source retained as a backup and migration source
 
 ## Local setup
 
@@ -14,48 +14,41 @@ This repository now contains a Cloudflare-native blog stack:
    pnpm install
    ```
 
-2. Create your CMS database and media bucket:
+2. Start the Astro frontend:
 
    ```bash
-   cd apps/cms
-   pnpm wrangler d1 create kilerd-blog-cms
-   pnpm wrangler r2 bucket create kilerd-blog-media
+   cp .env.example .env
+   pnpm dev
    ```
 
-3. Put the returned `database_id` into [apps/cms/wrangler.toml](/Users/chenxin/Projects/blog/apps/cms/wrangler.toml).
+3. Open the Keystatic Admin UI:
 
-4. Run local migrations:
-
-   ```bash
-   pnpm cms:db:migrate:local
+   ```text
+   http://127.0.0.1:4321/keystatic
    ```
 
-5. Start the CMS once so SonicJS can auto-sync the `posts` collection:
+## Content
 
-   ```bash
-   pnpm dev:cms
-   ```
+Keystatic stores posts as Markdown files in `src/content/posts`. Nested paths are supported, so an article with `path: "daily/example"` can live at `src/content/posts/daily/example.md` while keeping the public URL `/daily/example`. The frontend imports these files directly at build/runtime and parses their YAML frontmatter.
 
-6. In another shell, import the legacy content:
+The old Staple content under `data/` is no longer the active content source. To re-run the one-time legacy migration into Keystatic Markdown, use:
 
-   ```bash
-   pnpm import:content
-   ```
+```bash
+pnpm migrate:legacy-content
+```
 
-7. Start the Astro frontend:
+If `src/content/posts` already exists, the migration refuses to overwrite it. Use `pnpm migrate:legacy-content -- --force` only when you intentionally want to replace the Keystatic content from the legacy source.
 
-   ```bash
-   cp apps/web/.env.example apps/web/.env
-   pnpm dev:web
-   ```
+## Commands
 
-## What was preserved
-
-- Legacy URIs stay the same because each post stores its original `url` front matter as a `path` field.
-- Existing images continue to work from `apps/web/public/statics/`.
-- Old Markdown source remains under `data/` and is also exported to `generated/content/posts.json` during migration.
+```bash
+pnpm dev
+pnpm build
+pnpm check
+```
 
 ## Notes
 
-- Gitalk is now opt-in via `apps/web/.env` instead of being hard-coded into the page.
-- The frontend expects the CMS API at `SONICJS_API_URL`; the default local value is `http://127.0.0.1:8787`.
+- Legacy URLs stay the same because each post keeps its original `url` value as a `path` frontmatter field.
+- Existing images continue to work from `public/statics/`.
+- Gitalk configuration is read from `.env` / Cloudflare runtime environment variables.

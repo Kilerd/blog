@@ -1,0 +1,78 @@
+---
+import { siteConfig } from '../lib/site'
+
+interface Props {
+  issueId?: string
+  issueTitle?: string
+}
+
+const { issueId = '/', issueTitle } = Astro.props
+const runtimeEnv =
+  (Astro.locals as { runtime?: { env?: Record<string, string | undefined> } }).runtime?.env ??
+  (import.meta.env as Record<string, string | undefined>)
+
+function normalizeIssueId(pathname: string) {
+  const trimmed = pathname.replace(/^\/+|\/+$/g, '')
+
+  if (trimmed === '') {
+    return '/'
+  }
+
+  const legacyPath = `/${trimmed}/`
+
+  if (legacyPath.length <= 50) {
+    return legacyPath
+  }
+
+  let hash = 5381
+
+  for (const char of legacyPath) {
+    hash = (hash * 33) ^ char.charCodeAt(0)
+  }
+
+  const prefix = legacyPath.slice(0, 36).replace(/[^a-zA-Z0-9/_-]/g, '-')
+  return `${prefix}-${(hash >>> 0).toString(16)}`.slice(0, 50)
+}
+
+const gitalkConfigValue = {
+  clientId: runtimeEnv.GITALK_CLIENT_ID ?? siteConfig.gitalk.clientId,
+  clientSecret: runtimeEnv.GITALK_CLIENT_SECRET ?? siteConfig.gitalk.clientSecret,
+  repo: runtimeEnv.GITALK_REPO ?? siteConfig.gitalk.repo,
+  owner: runtimeEnv.GITALK_OWNER ?? siteConfig.gitalk.owner,
+  admin:
+    runtimeEnv.GITALK_ADMIN?.split(',')
+      .map((value) => value.trim())
+      .filter(Boolean) ?? siteConfig.gitalk.admin
+}
+
+const gitalkEnabled =
+  gitalkConfigValue.clientId &&
+  gitalkConfigValue.clientSecret &&
+  gitalkConfigValue.repo &&
+  gitalkConfigValue.owner &&
+  gitalkConfigValue.admin.length > 0
+
+const gitalkConfig = JSON.stringify({
+  clientID: gitalkConfigValue.clientId,
+  clientSecret: gitalkConfigValue.clientSecret,
+  repo: gitalkConfigValue.repo,
+  owner: gitalkConfigValue.owner,
+  admin: gitalkConfigValue.admin,
+  id: normalizeIssueId(issueId),
+  title: issueTitle,
+  distractionFreeMode: false
+})
+---
+
+{gitalkEnabled && (
+  <>
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css" />
+    <script is:inline src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <div id="gitalk-container"></div>
+    <script is:inline define:vars={{ gitalkConfig }}>
+      const parsedConfig = JSON.parse(gitalkConfig)
+      const gitalk = new Gitalk(parsedConfig)
+      gitalk.render('gitalk-container')
+    </script>
+  </>
+)}

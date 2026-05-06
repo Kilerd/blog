@@ -1,18 +1,12 @@
 {
-  "compilerOptions": {
-    "target": "ES2022",
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
-    "strict": true,
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "skipLibCheck": true,
-    "resolveJsonModule": true,
-    "types": [
-      "node"
-    ]
-  },
+  "extends": "astro/tsconfigs/strict",
   "include": [
+    ".astro/types.d.ts",
+    "**/*",
     "scripts/**/*.ts"
+  ],
+  "exclude": [
+    "dist",
+    "public"
   ]
 }

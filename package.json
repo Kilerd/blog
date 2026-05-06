@@ -1,21 +1,32 @@
 {
   "name": "kilerd-blog",
   "private": true,
+  "type": "module",
   "packageManager": "pnpm@10.6.3",
-  "workspaces": [
-    "apps/*"
-  ],
   "scripts": {
-    "build:content": "tsx scripts/build-content-index.ts",
-    "import:content": "tsx scripts/import-to-sonicjs.ts",
-    "dev:cms": "pnpm --filter @kilerd/cms dev",
-    "dev:web": "pnpm --filter @kilerd/web dev",
-    "build:web": "pnpm --filter @kilerd/web build",
-    "check:web": "pnpm --filter @kilerd/web check",
-    "cms:db:migrate": "pnpm --filter @kilerd/cms db:migrate",
-    "cms:db:migrate:local": "pnpm --filter @kilerd/cms db:migrate:local"
+    "migrate:legacy-content": "tsx scripts/migrate-keystatic-content.ts",
+    "dev": "KEYSTATIC_DEV=true astro dev",
+    "build": "SKIP_KEYSTATIC=true astro build",
+    "preview": "astro preview",
+    "check": "SKIP_KEYSTATIC=true astro check"
+  },
+  "dependencies": {
+    "@astrojs/cloudflare": "^13.1.3",
+    "@astrojs/markdoc": "^1.0.4",
+    "@astrojs/react": "^5.0.4",
+    "@astrojs/rss": "^4.0.17",
+    "@keystatic/astro": "^5.0.6",
+    "@keystatic/core": "^0.5.50",
+    "astro": "^6.0.8",
+    "han-css": "^3.3.0",
+    "markdown-it": "^14.1.0",
+    "react": "^19.2.5",
+    "react-dom": "^19.2.5",
+    "yaml": "^2.8.4"
   },
   "devDependencies": {
+    "@astrojs/check": "^0.9.8",
+    "@types/markdown-it": "^14.1.2",
     "@types/node": "^24.10.1",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3"
