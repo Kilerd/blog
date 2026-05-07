@@ -7,7 +7,7 @@ tags: []
 publishedAt: "2026-03-22T00:00:00.000000+08:00"
 isPage: false
 pageIndex: 999
-cover: "https://cms.kilerd.me/files/uploads/c8451cac-7207-4bfc-a87a-6b9f7c9735e2.png"
+cover: "https://pictures.kilerd.me/c8451cac-7207-4bfc-a87a-6b9f7c9735e2.png"
 headerBgColor: ""
 headerColor: ""
 sourceFile: "https://kilerd.me/thief-of-gpu"
@@ -17,7 +17,7 @@ sourceFile: "https://kilerd.me/thief-of-gpu"
 
 3月20日早上，出门跑步回来就发现服务出现了诡异的异常：LLM推理的TTFT从常规的220ms骤降至80ms，足足少了150ms。与此同时，TTS接口开始返回空音频流。
 
-![](https://cms.kilerd.me/files/uploads/38907898-3486-43c5-894c-a3c34da60658.jpeg)
+![](https://pictures.kilerd.me/38907898-3486-43c5-894c-a3c34da60658.jpeg)
 
 于是我进入了oncall环节。理论上我们的新模型已经上线快两周了，BUG都修复得差不多了，不应该无缘无故出故障。我的第一反应是：机器坏了。
 
@@ -25,15 +25,15 @@ sourceFile: "https://kilerd.me/thief-of-gpu"
 
 接下来SSH进入推理Pod，调用`nvidia-smi`查看显卡工作状态，发现部分Pod的`nvidia-smi`命令无法获取显卡信息。终于，问题定位到了：**部分机器出现大规模Pod卡在terminating状态，无法正常退出。**
 
-![](https://cms.kilerd.me/files/uploads/19fdb1fa-4b70-4b75-816a-863ec5b81d3f.png)
+![](https://pictures.kilerd.me/19fdb1fa-4b70-4b75-816a-863ec5b81d3f.png)
 
 当时还不清楚为什么会卡住。由于Pod内显示CUDA异常，我初步判定为宿主机损坏，快速drain掉故障节点，并强制清理卡顿的Pod，服务随即恢复正常。
 
-![](https://cms.kilerd.me/files/uploads/5619af65-df17-4354-91cd-32246a7d8491.png)
+![](https://pictures.kilerd.me/5619af65-df17-4354-91cd-32246a7d8491.png)
 
 ## 诡异的TTFT波动
 
-![](https://cms.kilerd.me/files/uploads/c8451cac-7207-4bfc-a87a-6b9f7c9735e2.png)
+![](https://pictures.kilerd.me/c8451cac-7207-4bfc-a87a-6b9f7c9735e2.png)
 
 服务恢复正常后，TTFT仍然波动剧烈。当时并非业务高峰期，进入Pod观察后发现：大部分请求能在150ms内完成首个音频chunk的推理，但有小部分请求需要2000-3000ms。
 
