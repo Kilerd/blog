@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="520" viewBox="0 0 960 520" role="img" aria-labelledby="t d" font-family="-apple-system, BlinkMacSystemFont, &#x27;PingFang SC&#x27;, &#x27;Hiragino Sans GB&#x27;, &#x27;Noto Sans CJK SC&#x27;, &#x27;Microsoft YaHei&#x27;, &#x27;Segoe UI&#x27;, sans-serif">
+<title id="t">最慢 1% 请求的时间瀑布</title>
+<desc id="d">七段依次为：客户端到 Prefill 3.2 ms，Prefill 接收与调度准入 86 ms，Prefill 前向 58 ms，KV 传输链 21 ms，Decode 接入 21.5 ms，Decode 前 9 步 200 ms，输出转发 2.5 ms，合计 392 ms。</desc>
+<rect width="960" height="520" fill="#fcfcfb"/>
+<text x="24.0" y="34.0" font-size="18" fill="#0b0b0b" text-anchor="start" font-weight="600">最慢的 1% 请求，时间都花在哪</text>
+<text x="24.0" y="58.0" font-size="13" fill="#52514e" text-anchor="start" font-weight="400">B300 1P1D，线上流量回放（7.8 万请求）。稳态下最慢 1% 请求到第 10 个 token 的分段均值，合计 392 ms。</text>
+<line x1="370.0" y1="92.0" x2="370.0" y2="450.0" stroke="#c3c2b7" stroke-width="1"/>
+<text x="370.0" y="468.0" font-size="12" fill="#898781" text-anchor="middle" font-weight="400">0</text>
+<line x1="502.5" y1="92.0" x2="502.5" y2="450.0" stroke="#e1e0d9" stroke-width="1"/>
+<text x="502.5" y="468.0" font-size="12" fill="#898781" text-anchor="middle" font-weight="400">100</text>
+<line x1="635.0" y1="92.0" x2="635.0" y2="450.0" stroke="#e1e0d9" stroke-width="1"/>
+<text x="635.0" y="468.0" font-size="12" fill="#898781" text-anchor="middle" font-weight="400">200</text>
+<line x1="767.5" y1="92.0" x2="767.5" y2="450.0" stroke="#e1e0d9" stroke-width="1"/>
+<text x="767.5" y="468.0" font-size="12" fill="#898781" text-anchor="middle" font-weight="400">300</text>
+<line x1="900.0" y1="92.0" x2="900.0" y2="450.0" stroke="#e1e0d9" stroke-width="1"/>
+<text x="900.0" y="468.0" font-size="12" fill="#898781" text-anchor="middle" font-weight="400">400</text>
+<text x="900.0" y="486.0" font-size="12" fill="#898781" text-anchor="end" font-weight="400">ms</text>
+<text x="24.0" y="122.0" font-size="14" fill="#0b0b0b" text-anchor="start" font-weight="600">客户端 → LB → Prefill</text>
+<text x="24.0" y="140.0" font-size="12" fill="#898781" text-anchor="start" font-weight="400">网络 + LB 解析和转发</text>
+<rect x="370.0" y="116.0" width="4.2" height="18.0" rx="2.1200000000000045" fill="#2a78d6"/>
+<text x="380.2" y="129.0" font-size="12" fill="#52514e" text-anchor="start" font-weight="400">3.2 ms</text>
+<text x="24.0" y="172.0" font-size="14" fill="#0b0b0b" text-anchor="start" font-weight="600">Prefill 接收与调度准入</text>
+<text x="24.0" y="190.0" font-size="12" fill="#898781" text-anchor="start" font-weight="400">交给调度器、反序列化、排队；后来用紧凑数组传 prompt</text>
+<line x1="374.2" y1="134.0" x2="374.2" y2="166.0" stroke="#c3c2b7" stroke-width="1"/>
+<rect x="374.2" y="166.0" width="114.1" height="18.0" rx="3" fill="#2a78d6"/>
+<text x="494.3" y="179.0" font-size="12" fill="#52514e" text-anchor="start" font-weight="400">86 ms</text>
+<text x="24.0" y="222.0" font-size="14" fill="#0b0b0b" text-anchor="start" font-weight="600">Prefill 前向</text>
+<text x="24.0" y="240.0" font-size="12" fill="#898781" text-anchor="start" font-weight="400">含冷热请求同批造成的队头阻塞</text>
+<line x1="488.3" y1="184.0" x2="488.3" y2="216.0" stroke="#c3c2b7" stroke-width="1"/>
+<rect x="488.3" y="216.0" width="77.1" height="18.0" rx="3" fill="#2a78d6"/>
+<text x="571.4" y="229.0" font-size="12" fill="#52514e" text-anchor="start" font-weight="400">58 ms</text>
+<text x="24.0" y="272.0" font-size="14" fill="#0b0b0b" text-anchor="start" font-weight="600">KV 传输链</text>
+<text x="24.0" y="290.0" font-size="12" fill="#898781" text-anchor="start" font-weight="400">等 D 的页表、发送排队、拷贝、通知</text>
+<line x1="565.4" y1="234.0" x2="565.4" y2="266.0" stroke="#c3c2b7" stroke-width="1"/>
+<rect x="565.4" y="266.0" width="27.8" height="18.0" rx="3" fill="#2a78d6"/>
+<text x="599.3" y="279.0" font-size="12" fill="#52514e" text-anchor="start" font-weight="400">21 ms</text>
+<text x="24.0" y="322.0" font-size="14" fill="#0b0b0b" text-anchor="start" font-weight="600">Decode 接入</text>
+<text x="24.0" y="340.0" font-size="12" fill="#898781" text-anchor="start" font-weight="400">发现传输完成、提交、等下一步才入批</text>
+<line x1="593.3" y1="284.0" x2="593.3" y2="316.0" stroke="#c3c2b7" stroke-width="1"/>
+<rect x="593.3" y="316.0" width="28.5" height="18.0" rx="3" fill="#2a78d6"/>
+<text x="627.8" y="329.0" font-size="12" fill="#52514e" text-anchor="start" font-weight="400">22 ms</text>
+<text x="24.0" y="372.0" font-size="14" fill="#0b0b0b" text-anchor="start" font-weight="600">Decode 前 9 步</text>
+<text x="24.0" y="390.0" font-size="12" fill="#898781" text-anchor="start" font-weight="400">大头；每步 GPU + 主机时间，后来开了 overlap</text>
+<line x1="621.8" y1="334.0" x2="621.8" y2="366.0" stroke="#c3c2b7" stroke-width="1"/>
+<rect x="621.8" y="366.0" width="264.5" height="18.0" rx="3" fill="#2a78d6"/>
+<text x="892.2" y="379.0" font-size="12" fill="#52514e" text-anchor="start" font-weight="400">200 ms</text>
+<text x="24.0" y="422.0" font-size="14" fill="#0b0b0b" text-anchor="start" font-weight="600">Decode 输出 → LB → 客户端</text>
+<text x="24.0" y="440.0" font-size="12" fill="#898781" text-anchor="start" font-weight="400">第 10 个 token 的转发</text>
+<line x1="886.2" y1="384.0" x2="886.2" y2="416.0" stroke="#c3c2b7" stroke-width="1"/>
+<rect x="886.2" y="416.0" width="3.3" height="18.0" rx="1.65625" fill="#2a78d6"/>
+<text x="895.5" y="429.0" font-size="12" fill="#52514e" text-anchor="start" font-weight="400">2.5 ms</text>
+<text x="24.0" y="506.0" font-size="12" fill="#898781" text-anchor="start" font-weight="400">各段首尾相接、没有空隙，加起来等于客户端实测时间。突发时最慢 1%（按首 token）里，Prefill 调度一项就占 786 ms 中的 501 ms。</text>
+</svg>

@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="700" viewBox="0 0 960 700" role="img" aria-labelledby="t d" font-family="-apple-system, BlinkMacSystemFont, &#x27;PingFang SC&#x27;, &#x27;Hiragino Sans GB&#x27;, &#x27;Noto Sans CJK SC&#x27;, &#x27;Microsoft YaHei&#x27;, &#x27;Segoe UI&#x27;, sans-serif">
+<title id="t">硬件约束：同机与跨机的 KV 传输</title>
+<desc id="d">5090 集群：机内 PCIe P2P 约 50 GB/s，搬 2048 行 KV 5.6 ms；跨机 25 GbE 约 3 GB/s，104 ms；没有 NVLink，没有 GPUDirect RDMA。B300 机器：机内 NVLink 0.54 ms；跨机只能走约 3.4 GB/s 的 Pod 网络，85 ms；CX-8 网卡没接线，RoCE 没暴露给 Pod。</desc>
+<rect width="960" height="700" fill="#fcfcfb"/>
+<text x="24.0" y="34.0" font-size="18" fill="#0b0b0b" text-anchor="start" font-weight="600">我们手里的硬件：同机快，跨机慢一到两个数量级</text>
+<text x="24.0" y="58.0" font-size="13" fill="#52514e" text-anchor="start" font-weight="400">延迟都是搬 2048 行 KV（一个 2k token 的 prompt，约 288 MiB）的实测 p50。</text>
+<rect x="24.0" y="80.0" width="440.0" height="380.0" rx="10" fill="#f4f4f1"/>
+<text x="40.0" y="106.0" font-size="15" fill="#0b0b0b" text-anchor="start" font-weight="600">RTX 5090 集群</text>
+<rect x="40.0" y="126.0" width="408.0" height="110.0" rx="8" fill="#ffffff" stroke="#d6d5ce" stroke-width="1"/>
+<text x="52.0" y="146.0" font-size="12" fill="#898781" text-anchor="start" font-weight="400">节点 A（8 卡，画了 4 张）</text>
+<rect x="56.0" y="188.0" width="50.0" height="34.0" rx="5" fill="#ffffff" stroke="#52514e" stroke-width="1"/>
+<text x="81.0" y="210.0" font-size="12" fill="#0b0b0b" text-anchor="middle" font-weight="600">5090</text>
+<rect x="114.0" y="188.0" width="50.0" height="34.0" rx="5" fill="#ffffff" stroke="#52514e" stroke-width="1"/>
+<text x="139.0" y="210.0" font-size="12" fill="#0b0b0b" text-anchor="middle" font-weight="600">5090</text>
+<rect x="172.0" y="188.0" width="50.0" height="34.0" rx="5" fill="#ffffff" stroke="#52514e" stroke-width="1"/>
+<text x="197.0" y="210.0" font-size="12" fill="#0b0b0b" text-anchor="middle" font-weight="600">5090</text>
+<rect x="230.0" y="188.0" width="50.0" height="34.0" rx="5" fill="#ffffff" stroke="#52514e" stroke-width="1"/>
+<text x="255.0" y="210.0" font-size="12" fill="#0b0b0b" text-anchor="middle" font-weight="600">5090</text>
+<line x1="81.0" y1="174.0" x2="255.0" y2="174.0" stroke="#2a78d6" stroke-width="3"/>
+<line x1="81.0" y1="174.0" x2="81.0" y2="188.0" stroke="#2a78d6" stroke-width="3"/>
+<line x1="139.0" y1="174.0" x2="139.0" y2="188.0" stroke="#2a78d6" stroke-width="3"/>
+<line x1="197.0" y1="174.0" x2="197.0" y2="188.0" stroke="#2a78d6" stroke-width="3"/>
+<line x1="255.0" y1="174.0" x2="255.0" y2="188.0" stroke="#2a78d6" stroke-width="3"/>
+<text x="296.0" y="200.0" font-size="12" fill="#0b0b0b" text-anchor="start" font-weight="600">PCIe P2P ≈ 50 GB/s</text>
+<text x="296.0" y="218.0" font-size="12" fill="#52514e" text-anchor="start" font-weight="400">2048 行 5.6 ms</text>
+<rect x="40.0" y="300.0" width="408.0" height="110.0" rx="8" fill="#ffffff" stroke="#d6d5ce" stroke-width="1"/>
+<text x="52.0" y="320.0" font-size="12" fill="#898781" text-anchor="start" font-weight="400">节点 B（8 卡，画了 4 张）</text>
+<rect x="56.0" y="362.0" width="50.0" height="34.0" rx="5" fill="#ffffff" stroke="#52514e" stroke-width="1"/>
+<text x="81.0" y="384.0" font-size="12" fill="#0b0b0b" text-anchor="middle" font-weight="600">5090</text>
+<rect x="114.0" y="362.0" width="50.0" height="34.0" rx="5" fill="#ffffff" stroke="#52514e" stroke-width="1"/>
+<text x="139.0" y="384.0" font-size="12" fill="#0b0b0b" text-anchor="middle" font-weight="600">5090</text>
+<rect x="172.0" y="362.0" width="50.0" height="34.0" rx="5" fill="#ffffff" stroke="#52514e" stroke-width="1"/>
+<text x="197.0" y="384.0" font-size="12" fill="#0b0b0b" text-anchor="middle" font-weight="600">5090</text>
+<rect x="230.0" y="362.0" width="50.0" height="34.0" rx="5" fill="#ffffff" stroke="#52514e" stroke-width="1"/>
+<text x="255.0" y="384.0" font-size="12" fill="#0b0b0b" text-anchor="middle" font-weight="600">5090</text>
+<line x1="81.0" y1="348.0" x2="255.0" y2="348.0" stroke="#2a78d6" stroke-width="3"/>
+<line x1="81.0" y1="348.0" x2="81.0" y2="362.0" stroke="#2a78d6" stroke-width="3"/>
+<line x1="139.0" y1="348.0" x2="139.0" y2="362.0" stroke="#2a78d6" stroke-width="3"/>
+<line x1="197.0" y1="348.0" x2="197.0" y2="362.0" stroke="#2a78d6" stroke-width="3"/>
+<line x1="255.0" y1="348.0" x2="255.0" y2="362.0" stroke="#2a78d6" stroke-width="3"/>
+<line x1="134.0" y1="236.0" x2="134.0" y2="300.0" stroke="#898781" stroke-width="1.5"/>
+<text x="148.0" y="262.0" font-size="12" fill="#0b0b0b" text-anchor="start" font-weight="600">25 GbE ≈ 3 GB/s</text>
+<text x="148.0" y="280.0" font-size="12" fill="#52514e" text-anchor="start" font-weight="400">2048 行 104 ms（TCP 和 RoCE 一样，线速封顶）</text>
+<text x="44.0" y="438.0" font-size="14" fill="#d03b3b" text-anchor="start" font-weight="700">✗</text>
+<text x="62.0" y="438.0" font-size="12" fill="#52514e" text-anchor="start" font-weight="400">没有 NVLink</text>
+<text x="146.8" y="438.0" font-size="14" fill="#d03b3b" text-anchor="start" font-weight="700">✗</text>
+<text x="164.8" y="438.0" font-size="12" fill="#52514e" text-anchor="start" font-weight="400">没有 GPUDirect RDMA</text>
+<rect x="496.0" y="80.0" width="440.0" height="380.0" rx="10" fill="#f4f4f1"/>
+<text x="512.0" y="106.0" font-size="15" fill="#0b0b0b" text-anchor="start" font-weight="600">B300 机器</text>
+<rect x="512.0" y="126.0" width="408.0" height="110.0" rx="8" fill="#ffffff" stroke="#d6d5ce" stroke-width="1"/>
+<text x="524.0" y="146.0" font-size="12" fill="#898781" text-anchor="start" font-weight="400">节点 A（8 卡，画了 4 张）</text>
+<rect x="528.0" y="188.0" width="50.0" height="34.0" rx="5" fill="#ffffff" stroke="#52514e" stroke-width="1"/>
+<text x="553.0" y="210.0" font-size="12" fill="#0b0b0b" text-anchor="middle" font-weight="600">B300</text>
+<rect x="586.0" y="188.0" width="50.0" height="34.0" rx="5" fill="#ffffff" stroke="#52514e" stroke-width="1"/>
+<text x="611.0" y="210.0" font-size="12" fill="#0b0b0b" text-anchor="middle" font-weight="600">B300</text>
+<rect x="644.0" y="188.0" width="50.0" height="34.0" rx="5" fill="#ffffff" stroke="#52514e" stroke-width="1"/>
+<text x="669.0" y="210.0" font-size="12" fill="#0b0b0b" text-anchor="middle" font-weight="600">B300</text>
+<rect x="702.0" y="188.0" width="50.0" height="34.0" rx="5" fill="#ffffff" stroke="#52514e" stroke-width="1"/>
+<text x="727.0" y="210.0" font-size="12" fill="#0b0b0b" text-anchor="middle" font-weight="600">B300</text>
+<line x1="553.0" y1="174.0" x2="727.0" y2="174.0" stroke="#2a78d6" stroke-width="3"/>
+<line x1="553.0" y1="174.0" x2="553.0" y2="188.0" stroke="#2a78d6" stroke-width="3"/>
+<line x1="611.0" y1="174.0" x2="611.0" y2="188.0" stroke="#2a78d6" stroke-width="3"/>
+<line x1="669.0" y1="174.0" x2="669.0" y2="188.0" stroke="#2a78d6" stroke-width="3"/>
+<line x1="727.0" y1="174.0" x2="727.0" y2="188.0" stroke="#2a78d6" stroke-width="3"/>
+<text x="768.0" y="200.0" font-size="12" fill="#0b0b0b" text-anchor="start" font-weight="600">NVLink（机内）</text>
+<text x="768.0" y="218.0" font-size="12" fill="#52514e" text-anchor="start" font-weight="400">2048 行 0.54 ms</text>
+<rect x="512.0" y="300.0" width="408.0" height="110.0" rx="8" fill="#ffffff" stroke="#d6d5ce" stroke-width="1"/>
+<text x="524.0" y="320.0" font-size="12" fill="#898781" text-anchor="start" font-weight="400">节点 B（8 卡，画了 4 张）</text>
+<rect x="528.0" y="362.0" width="50.0" height="34.0" rx="5" fill="#ffffff" stroke="#52514e" stroke-width="1"/>
+<text x="553.0" y="384.0" font-size="12" fill="#0b0b0b" text-anchor="middle" font-weight="600">B300</text>
+<rect x="586.0" y="362.0" width="50.0" height="34.0" rx="5" fill="#ffffff" stroke="#52514e" stroke-width="1"/>
+<text x="611.0" y="384.0" font-size="12" fill="#0b0b0b" text-anchor="middle" font-weight="600">B300</text>
+<rect x="644.0" y="362.0" width="50.0" height="34.0" rx="5" fill="#ffffff" stroke="#52514e" stroke-width="1"/>
+<text x="669.0" y="384.0" font-size="12" fill="#0b0b0b" text-anchor="middle" font-weight="600">B300</text>
+<rect x="702.0" y="362.0" width="50.0" height="34.0" rx="5" fill="#ffffff" stroke="#52514e" stroke-width="1"/>
+<text x="727.0" y="384.0" font-size="12" fill="#0b0b0b" text-anchor="middle" font-weight="600">B300</text>
+<line x1="553.0" y1="348.0" x2="727.0" y2="348.0" stroke="#2a78d6" stroke-width="3"/>
+<line x1="553.0" y1="348.0" x2="553.0" y2="362.0" stroke="#2a78d6" stroke-width="3"/>
+<line x1="611.0" y1="348.0" x2="611.0" y2="362.0" stroke="#2a78d6" stroke-width="3"/>
+<line x1="669.0" y1="348.0" x2="669.0" y2="362.0" stroke="#2a78d6" stroke-width="3"/>
+<line x1="727.0" y1="348.0" x2="727.0" y2="362.0" stroke="#2a78d6" stroke-width="3"/>
+<line x1="606.0" y1="236.0" x2="606.0" y2="300.0" stroke="#898781" stroke-width="1.5"/>
+<text x="620.0" y="262.0" font-size="12" fill="#0b0b0b" text-anchor="start" font-weight="600">Pod 网络 ≈ 3.4 GB/s</text>
+<text x="620.0" y="280.0" font-size="12" fill="#52514e" text-anchor="start" font-weight="400">2048 行 85 ms（只有 TCP 能用）</text>
+<text x="516.0" y="438.0" font-size="14" fill="#d03b3b" text-anchor="start" font-weight="700">✗</text>
+<text x="534.0" y="438.0" font-size="12" fill="#52514e" text-anchor="start" font-weight="400">8 张 CX-8 网卡没接线</text>
+<text x="670.4" y="438.0" font-size="14" fill="#d03b3b" text-anchor="start" font-weight="700">✗</text>
+<text x="688.4" y="438.0" font-size="12" fill="#52514e" text-anchor="start" font-weight="400">RoCE 没暴露给 Pod</text>
+<text x="24.0" y="500.0" font-size="15" fill="#0b0b0b" text-anchor="start" font-weight="600">同一份 KV，同机 vs 跨机</text>
+<line x1="260.0" y1="520.0" x2="260.0" y2="656.0" stroke="#c3c2b7" stroke-width="1"/>
+<text x="260.0" y="674.0" font-size="12" fill="#898781" text-anchor="middle" font-weight="400">0 ms</text>
+<line x1="410.0" y1="520.0" x2="410.0" y2="656.0" stroke="#e1e0d9" stroke-width="1"/>
+<text x="410.0" y="674.0" font-size="12" fill="#898781" text-anchor="middle" font-weight="400">30 ms</text>
+<line x1="560.0" y1="520.0" x2="560.0" y2="656.0" stroke="#e1e0d9" stroke-width="1"/>
+<text x="560.0" y="674.0" font-size="12" fill="#898781" text-anchor="middle" font-weight="400">60 ms</text>
+<line x1="710.0" y1="520.0" x2="710.0" y2="656.0" stroke="#e1e0d9" stroke-width="1"/>
+<text x="710.0" y="674.0" font-size="12" fill="#898781" text-anchor="middle" font-weight="400">90 ms</text>
+<line x1="860.0" y1="520.0" x2="860.0" y2="656.0" stroke="#e1e0d9" stroke-width="1"/>
+<text x="860.0" y="674.0" font-size="12" fill="#898781" text-anchor="middle" font-weight="400">120 ms</text>
+<text x="24.0" y="542.0" font-size="13" fill="#0b0b0b" text-anchor="start" font-weight="400">B300 同机（NVLink）</text>
+<path d="M260.0,528.0 H261.4 Q262.7,528.0 262.7,529.4 V544.6 Q262.7,546.0 261.4,546.0 H260.0 Z" fill="#2a78d6"/>
+<text x="270.7" y="542.0" font-size="12" fill="#52514e" text-anchor="start" font-weight="400">0.54 ms</text>
+<text x="24.0" y="576.0" font-size="13" fill="#0b0b0b" text-anchor="start" font-weight="400">5090 同机（PCIe P2P）</text>
+<path d="M260.0,562.0 H283.9 Q287.9,562.0 287.9,566.0 V576.0 Q287.9,580.0 283.9,580.0 H260.0 Z" fill="#2a78d6"/>
+<text x="295.9" y="576.0" font-size="12" fill="#52514e" text-anchor="start" font-weight="400">5.58 ms</text>
+<text x="24.0" y="610.0" font-size="13" fill="#0b0b0b" text-anchor="start" font-weight="400">B300 跨机（Pod 网络 TCP）</text>
+<path d="M260.0,596.0 H682.0 Q686.0,596.0 686.0,600.0 V610.0 Q686.0,614.0 682.0,614.0 H260.0 Z" fill="#2a78d6"/>
+<text x="694.0" y="610.0" font-size="12" fill="#52514e" text-anchor="start" font-weight="400">85.2 ms</text>
+<text x="24.0" y="644.0" font-size="13" fill="#0b0b0b" text-anchor="start" font-weight="400">5090 跨机（25 GbE）</text>
+<path d="M260.0,630.0 H775.5 Q779.5,630.0 779.5,634.0 V644.0 Q779.5,648.0 775.5,648.0 H260.0 Z" fill="#2a78d6"/>
+<text x="787.5" y="644.0" font-size="12" fill="#52514e" text-anchor="start" font-weight="400">103.9 ms</text>
+</svg>
