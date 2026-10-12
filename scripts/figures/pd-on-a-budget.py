@@ -361,6 +361,123 @@ def fig_waterfall():
 
 
 # --------------------------------------------------------------------------
+# figure: what PD does (one handoff)
+
+
+def fig_handoff():
+    W, H = 960, 330
+    b = []
+    b.append(text(24, 34, "PD 在干嘛：两张卡，一次交接", 18, INK, weight=600))
+    b.append(text(24, 58, "Prefill 一次算完整个 prompt；Decode 拿着它的 KV，一步一个 token 往下生成。", 13, INK2))
+    top, h = 96, 84
+    # request
+    box(b, 24, top + 10, 110, 64, "请求", ["文本 + 参考音频"])
+    b.append(arrow(134, top + 42, 176, top + 42))
+    # prefill
+    box(b, 176, top, 250, h, "Prefill（GPU A）", ["一次 forward 算完整个 prompt", "产出：KV cache + 第一个 token"], stroke=INK2)
+    # KV handoff
+    b.append(line(426, top + 42, 548, top + 42, BLUE, 4))
+    b.append(arrow_head(560, top + 42, "right", BLUE, 12))
+    b.append(text(493, top + 28, "KV + token0", 13, INK, anchor="middle", weight=600))
+    b.append(text(493, top + 66, "同机拷贝", 12, INK2, anchor="middle"))
+    # decode
+    box(b, 560, top, 250, h, "Decode（GPU B）", ["拿着 KV，一步生成一个 token", "token1, token2, token3, …"], stroke=INK2)
+    b.append(arrow(810, top + 42, 846, top + 42))
+    box(b, 846, top + 10, 90, 64, "流式返回", ["边生成边播"])
+    # what each side's work looks like
+    y = top + h + 34
+    b.append(rect(176, y, 250, 22, INK2, rx=3))
+    b.append(text(301, y + 15, "一大口：上千行一起算", 12, "#ffffff", anchor="middle", weight=600))
+    sq, gap = 30, 6
+    for i in range(6):
+        x = 560 + i * (sq + gap)
+        b.append(rect(x, y, sq, 22, INK2, rx=3))
+        b.append(text(x + sq / 2, y + 15, str(i + 1), 12, "#ffffff", anchor="middle", weight=600))
+    b.append(text(560 + 6 * (sq + gap) + 4, y + 15, "…", 14, INK2))
+    b.append(text(560, y + 44, "很多小步：每步都要把 KV 读一遍", 12, INK2))
+    b.append(text(176, y + 44, "算一次就完事", 12, INK2))
+    b.append(
+        text(
+            24, H - 14,
+            "单体部署时，这两件事挤在同一张卡上轮流做：prefill 一来，正在 decode 的流就得停下来等。",
+            12, MUTED,
+        )
+    )
+    write(
+        "handoff",
+        svg_doc(
+            W, H, b, "PD 的一次交接",
+            "请求先到 Prefill（GPU A），它一次算完整个 prompt，产出 KV cache 和第一个 token；"
+            "KV 和第一个 token 在同一台机器上拷给 Decode（GPU B）；Decode 一步生成一个 token，流式返回给用户。",
+        ),
+    )
+
+
+# --------------------------------------------------------------------------
+# figure: the late-write race after a failed transfer
+
+AQUA = "#1baf7a"  # categorical slot 3; below 3:1 on the surface, so every use is labelled
+
+
+def fig_late_write():
+    W, H = 960, 400
+    b = []
+    b.append(text(24, 34, "迟到的写入：一次没有报错的 KV 污染", 18, INK, weight=600))
+    b.append(text(24, 58, "如果 D 太早把页收回去，P 卡在半路的那笔写入会落进别人的页里。", 13, INK2))
+    lx = 24
+    t0, t1, t2, t3, tend = 200, 410, 540, 730, 936
+    lanes = [("Prefill", 120), ("Decode", 186), ("KV 页 #N", 252), ("请求 B", 318)]
+    for name, y in lanes:
+        b.append(text(lx, y + 5, name, 14, INK, weight=600))
+        b.append(line(t0 - 10, y, tend, y, GRID, 1))
+    # time marks
+    for t, lab in [(t0, "t0"), (t1, "t1"), (t2, "t2"), (t3, "t3")]:
+        b.append(line(t, 92, t, 352, AXIS, 1))
+        b.append(text(t, 370, lab, 12, MUTED, anchor="middle"))
+    bh = 22
+    # Prefill lane: write starts, stalls, lands late
+    y = 120
+    b.append(rect(t0, y - bh / 2, 80, bh, BLUE, rx=3))
+    b.append(text(t0 + 40, y + 4, "开始写 A", 12, "#ffffff", anchor="middle", weight=600))
+    b.append(rect(t0 + 82, y - bh / 2, t3 - t0 - 82, bh, "#e1e0d9", rx=3))
+    b.append(text((t0 + 82 + t3) / 2, y + 4, "卡住了几秒，写入还在半路", 12, INK2, anchor="middle"))
+    b.append(rect(t3, y - bh / 2, 26, bh, CRITICAL, rx=3))
+    b.append(text(t3 + 34, y + 4, "这笔写入终于落地", 12, INK, weight=600))
+    # Decode lane: gives up at t1
+    y = 186
+    b.append(dot(t1, y, INK2, r=6))
+    b.append(text(t1 + 12, y - 8, "等不到结果，判定传输失败", 12, INK))
+    b.append(text(t1 + 12, y + 12, "释放 A 的页，分给下一个请求", 12, INK2))
+    # Page lane
+    y = 252
+    b.append(rect(t0, y - bh / 2, t1 - t0 - 2, bh, BLUE, rx=3))
+    b.append(text((t0 + t1) / 2, y + 4, "属于请求 A", 12, "#ffffff", anchor="middle", weight=600))
+    b.append(rect(t1, y - bh / 2, t2 - t1 - 2, bh, SURFACE, rx=3, stroke=AXIS))
+    b.append(text((t1 + t2) / 2, y + 4, "空闲", 12, INK2, anchor="middle"))
+    b.append(rect(t2, y - bh / 2, tend - t2, bh, AQUA, rx=3))
+    b.append(text((t2 + t3) / 2, y + 4, "属于请求 B", 12, INK, anchor="middle", weight=600))
+    # Request B lane
+    y = 318
+    b.append(rect(t2, y - bh / 2, t3 - t2 - 2, bh, AQUA, rx=3))
+    b.append(text((t2 + t3) / 2, y + 4, "用这些页正常解码", 12, INK, anchor="middle", weight=600))
+    b.append(text(t3 + 8, y - 2, "✗", 15, CRITICAL, weight=700))
+    b.append(text(t3 + 26, y - 2, "B 的 KV 被悄悄改掉", 12, INK, weight=600))
+    b.append(text(t3 + 26, y + 16, "没有报错，音频听起来不对", 12, INK2))
+    # the landing point on the page lane
+    b.append(line(t3, 132, t3, 240, CRITICAL, 2))
+    b.append(arrow_head(t3, 241, "down", CRITICAL, 9))
+    write(
+        "late-write",
+        svg_doc(
+            W, H, b, "迟到的写入如何污染别人的 KV",
+            "t0：Prefill 开始往 Decode 的页里写请求 A 的 KV，随后卡住了几秒。t1：Decode 等不到结果，判定传输失败，"
+            "释放 A 的页。t2：请求 B 拿到这些页并开始解码。t3：Prefill 那笔迟到的写入落进了 B 的页，"
+            "B 的 KV 被悄悄改掉，没有任何报错。",
+        ),
+    )
+
+
+# --------------------------------------------------------------------------
 # figure: architecture of one 1P1D unit
 
 
@@ -563,6 +680,8 @@ def fig_hardware():
 
 if __name__ == "__main__":
     os.makedirs(OUT_DIR, exist_ok=True)
+    fig_handoff()
+    fig_late_write()
     fig_architecture()
     fig_hardware()
     fig_ttfa()
