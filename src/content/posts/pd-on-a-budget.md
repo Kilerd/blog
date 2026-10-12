@@ -15,8 +15,6 @@ headerBgColor: ""
 headerColor: ""
 ---
 
-<!-- TODO: 是否提公司名（目前全文只说“我们”） -->
-
 过去一周多，我几乎都泡在一件事上：给我们的 TTS 推理服务做 PD 分离（Prefill/Decode Disaggregation）。
 
 说起来，这事的起点其实挺小的。我们早就有一个做 PD 分离的分支，一直卡在 B300 上动不了，理由永远是那一句「Mooncake 不支持 B300」。社区里也确实挂着一个 issue：[Mooncake NvlinkTransport cuMemCreate failed #1297](https://github.com/kvcache-ai/Mooncake/issues/1297)。某天我实在忍不了了，心想「不就是一个 issue 吗，我自己修一下总行吧」，就动手去翻。
