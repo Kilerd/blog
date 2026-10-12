@@ -19,6 +19,12 @@ headerColor: ""
 
 过去一周多，我几乎都泡在一件事上：给我们的 TTS 推理服务做 PD 分离（Prefill/Decode Disaggregation）。
 
+说起来，这事的起点其实挺小的。我们早就有一个做 PD 分离的分支，一直卡在 B300 上动不了，理由永远是那一句「Mooncake 不支持 B300」。社区里也确实挂着一个 issue：[Mooncake NvlinkTransport cuMemCreate failed #1297](https://github.com/kvcache-ai/Mooncake/issues/1297)。某天我实在忍不了了，心想「不就是一个 issue 吗，我自己修一下总行吧」，就动手去翻。
+
+结果一翻才发现，坑比 issue 本身深多了。我们钉的那个 Mooncake 版本，wheel 里压根就没编进 NVLink 传输；换了新版本，只改协议名的话它会悄悄退回 TCP，慢了将近 300 倍，还一个报错都没有；issue 里那个 `cuMemCreate` 报错我们也复现了，根子在 IMEX 没配好；好不容易在同一个容器里跑通了，一次 281 MiB 只要 0.4 ms，可 P 和 D 一拆成两个 Pod，又是一句干脆的 `invalid argument`。
+
+本来只是想修个 issue，修着修着，就修成了一整套 PD。
+
 PD 分离不是什么新鲜玩意儿，DistServe、Mooncake、Dynamo、llm-d，社区里一抓一大把。可真正动手之后我才发现，这些方案都有一个默认前提：你得有 RDMA，最好还有跨机的 NVLink。而我们手里有的是一堆消费级的 RTX 5090，外加一批跨机网络还没到位的 B300。
 
 所以这篇讲的是一个「穷人版」的 PD：P 和 D 只在同一台机器里配对，KV 不出这台机器。路上踩的坑，比我预想的多得多。
