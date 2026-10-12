@@ -1,111 +1,60 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="960" height="470" viewBox="0 0 960 470" role="img" aria-labelledby="t d" font-family="-apple-system, BlinkMacSystemFont, &#x27;PingFang SC&#x27;, &#x27;Hiragino Sans GB&#x27;, &#x27;Noto Sans CJK SC&#x27;, &#x27;Microsoft YaHei&#x27;, &#x27;Segoe UI&#x27;, sans-serif">
-<title id="t">首段音频时间随并发的变化：单体与 PD 1P1D</title>
-<desc id="d">两个小图分别是 E2E TTFA 的 p95 和 p99。单体（1 卡）从 2 路到 40 路，p95 从 289 ms 涨到 507 ms；PD 1P1D（2 卡）从 2 路到 64 路，p95 从 300 ms 涨到 487 ms。同样并发下两者接近，PD 略低。</desc>
-<rect width="960" height="470" fill="#fcfcfb"/>
-<text x="24.0" y="34.0" font-size="18" fill="#0b0b0b" text-anchor="start" font-weight="600">首段音频时间（E2E TTFA）随并发的变化</text>
-<text x="24.0" y="58.0" font-size="13" fill="#52514e" text-anchor="start" font-weight="400">5090，线上流量配比回放。单体 = 1 张卡；PD 1P1D = 2 张卡。越低越好。</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="450" viewBox="0 0 960 450" role="img" aria-labelledby="t d" font-family="-apple-system, BlinkMacSystemFont, &#x27;PingFang SC&#x27;, &#x27;Hiragino Sans GB&#x27;, &#x27;Noto Sans CJK SC&#x27;, &#x27;Microsoft YaHei&#x27;, &#x27;Segoe UI&#x27;, sans-serif">
+<title id="t">首段音频时间 p95 随并发的变化：单体与 PD 1P1D</title>
+<desc id="d">单体（1 卡）从 2 路到 40 路，TTFA p95 从 289 ms 涨到 507 ms；PD 1P1D（2 卡）从 2 路到 64 路，从 300 ms 涨到 487 ms。8 路以上，同样并发下 PD 都更低，40 路时 406 vs 507 ms。纵轴从 200 ms 起。</desc>
+<rect width="960" height="450" fill="#fcfcfb"/>
+<text x="24.0" y="34.0" font-size="18" fill="#0b0b0b" text-anchor="start" font-weight="600">首段音频时间（TTFA p95）</text>
+<text x="24.0" y="58.0" font-size="13" fill="#52514e" text-anchor="start" font-weight="400">同一次压测。单体 = 1 张卡，PD 1P1D = 2 张卡。越低越好。</text>
 <line x1="24.0" y1="86.0" x2="46.0" y2="86.0" stroke="#2a78d6" stroke-width="2"/>
 <circle cx="35.0" cy="86.0" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
 <text x="54.0" y="90.0" font-size="13" fill="#52514e" text-anchor="start" font-weight="400">PD 1P1D（2 卡）</text>
 <line x1="175.8" y1="86.0" x2="197.8" y2="86.0" stroke="#eb6834" stroke-width="2"/>
 <circle cx="186.8" cy="86.0" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
 <text x="205.8" y="90.0" font-size="13" fill="#52514e" text-anchor="start" font-weight="400">单体（1 卡）</text>
-<text x="70.0" y="126.0" font-size="14" fill="#0b0b0b" text-anchor="start" font-weight="600">p95（ms）</text>
-<line x1="70.0" y1="380.0" x2="450.0" y2="380.0" stroke="#c3c2b7" stroke-width="1"/>
-<text x="62.0" y="384.0" font-size="12" fill="#898781" text-anchor="end" font-weight="400">200</text>
-<line x1="70.0" y1="332.0" x2="450.0" y2="332.0" stroke="#e1e0d9" stroke-width="1"/>
-<text x="62.0" y="336.0" font-size="12" fill="#898781" text-anchor="end" font-weight="400">300</text>
-<line x1="70.0" y1="284.0" x2="450.0" y2="284.0" stroke="#e1e0d9" stroke-width="1"/>
-<text x="62.0" y="288.0" font-size="12" fill="#898781" text-anchor="end" font-weight="400">400</text>
-<line x1="70.0" y1="236.0" x2="450.0" y2="236.0" stroke="#e1e0d9" stroke-width="1"/>
-<text x="62.0" y="240.0" font-size="12" fill="#898781" text-anchor="end" font-weight="400">500</text>
-<line x1="70.0" y1="188.0" x2="450.0" y2="188.0" stroke="#e1e0d9" stroke-width="1"/>
-<text x="62.0" y="192.0" font-size="12" fill="#898781" text-anchor="end" font-weight="400">600</text>
-<line x1="70.0" y1="140.0" x2="450.0" y2="140.0" stroke="#e1e0d9" stroke-width="1"/>
-<text x="62.0" y="144.0" font-size="12" fill="#898781" text-anchor="end" font-weight="400">700</text>
-<text x="70.0" y="398.0" font-size="12" fill="#898781" text-anchor="middle" font-weight="400">0</text>
-<text x="117.5" y="398.0" font-size="12" fill="#898781" text-anchor="middle" font-weight="400">8</text>
-<text x="165.0" y="398.0" font-size="12" fill="#898781" text-anchor="middle" font-weight="400">16</text>
-<text x="212.5" y="398.0" font-size="12" fill="#898781" text-anchor="middle" font-weight="400">24</text>
-<text x="260.0" y="398.0" font-size="12" fill="#898781" text-anchor="middle" font-weight="400">32</text>
-<text x="307.5" y="398.0" font-size="12" fill="#898781" text-anchor="middle" font-weight="400">40</text>
-<text x="355.0" y="398.0" font-size="12" fill="#898781" text-anchor="middle" font-weight="400">48</text>
-<text x="402.5" y="398.0" font-size="12" fill="#898781" text-anchor="middle" font-weight="400">56</text>
-<text x="450.0" y="398.0" font-size="12" fill="#898781" text-anchor="middle" font-weight="400">64</text>
-<polyline points="81.9,337.3 93.8,333.9 117.5,320.0 129.4,319.0 141.2,314.7 153.1,300.8 165.0,309.4 188.8,283.5 212.5,271.0 236.2,255.7 260.0,259.0 307.5,232.6" fill="none" stroke="#eb6834" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="81.9" cy="337.3" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="93.8" cy="333.9" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="117.5" cy="320.0" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="129.4" cy="319.0" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="141.2" cy="314.7" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="153.1" cy="300.8" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="165.0" cy="309.4" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="188.8" cy="283.5" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="212.5" cy="271.0" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="236.2" cy="255.7" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="260.0" cy="259.0" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="307.5" cy="232.6" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
-<polyline points="81.9,332.0 93.8,336.8 117.5,330.1 165.0,318.6 212.5,302.7 260.0,287.8 307.5,281.1 331.2,256.6 355.0,259.5 402.5,233.1 450.0,242.2" fill="none" stroke="#2a78d6" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="81.9" cy="332.0" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="93.8" cy="336.8" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="117.5" cy="330.1" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="165.0" cy="318.6" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="212.5" cy="302.7" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="260.0" cy="287.8" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="307.5" cy="281.1" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="331.2" cy="256.6" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="355.0" cy="259.5" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="402.5" cy="233.1" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="450.0" cy="242.2" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
-<text x="315.5" y="222.6" font-size="12" fill="#52514e" text-anchor="start" font-weight="400">单体只测到 40 路</text>
-<text x="550.0" y="126.0" font-size="14" fill="#0b0b0b" text-anchor="start" font-weight="600">p99（ms）</text>
-<line x1="550.0" y1="380.0" x2="930.0" y2="380.0" stroke="#c3c2b7" stroke-width="1"/>
-<text x="542.0" y="384.0" font-size="12" fill="#898781" text-anchor="end" font-weight="400">200</text>
-<line x1="550.0" y1="332.0" x2="930.0" y2="332.0" stroke="#e1e0d9" stroke-width="1"/>
-<text x="542.0" y="336.0" font-size="12" fill="#898781" text-anchor="end" font-weight="400">300</text>
-<line x1="550.0" y1="284.0" x2="930.0" y2="284.0" stroke="#e1e0d9" stroke-width="1"/>
-<text x="542.0" y="288.0" font-size="12" fill="#898781" text-anchor="end" font-weight="400">400</text>
-<line x1="550.0" y1="236.0" x2="930.0" y2="236.0" stroke="#e1e0d9" stroke-width="1"/>
-<text x="542.0" y="240.0" font-size="12" fill="#898781" text-anchor="end" font-weight="400">500</text>
-<line x1="550.0" y1="188.0" x2="930.0" y2="188.0" stroke="#e1e0d9" stroke-width="1"/>
-<text x="542.0" y="192.0" font-size="12" fill="#898781" text-anchor="end" font-weight="400">600</text>
-<line x1="550.0" y1="140.0" x2="930.0" y2="140.0" stroke="#e1e0d9" stroke-width="1"/>
-<text x="542.0" y="144.0" font-size="12" fill="#898781" text-anchor="end" font-weight="400">700</text>
-<text x="550.0" y="398.0" font-size="12" fill="#898781" text-anchor="middle" font-weight="400">0</text>
-<text x="597.5" y="398.0" font-size="12" fill="#898781" text-anchor="middle" font-weight="400">8</text>
-<text x="645.0" y="398.0" font-size="12" fill="#898781" text-anchor="middle" font-weight="400">16</text>
-<text x="692.5" y="398.0" font-size="12" fill="#898781" text-anchor="middle" font-weight="400">24</text>
-<text x="740.0" y="398.0" font-size="12" fill="#898781" text-anchor="middle" font-weight="400">32</text>
-<text x="787.5" y="398.0" font-size="12" fill="#898781" text-anchor="middle" font-weight="400">40</text>
-<text x="835.0" y="398.0" font-size="12" fill="#898781" text-anchor="middle" font-weight="400">48</text>
-<text x="882.5" y="398.0" font-size="12" fill="#898781" text-anchor="middle" font-weight="400">56</text>
-<text x="930.0" y="398.0" font-size="12" fill="#898781" text-anchor="middle" font-weight="400">64</text>
-<polyline points="561.9,279.7 573.8,277.3 597.5,258.6 609.4,273.9 621.2,274.4 633.1,241.3 645.0,230.7 668.8,239.8 692.5,220.6 716.2,208.6 740.0,201.9 787.5,189.9" fill="none" stroke="#eb6834" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="561.9" cy="279.7" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="573.8" cy="277.3" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="597.5" cy="258.6" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="609.4" cy="273.9" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="621.2" cy="274.4" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="633.1" cy="241.3" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="645.0" cy="230.7" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="668.8" cy="239.8" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="692.5" cy="220.6" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="716.2" cy="208.6" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="740.0" cy="201.9" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="787.5" cy="189.9" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
-<polyline points="561.9,282.1 573.8,302.2 597.5,270.1 645.0,263.8 692.5,230.7 740.0,227.8 787.5,198.1 811.2,189.0 835.0,182.2 882.5,172.2 930.0,153.4" fill="none" stroke="#2a78d6" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="561.9" cy="282.1" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="573.8" cy="302.2" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="597.5" cy="270.1" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="645.0" cy="263.8" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="692.5" cy="230.7" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="740.0" cy="227.8" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="787.5" cy="198.1" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="811.2" cy="189.0" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="835.0" cy="182.2" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="882.5" cy="172.2" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="930.0" cy="153.4" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
-<text x="260.0" y="422.0" font-size="12" fill="#898781" text-anchor="middle" font-weight="400">并发路数（整组）</text>
-<text x="740.0" y="422.0" font-size="12" fill="#898781" text-anchor="middle" font-weight="400">并发路数（整组）</text>
-<text x="24.0" y="456.0" font-size="12" fill="#898781" text-anchor="start" font-weight="400">纵轴从 200 ms 起。按每卡算，PD 的首包并不更快：每卡 16 路时单体 p95 347 ms，PD（32 路）392 ms。PD 买的是不卡顿，见下一张图。</text>
+<line x1="80.0" y1="380.0" x2="920.0" y2="380.0" stroke="#c3c2b7" stroke-width="1"/>
+<text x="72.0" y="384.0" font-size="12" fill="#898781" text-anchor="end" font-weight="400">200 ms</text>
+<line x1="80.0" y1="317.5" x2="920.0" y2="317.5" stroke="#e1e0d9" stroke-width="1"/>
+<text x="72.0" y="321.5" font-size="12" fill="#898781" text-anchor="end" font-weight="400">300 ms</text>
+<line x1="80.0" y1="255.0" x2="920.0" y2="255.0" stroke="#e1e0d9" stroke-width="1"/>
+<text x="72.0" y="259.0" font-size="12" fill="#898781" text-anchor="end" font-weight="400">400 ms</text>
+<line x1="80.0" y1="192.5" x2="920.0" y2="192.5" stroke="#e1e0d9" stroke-width="1"/>
+<text x="72.0" y="196.5" font-size="12" fill="#898781" text-anchor="end" font-weight="400">500 ms</text>
+<line x1="80.0" y1="130.0" x2="920.0" y2="130.0" stroke="#e1e0d9" stroke-width="1"/>
+<text x="72.0" y="134.0" font-size="12" fill="#898781" text-anchor="end" font-weight="400">600 ms</text>
+<text x="80.0" y="398.0" font-size="12" fill="#898781" text-anchor="middle" font-weight="400">0</text>
+<text x="185.0" y="398.0" font-size="12" fill="#898781" text-anchor="middle" font-weight="400">8</text>
+<text x="290.0" y="398.0" font-size="12" fill="#898781" text-anchor="middle" font-weight="400">16</text>
+<text x="395.0" y="398.0" font-size="12" fill="#898781" text-anchor="middle" font-weight="400">24</text>
+<text x="500.0" y="398.0" font-size="12" fill="#898781" text-anchor="middle" font-weight="400">32</text>
+<text x="605.0" y="398.0" font-size="12" fill="#898781" text-anchor="middle" font-weight="400">40</text>
+<text x="710.0" y="398.0" font-size="12" fill="#898781" text-anchor="middle" font-weight="400">48</text>
+<text x="815.0" y="398.0" font-size="12" fill="#898781" text-anchor="middle" font-weight="400">56</text>
+<text x="920.0" y="398.0" font-size="12" fill="#898781" text-anchor="middle" font-weight="400">64</text>
+<polyline points="106.2,324.4 132.5,320.0 185.0,301.9 211.2,300.6 237.5,295.0 263.8,276.9 290.0,288.1 342.5,254.4 395.0,238.1 447.5,218.1 500.0,222.5 605.0,188.1" fill="none" stroke="#eb6834" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="106.2" cy="324.4" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
+<circle cx="132.5" cy="320.0" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
+<circle cx="185.0" cy="301.9" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
+<circle cx="211.2" cy="300.6" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
+<circle cx="237.5" cy="295.0" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
+<circle cx="263.8" cy="276.9" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
+<circle cx="290.0" cy="288.1" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
+<circle cx="342.5" cy="254.4" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
+<circle cx="395.0" cy="238.1" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
+<circle cx="447.5" cy="218.1" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
+<circle cx="500.0" cy="222.5" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
+<circle cx="605.0" cy="188.1" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
+<polyline points="106.2,317.5 132.5,323.8 185.0,315.0 290.0,300.0 395.0,279.4 500.0,260.0 605.0,251.2 657.5,219.4 710.0,223.1 815.0,188.8 920.0,200.6" fill="none" stroke="#2a78d6" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="106.2" cy="317.5" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
+<circle cx="132.5" cy="323.8" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
+<circle cx="185.0" cy="315.0" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
+<circle cx="290.0" cy="300.0" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
+<circle cx="395.0" cy="279.4" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
+<circle cx="500.0" cy="260.0" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
+<circle cx="605.0" cy="251.2" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
+<circle cx="657.5" cy="219.4" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
+<circle cx="710.0" cy="223.1" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
+<circle cx="815.0" cy="188.8" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
+<circle cx="920.0" cy="200.6" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
+<text x="615.0" y="180.1" font-size="12" fill="#52514e" text-anchor="start" font-weight="400">单体 40 路：507 ms</text>
+<text x="615.0" y="271.2" font-size="12" fill="#52514e" text-anchor="start" font-weight="400">PD 40 路：406 ms</text>
+<text x="500.0" y="420.0" font-size="12" fill="#898781" text-anchor="middle" font-weight="400">并发路数</text>
 </svg>

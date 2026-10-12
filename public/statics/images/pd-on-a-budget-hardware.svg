@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="960" height="700" viewBox="0 0 960 700" role="img" aria-labelledby="t d" font-family="-apple-system, BlinkMacSystemFont, &#x27;PingFang SC&#x27;, &#x27;Hiragino Sans GB&#x27;, &#x27;Noto Sans CJK SC&#x27;, &#x27;Microsoft YaHei&#x27;, &#x27;Segoe UI&#x27;, sans-serif">
 <title id="t">硬件约束：同机与跨机的 KV 传输</title>
-<desc id="d">5090 集群：机内 PCIe P2P 约 50 GB/s，搬 2048 行 KV 5.6 ms；跨机 25 GbE 约 3 GB/s，104 ms；没有 NVLink，没有 GPUDirect RDMA。B300 机器：机内 NVLink 0.54 ms；跨机只能走约 3.4 GB/s 的 Pod 网络，85 ms；CX-8 网卡没接线，RoCE 没暴露给 Pod。</desc>
+<desc id="d">5090 集群：机内 PCIe P2P 约 50 GB/s，搬 2048 行 KV 5.6 ms；跨机 25 GbE 约 3 GB/s，104 ms；没有 NVLink，没有 GPUDirect RDMA。B300 机器：机内 NVLink 0.54 ms；跨机只能走约 3.4 GB/s 的 Pod 网络，85 ms；IB 卡没到位，RoCE 没暴露给 Pod。</desc>
 <rect width="960" height="700" fill="#fcfcfb"/>
 <text x="24.0" y="34.0" font-size="18" fill="#0b0b0b" text-anchor="start" font-weight="600">我们手里的硬件：同机快，跨机慢一到两个数量级</text>
 <text x="24.0" y="58.0" font-size="13" fill="#52514e" text-anchor="start" font-weight="400">延迟都是搬 2048 行 KV（一个 2k token 的 prompt，约 288 MiB）的实测 p50。</text>
@@ -83,9 +83,9 @@
 <text x="620.0" y="262.0" font-size="12" fill="#0b0b0b" text-anchor="start" font-weight="600">Pod 网络 ≈ 3.4 GB/s</text>
 <text x="620.0" y="280.0" font-size="12" fill="#52514e" text-anchor="start" font-weight="400">2048 行 85 ms（只有 TCP 能用）</text>
 <text x="516.0" y="438.0" font-size="14" fill="#d03b3b" text-anchor="start" font-weight="700">✗</text>
-<text x="534.0" y="438.0" font-size="12" fill="#52514e" text-anchor="start" font-weight="400">8 张 CX-8 网卡没接线</text>
-<text x="670.4" y="438.0" font-size="14" fill="#d03b3b" text-anchor="start" font-weight="700">✗</text>
-<text x="688.4" y="438.0" font-size="12" fill="#52514e" text-anchor="start" font-weight="400">RoCE 没暴露给 Pod</text>
+<text x="534.0" y="438.0" font-size="12" fill="#52514e" text-anchor="start" font-weight="400">IB 卡没到位</text>
+<text x="619.0" y="438.0" font-size="14" fill="#d03b3b" text-anchor="start" font-weight="700">✗</text>
+<text x="637.0" y="438.0" font-size="12" fill="#52514e" text-anchor="start" font-weight="400">RoCE 没暴露给 Pod</text>
 <text x="24.0" y="500.0" font-size="15" fill="#0b0b0b" text-anchor="start" font-weight="600">同一份 KV，同机 vs 跨机</text>
 <line x1="260.0" y1="520.0" x2="260.0" y2="656.0" stroke="#c3c2b7" stroke-width="1"/>
 <text x="260.0" y="674.0" font-size="12" fill="#898781" text-anchor="middle" font-weight="400">0 ms</text>

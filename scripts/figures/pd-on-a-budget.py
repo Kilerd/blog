@@ -191,20 +191,17 @@ def write(name, svg):
 
 
 # --------------------------------------------------------------------------
-# data: 5090 capacity test, mono (1 GPU) vs PD 1P+1D (2 GPUs), same image,
-# replay of the production traffic mix. E2E TTFA = time to the 10th token
-# convolved with the TTS engine's other stages.
+# data: 5090 load test, mono (1 GPU) vs PD 1P+1D (2 GPUs), same image, replay
+# of the production traffic mix. "Stutter" = share of streams whose playback
+# had a gap. E2E TTFA = time to the first audio chunk, convolved with the TTS
+# engine's other stages.
 
 MONO_X = [2, 4, 8, 10, 12, 14, 16, 20, 24, 28, 32, 40]
 MONO_P95 = [289, 296, 325, 327, 336, 365, 347, 401, 427, 459, 452, 507]
-MONO_P99 = [409, 414, 453, 421, 420, 489, 511, 492, 532, 557, 571, 596]
-MONO_P1 = [63.8, 57.4, 48.1, 43.4, 41.8, 37.9, 38.1, 36.3, 33.6, 29.9, 27.5, 25.7]
 MONO_GAP = [0.00, 0.00, 0.12, 0.19, 0.00, 0.38, 0.32, 0.73, 5.33, 12.80, 19.28, 54.02]
 
 PD_X = [2, 4, 8, 16, 24, 32, 40, 44, 48, 56, 64]
 PD_P95 = [300, 290, 304, 328, 361, 392, 406, 457, 451, 506, 487]
-PD_P99 = [404, 362, 429, 442, 511, 517, 579, 598, 612, 633, 672]
-PD_P1 = [61.5, 60.4, 56.3, 50.1, 45.1, 42.7, 38.5, 36.7, 34.3, 34.0, 32.6]
 PD_GAP = [0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 1.38, 17.78, 40.07, 49.87]
 
 
@@ -212,153 +209,99 @@ def scale(d0, d1, r0, r1):
     return lambda v: r0 + (v - d0) * (r1 - r0) / (d1 - d0)
 
 
-def line_panel(body, x0, x1, y0, y1, xdom, ydom, yticks, xticks, series, ylabel_fmt, title):
-    """One small-multiple line panel. series: [(xs, ys, color)]."""
-    sx = scale(xdom[0], xdom[1], x0, x1)
-    sy = scale(ydom[0], ydom[1], y1, y0)
-    body.append(text(x0, y0 - 14, title, 14, INK, weight=600))
-    for t in yticks:
-        y = sy(t)
-        body.append(line(x0, y, x1, y, GRID if t != ydom[0] else AXIS, 1))
-        body.append(text(x0 - 8, y + 4, ylabel_fmt(t), 12, MUTED, anchor="end"))
-    for t in xticks:
-        body.append(text(sx(t), y1 + 18, str(t), 12, MUTED, anchor="middle"))
-    for xs, ys, color in series:
-        pts = [(sx(a), sy(b)) for a, b in zip(xs, ys)]
-        body.append(polyline(pts, color))
-        for px, py in pts:
-            body.append(dot(px, py, color))
-    return sx, sy
-
-
 # --------------------------------------------------------------------------
-# figure 3: TTFA vs concurrency
+# figure: TTFA p95 vs concurrency
 
 
 def fig_ttfa():
-    W, H = 960, 470
+    W, H = 960, 450
     b = []
-    b.append(text(24, 34, "首段音频时间（E2E TTFA）随并发的变化", 18, INK, weight=600))
-    b.append(
-        text(24, 58, "5090，线上流量配比回放。单体 = 1 张卡；PD 1P1D = 2 张卡。越低越好。", 13, INK2)
-    )
+    b.append(text(24, 34, "首段音频时间（TTFA p95）", 18, INK, weight=600))
+    b.append(text(24, 58, "同一次压测。单体 = 1 张卡，PD 1P1D = 2 张卡。越低越好。", 13, INK2))
     b += legend(24, 90, [("PD 1P1D（2 卡）", BLUE, "line"), ("单体（1 卡）", ORANGE, "line")])
-    xt = [0, 8, 16, 24, 32, 40, 48, 56, 64]
-    yt = [200, 300, 400, 500, 600, 700]
-    fmt = lambda v: f"{v}"
-    top, bottom = 140, 380
-    sx, sy = line_panel(
-        b, 70, 450, top, bottom, (0, 64), (200, 700), yt, xt,
-        [(MONO_X, MONO_P95, ORANGE), (PD_X, PD_P95, BLUE)], fmt, "p95（ms）",
-    )
-    b.append(text(sx(40) + 8, sy(507) - 10, "单体只测到 40 路", 12, INK2))
-    sx2, sy2 = line_panel(
-        b, 550, 930, top, bottom, (0, 64), (200, 700), yt, xt,
-        [(MONO_X, MONO_P99, ORANGE), (PD_X, PD_P99, BLUE)], fmt, "p99（ms）",
-    )
-    b.append(text(260, bottom + 42, "并发路数（整组）", 12, MUTED, anchor="middle"))
-    b.append(text(740, bottom + 42, "并发路数（整组）", 12, MUTED, anchor="middle"))
-    b.append(
-        text(
-            24, H - 14,
-            "纵轴从 200 ms 起。按每卡算，PD 的首包并不更快：每卡 16 路时单体 p95 347 ms，PD（32 路）392 ms。PD 买的是不卡顿，见下一张图。",
-            12, MUTED,
-        )
-    )
+    x0, x1, top, bottom = 80, 920, 130, 380
+    sx = scale(0, 64, x0, x1)
+    sy = scale(200, 600, bottom, top)
+    for t in [200, 300, 400, 500, 600]:
+        y = sy(t)
+        b.append(line(x0, y, x1, y, GRID if t != 200 else AXIS, 1))
+        b.append(text(x0 - 8, y + 4, f"{t} ms", 12, MUTED, anchor="end"))
+    for t in [0, 8, 16, 24, 32, 40, 48, 56, 64]:
+        b.append(text(sx(t), bottom + 18, str(t), 12, MUTED, anchor="middle"))
+    for xs, ys, color in [(MONO_X, MONO_P95, ORANGE), (PD_X, PD_P95, BLUE)]:
+        pts = [(sx(a), sy(c)) for a, c in zip(xs, ys)]
+        b.append(polyline(pts, color))
+        for px, py in pts:
+            b.append(dot(px, py, color))
+    b.append(text(sx(40) + 10, sy(507) - 8, "单体 40 路：507 ms", 12, INK2))
+    b.append(text(sx(40) + 10, sy(406) + 20, "PD 40 路：406 ms", 12, INK2))
+    b.append(text((x0 + x1) / 2, bottom + 40, "并发路数", 12, MUTED, anchor="middle"))
     write(
         "ttfa",
         svg_doc(
-            W, H, b, "首段音频时间随并发的变化：单体与 PD 1P1D",
-            "两个小图分别是 E2E TTFA 的 p95 和 p99。单体（1 卡）从 2 路到 40 路，p95 从 289 ms 涨到 507 ms；"
-            "PD 1P1D（2 卡）从 2 路到 64 路，p95 从 300 ms 涨到 487 ms。同样并发下两者接近，PD 略低。",
+            W, H, b, "首段音频时间 p95 随并发的变化：单体与 PD 1P1D",
+            "单体（1 卡）从 2 路到 40 路，TTFA p95 从 289 ms 涨到 507 ms；PD 1P1D（2 卡）从 2 路到 64 路，"
+            "从 300 ms 涨到 487 ms。8 路以上，同样并发下 PD 都更低，40 路时 406 vs 507 ms。纵轴从 200 ms 起。",
         ),
     )
 
 
 # --------------------------------------------------------------------------
-# figure 4: stutter share and slowest-1% speed
+# figure: stutter share, mono vs PD
 
 
 def fig_stutter():
-    W, H = 960, 470
+    W, H = 960, 430
     b = []
-    b.append(text(24, 34, "卡顿占比与最慢 1% 的流速", 18, INK, weight=600))
-    b.append(
-        text(
-            24, 58,
-            "同一次测试。卡顿 = 按首窗 10,10,12,32,64 播放时出现空隙的流的占比；流速 p1 = 最慢 1% 的流的 tok/s。",
-            13, INK2,
-        )
-    )
+    b.append(text(24, 34, "多少路流会卡顿：单体 vs PD", 18, INK, weight=600))
+    b.append(text(24, 58, "按线上真实请求的样子压测。单体 = 1 张卡，PD 1P1D = 2 张卡。", 13, INK2))
     b += legend(24, 90, [("PD 1P1D（2 卡）", BLUE, "bar"), ("单体（1 卡）", ORANGE, "bar")])
-
-    # left: grouped bars at the concurrency levels both setups ran.
-    x0, x1, top, bottom = 70, 450, 140, 380
-    b.append(text(x0, top - 14, "卡顿流占比（%）", 14, INK, weight=600))
+    x0, x1, top, bottom = 80, 920, 130, 360
     sy = scale(0, 60, bottom, top)
-    for t in [0, 10, 20, 30, 40, 50, 60]:
+    for t in [0, 20, 40, 60]:
         y = sy(t)
         b.append(line(x0, y, x1, y, GRID if t else AXIS, 1))
-        b.append(text(x0 - 8, y + 4, str(t), 12, MUTED, anchor="end"))
+        b.append(text(x0 - 8, y + 4, f"{t}%", 12, MUTED, anchor="end"))
     levels = [8, 16, 24, 32, 40]
-    mono = {x: g for x, g in zip(MONO_X, MONO_GAP)}
-    pd = {x: g for x, g in zip(PD_X, PD_GAP)}
+    mono = dict(zip(MONO_X, MONO_GAP))
+    pd = dict(zip(PD_X, PD_GAP))
     band = (x1 - x0) / len(levels)
-    bw = 22
+    bw = 24
     for i, lv in enumerate(levels):
         cx = x0 + band * (i + 0.5)
         xa = cx - bw - 1  # PD
-        xb = cx + 1  # mono (2px surface gap between the pair)
+        xb = cx + 1  # mono, 2px surface gap between the pair
         hp = bottom - sy(pd[lv])
         hm = bottom - sy(mono[lv])
         b.append(vbar(xa, bottom, bw, hp, BLUE))
         b.append(vbar(xb, bottom, bw, hm, ORANGE))
-        b.append(text(xa + bw / 2, bottom - hp - 6, "0", 11, INK2, anchor="middle"))
-        lab = f"{mono[lv]:.2f}" if mono[lv] < 1 else f"{mono[lv]:.1f}"
-        b.append(text(xb + bw / 2, bottom - hm - 6, lab, 11, INK2, anchor="middle"))
-        b.append(text(cx, bottom + 18, str(lv), 12, MUTED, anchor="middle"))
-    b.append(text((x0 + x1) / 2, bottom + 40, "并发路数（整组）", 12, MUTED, anchor="middle"))
-
-    # right: slowest-1% speed with the 42 tok/s floor.
-    sx, sy2 = line_panel(
-        b, 550, 930, top, bottom, (0, 64), (20, 70),
-        [20, 30, 40, 50, 60, 70], [0, 8, 16, 24, 32, 40, 48, 56, 64],
-        [(MONO_X, MONO_P1, ORANGE), (PD_X, PD_P1, BLUE)], lambda v: f"{v}", "最慢 1% 的流速（tok/s）",
-    )
-    yf = sy2(42)
-    b.append(line(550, yf, 930, yf, INK2, 1.5))
-    b.append(text(926, yf - 7, "42 tok/s 底线（RTF ≤ 0.5）", 12, INK2, anchor="end"))
-    b.append(text(740, bottom + 40, "并发路数（整组）", 12, MUTED, anchor="middle"))
-    b.append(
-        text(
-            24, H - 14,
-            "单体 8 路起就有卡顿流；PD 到 40 路都是 0，44 路开始出现（1.38%），48 路 17.8%。每卡 16 路时 PD p1 42.7，单体 38.1。",
-            12, MUTED,
-        )
-    )
+        b.append(text(xa + bw / 2, bottom - hp - 7, "0", 12, INK2, anchor="middle"))
+        lab = f"{mono[lv]:.2f}%" if mono[lv] < 1 else f"{mono[lv]:.1f}%"
+        b.append(text(xb + bw / 2, bottom - hm - 7, lab, 12, INK2, anchor="middle"))
+        b.append(text(cx, bottom + 20, f"{lv} 路", 13, INK2, anchor="middle"))
+    b.append(text(24, H - 16, "PD 到 40 路都是 0 卡顿；单体 8 路就开始有流卡顿。", 12, MUTED))
     write(
         "stutter",
         svg_doc(
-            W, H, b, "卡顿占比与最慢 1% 流速：单体与 PD 1P1D",
-            "左图：在 8、16、24、32、40 路时，单体卡顿流占比为 0.12%、0.32%、5.33%、19.28%、54.02%，PD 1P1D 全部为 0。"
-            "右图：最慢 1% 的流速，单体 8 路 48.1、16 路 38.1、40 路 25.7 tok/s；PD 16 路 50.1、32 路 42.7、40 路 38.5 tok/s；"
-            "参考线为 42 tok/s。",
+            W, H, b, "卡顿流占比：单体与 PD 1P1D",
+            "在 8、16、24、32、40 路时，单体（1 卡）卡顿流占比为 0.12%、0.32%、5.33%、19.28%、54.02%；"
+            "PD 1P1D（2 卡）全部为 0。",
         ),
     )
 
 
 # --------------------------------------------------------------------------
-# figure 5: waterfall of the slowest 1% (B300 1P1D replay, steady state)
+# figure: waterfall of the slowest 1% (B300 1P1D replay, steady state)
 
 WATERFALL = [
-    # (stage, note, ms) — means over the slowest 1% to the 10th token; they add up to 392 ms.
+    # (stage, note, ms): means over the slowest 1% up to the first audio chunk; they add up to 392 ms.
     ("客户端 → LB → Prefill", "网络 + LB 解析和转发", 3.2),
     ("Prefill 接收与调度准入", "交给调度器、反序列化、排队；后来用紧凑数组传 prompt", 86.1),
     ("Prefill 前向", "含冷热请求同批造成的队头阻塞", 58.2),
     ("KV 传输链", "等 D 的页表、发送排队、拷贝、通知", 21.0),
     ("Decode 接入", "发现传输完成、提交、等下一步才入批", 21.5),
-    ("Decode 前 9 步", "大头；每步 GPU + 主机时间，后来开了 overlap", 199.6),
-    ("Decode 输出 → LB → 客户端", "第 10 个 token 的转发", 2.5),
+    ("Decode 到首段音频", "9 步解码；每步 GPU + 主机时间，后来开了 overlap", 199.6),
+    ("Decode 输出 → LB → 客户端", "首段音频的最后一个 token 转发出去", 2.5),
 ]
 
 
@@ -369,7 +312,7 @@ def fig_waterfall():
     b.append(
         text(
             24, 58,
-            "B300 1P1D，线上流量回放（7.8 万请求）。稳态下最慢 1% 请求到第 10 个 token 的分段均值，合计 392 ms。",
+            "B300 1P1D，线上流量回放（7.8 万请求）。稳态下最慢 1% 请求到首段音频的分段均值，合计 392 ms。",
             13, INK2,
         )
     )
@@ -412,96 +355,13 @@ def fig_waterfall():
         svg_doc(
             W, H, b, "最慢 1% 请求的时间瀑布",
             "七段依次为：客户端到 Prefill 3.2 ms，Prefill 接收与调度准入 86 ms，Prefill 前向 58 ms，KV 传输链 21 ms，"
-            "Decode 接入 21.5 ms，Decode 前 9 步 200 ms，输出转发 2.5 ms，合计 392 ms。",
+            "Decode 接入 21.5 ms，Decode 到首段音频 200 ms，输出转发 2.5 ms，合计 392 ms。",
         ),
     )
 
 
 # --------------------------------------------------------------------------
-# figure 6: unit start-up time
-
-STARTUP = [
-    ("改之前", "D 140 s、P 119 s 就绪", 148),
-    ("+ 按角色捕获 graph、并行预编译 JIT", "D 65 s、P 76 s 就绪", 79),
-    ("+ P 的 piecewise 封顶、HiCache 后台锁页", "D 39 s、P 45 s 就绪", 47),
-]
-
-WASTE = [
-    ("Decode", [
-        ("JIT 模块第一次用时串行 nvcc 编译", 49),
-        ("piecewise extend graph（D 从来不跑 extend）", 29),
-        ("HiCache 64 GiB 主机池同步锁页", 20.5),
-    ]),
-    ("Prefill", [
-        ("decode graph bs 1–128（P 从来不 decode）", 23),
-        ("采样器 graph 梯子捕获到 128", 23),
-        ("piecewise 梯子封顶 2048 后省下", 20.2),
-        ("HiCache 24 GiB 主机池同步锁页", 8),
-    ]),
-]
-
-
-def fig_startup():
-    W, H = 960, 640
-    b = []
-    b.append(text(24, 34, "PD 单元启动：148 s → 47 s", 18, INK, weight=600))
-    b.append(text(24, 58, "5090 上一个 1P1D 单元，从 Pod 启动到 LB /health 返回 200。", 13, INK2))
-
-    lx, x0, x1 = 24, 380, 860
-    sx = scale(0, 160, x0, x1)
-    top = 96
-    row = 52
-    bottom = top + row * len(STARTUP)
-    for t in [0, 40, 80, 120, 160]:
-        b.append(line(sx(t), top - 6, sx(t), bottom, GRID if t else AXIS, 1))
-        b.append(text(sx(t), bottom + 18, f"{t} s", 12, MUTED, anchor="middle"))
-    for i, (label, sub, v) in enumerate(STARTUP):
-        yc = top + row * i + row / 2
-        b.append(text(lx, yc - 3, label, 14, INK, weight=600))
-        b.append(text(lx, yc + 15, sub, 12, MUTED))
-        b.append(hbar(x0, yc - 10, sx(v) - x0, 20, BLUE))
-        b.append(text(sx(v) + 8, yc + 5, f"{v} s", 14, INK, weight=600))
-
-    # lower panel: the measured waste, by role.
-    y = bottom + 66
-    b.append(text(24, y, "测出来的浪费（秒）", 15, INK, weight=600))
-    b.append(text(24 + tw("测出来的浪费（秒）", 15) + 12, y, "P 和 D 并行启动，这些数不能直接相加", 12, MUTED))
-    sx2 = scale(0, 60, x0, x1)
-    y += 24
-    # lay the rows out first so the grid sits under the bars
-    rows = []
-    for role, items in WASTE:
-        rows.append(("head", role, None, y))
-        y += 24
-        for label, v in items:
-            rows.append(("item", label, v, y))
-            y += 28
-        y += 6
-    grid_top, grid_bottom = rows[0][3] + 4, y - 6
-    for t in [0, 20, 40, 60]:
-        b.append(line(sx2(t), grid_top, sx2(t), grid_bottom, GRID if t else AXIS, 1))
-        b.append(text(sx2(t), grid_bottom + 18, f"{t} s", 12, MUTED, anchor="middle"))
-    for kind, label, v, ry in rows:
-        if kind == "head":
-            b.append(text(lx, ry + 14, label, 13, INK2, weight=600))
-            continue
-        b.append(text(lx + 12, ry + 13, label, 13, INK))
-        b.append(hbar(x0, ry, sx2(v) - x0, 16, BLUE))
-        lab = "≈49 s" if v == 49 else f"{v:g} s"
-        b.append(text(sx2(v) + 8, ry + 13, lab, 12, INK2))
-    write(
-        "startup",
-        svg_doc(
-            W, H, b, "PD 单元启动时间从 148 秒降到 47 秒",
-            "上半部分：原始版本 148 秒，按角色捕获 graph 并行预编译 JIT 后 79 秒，再加 piecewise 封顶和 HiCache 后台锁页后 47 秒。"
-            "下半部分：测出来的浪费，Decode 侧 JIT 串行编译约 49 秒、无用 piecewise graph 29 秒、同步锁页 20.5 秒；"
-            "Prefill 侧无用 decode graph 23 秒、采样器 graph 23 秒、piecewise 封顶省 20 秒、同步锁页 8 秒。",
-        ),
-    )
-
-
-# --------------------------------------------------------------------------
-# figure 1: architecture of one 1P1D unit
+# figure: architecture of one 1P1D unit
 
 
 def box(b, x, y, w, h, title, lines=(), fill="#ffffff", stroke=BORDER, title_size=14, sub_size=12, rx=8, title_fill=INK):
@@ -538,7 +398,7 @@ def fig_architecture():
     b.append(text(220, 372, "扩缩", 11, MUTED))
 
     # pd-lb
-    box(b, 296, 196, 170, 96, "pd-lb（Rust）", ["只转发给本单元的 P 和 D", "预热通过才就绪", "退出前把在途流放完"])
+    box(b, 296, 196, 170, 96, "pd-lb", ["只转发给本单元的 P 和 D", "P、D 都健康才就绪", "退出前把在途流放完"])
 
     # prefill / decode
     px, py, pw, ph = 540, 132, 190, 78
@@ -568,7 +428,7 @@ def fig_architecture():
 
     # sidecars
     box(b, 752, 132, 160, 78, "注册 sidecar", ["健康才注册到 Router，", "退出时先摘掉"], fill=PANEL)
-    box(b, 752, 228, 160, 150, "nvlink-proxy", ["sidecar，仅 5090", "看得见所有卡", "替 P 把 KV 拷给 D", "每对卡 P2P 自检，", "不过就走主机内存"], fill=PANEL)
+    box(b, 752, 228, 160, 132, "nvlink-proxy", ["sidecar，仅 5090", "看得见所有卡", "替 P 把 KV 拷给 D", "每个单元独享一个"], fill=PANEL)
 
     # bottom: the two same-node transfer paths
     y = 474
@@ -578,7 +438,7 @@ def fig_architecture():
             "D 的 KV 池用 FABRIC 内存分配并导出句柄（IMEX）",
             "P 导入后，一个 gather kernel 直接写进 D 的页",
             "2048 条散落的行 0.47 ms；上游逐块拷贝约 296 ms",
-            "跨机或自检失败时退回 TCP（慢但对）",
+            "跨机或 FABRIC 不可用时退回 TCP（慢但对）",
         ],
         fill=PANEL, stroke=BORDER,
     )
@@ -587,7 +447,7 @@ def fig_architecture():
         [
             "sidecar 不申请 GPU，NVIDIA_VISIBLE_DEVICES=all",
             "替两边打开 CUDA IPC 句柄，走 PCIe P2P（~50 GB/s）",
-            "坏掉的卡对改走 pinned 主机内存中转",
+            "每个单元一个，不再和同机的其他单元排队",
             "端到端 KV 校验：对不上就中止这个请求",
         ],
         fill=PANEL, stroke=BORDER,
@@ -598,13 +458,13 @@ def fig_architecture():
             W, H, b, "PD 部署架构：Router 后面挂固定的 1P1D 单元",
             "TTS 引擎把请求发给 Router，Router 按会话亲和分发到多个单元，KEDA 按 decode 在途路数扩缩单元。"
             "每个单元是一个 Pod：Rust 写的 pd-lb 同时把请求发给 Prefill 和 Decode，Prefill 把 KV 在同一台机器上拷给 Decode，"
-            "Decode 把 token 流回 LB。B300 上 Prefill 通过 FABRIC 句柄直接写 Decode 的 KV 池；5090 上由 nvlink-proxy sidecar 代做 P2P 拷贝。",
+            "Decode 把 token 流回 LB。B300 上 Prefill 通过 FABRIC 句柄直接写 Decode 的 KV 池；5090 上由每个单元自己的 nvlink-proxy sidecar 代做 P2P 拷贝。",
         ),
     )
 
 
 # --------------------------------------------------------------------------
-# figure 2: hardware constraints
+# figure: hardware constraints
 
 
 def gpu_row(b, x, y, n, label, w=50, gap=8, fill="#ffffff"):
@@ -665,7 +525,7 @@ def fig_hardware():
     cluster_panel(
         b, 496, "B300 机器", "B300", "NVLink（机内）", "2048 行 0.54 ms",
         "Pod 网络 ≈ 3.4 GB/s", "2048 行 85 ms（只有 TCP 能用）",
-        [(False, "8 张 CX-8 网卡没接线"), (False, "RoCE 没暴露给 Pod")],
+        [(False, "IB 卡没到位"), (False, "RoCE 没暴露给 Pod")],
     )
 
     # bottom: the four numbers as bars
@@ -696,7 +556,7 @@ def fig_hardware():
         svg_doc(
             W, H, b, "硬件约束：同机与跨机的 KV 传输",
             "5090 集群：机内 PCIe P2P 约 50 GB/s，搬 2048 行 KV 5.6 ms；跨机 25 GbE 约 3 GB/s，104 ms；没有 NVLink，没有 GPUDirect RDMA。"
-            "B300 机器：机内 NVLink 0.54 ms；跨机只能走约 3.4 GB/s 的 Pod 网络，85 ms；CX-8 网卡没接线，RoCE 没暴露给 Pod。",
+            "B300 机器：机内 NVLink 0.54 ms；跨机只能走约 3.4 GB/s 的 Pod 网络，85 ms；IB 卡没到位，RoCE 没暴露给 Pod。",
         ),
     )
 
@@ -708,4 +568,3 @@ if __name__ == "__main__":
     fig_ttfa()
     fig_stutter()
     fig_waterfall()
-    fig_startup()

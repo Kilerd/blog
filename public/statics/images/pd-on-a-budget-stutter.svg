@@ -1,103 +1,45 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="960" height="470" viewBox="0 0 960 470" role="img" aria-labelledby="t d" font-family="-apple-system, BlinkMacSystemFont, &#x27;PingFang SC&#x27;, &#x27;Hiragino Sans GB&#x27;, &#x27;Noto Sans CJK SC&#x27;, &#x27;Microsoft YaHei&#x27;, &#x27;Segoe UI&#x27;, sans-serif">
-<title id="t">卡顿占比与最慢 1% 流速：单体与 PD 1P1D</title>
-<desc id="d">左图：在 8、16、24、32、40 路时，单体卡顿流占比为 0.12%、0.32%、5.33%、19.28%、54.02%，PD 1P1D 全部为 0。右图：最慢 1% 的流速，单体 8 路 48.1、16 路 38.1、40 路 25.7 tok/s；PD 16 路 50.1、32 路 42.7、40 路 38.5 tok/s；参考线为 42 tok/s。</desc>
-<rect width="960" height="470" fill="#fcfcfb"/>
-<text x="24.0" y="34.0" font-size="18" fill="#0b0b0b" text-anchor="start" font-weight="600">卡顿占比与最慢 1% 的流速</text>
-<text x="24.0" y="58.0" font-size="13" fill="#52514e" text-anchor="start" font-weight="400">同一次测试。卡顿 = 按首窗 10,10,12,32,64 播放时出现空隙的流的占比；流速 p1 = 最慢 1% 的流的 tok/s。</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="430" viewBox="0 0 960 430" role="img" aria-labelledby="t d" font-family="-apple-system, BlinkMacSystemFont, &#x27;PingFang SC&#x27;, &#x27;Hiragino Sans GB&#x27;, &#x27;Noto Sans CJK SC&#x27;, &#x27;Microsoft YaHei&#x27;, &#x27;Segoe UI&#x27;, sans-serif">
+<title id="t">卡顿流占比：单体与 PD 1P1D</title>
+<desc id="d">在 8、16、24、32、40 路时，单体（1 卡）卡顿流占比为 0.12%、0.32%、5.33%、19.28%、54.02%；PD 1P1D（2 卡）全部为 0。</desc>
+<rect width="960" height="430" fill="#fcfcfb"/>
+<text x="24.0" y="34.0" font-size="18" fill="#0b0b0b" text-anchor="start" font-weight="600">多少路流会卡顿：单体 vs PD</text>
+<text x="24.0" y="58.0" font-size="13" fill="#52514e" text-anchor="start" font-weight="400">按线上真实请求的样子压测。单体 = 1 张卡，PD 1P1D = 2 张卡。</text>
 <rect x="24.0" y="79.0" width="14.0" height="14.0" rx="3" fill="#2a78d6"/>
 <text x="46.0" y="90.0" font-size="13" fill="#52514e" text-anchor="start" font-weight="400">PD 1P1D（2 卡）</text>
 <rect x="167.8" y="79.0" width="14.0" height="14.0" rx="3" fill="#eb6834"/>
 <text x="189.8" y="90.0" font-size="13" fill="#52514e" text-anchor="start" font-weight="400">单体（1 卡）</text>
-<text x="70.0" y="126.0" font-size="14" fill="#0b0b0b" text-anchor="start" font-weight="600">卡顿流占比（%）</text>
-<line x1="70.0" y1="380.0" x2="450.0" y2="380.0" stroke="#c3c2b7" stroke-width="1"/>
-<text x="62.0" y="384.0" font-size="12" fill="#898781" text-anchor="end" font-weight="400">0</text>
-<line x1="70.0" y1="340.0" x2="450.0" y2="340.0" stroke="#e1e0d9" stroke-width="1"/>
-<text x="62.0" y="344.0" font-size="12" fill="#898781" text-anchor="end" font-weight="400">10</text>
-<line x1="70.0" y1="300.0" x2="450.0" y2="300.0" stroke="#e1e0d9" stroke-width="1"/>
-<text x="62.0" y="304.0" font-size="12" fill="#898781" text-anchor="end" font-weight="400">20</text>
-<line x1="70.0" y1="260.0" x2="450.0" y2="260.0" stroke="#e1e0d9" stroke-width="1"/>
-<text x="62.0" y="264.0" font-size="12" fill="#898781" text-anchor="end" font-weight="400">30</text>
-<line x1="70.0" y1="220.0" x2="450.0" y2="220.0" stroke="#e1e0d9" stroke-width="1"/>
-<text x="62.0" y="224.0" font-size="12" fill="#898781" text-anchor="end" font-weight="400">40</text>
-<line x1="70.0" y1="180.0" x2="450.0" y2="180.0" stroke="#e1e0d9" stroke-width="1"/>
-<text x="62.0" y="184.0" font-size="12" fill="#898781" text-anchor="end" font-weight="400">50</text>
-<line x1="70.0" y1="140.0" x2="450.0" y2="140.0" stroke="#e1e0d9" stroke-width="1"/>
-<text x="62.0" y="144.0" font-size="12" fill="#898781" text-anchor="end" font-weight="400">60</text>
+<line x1="80.0" y1="360.0" x2="920.0" y2="360.0" stroke="#c3c2b7" stroke-width="1"/>
+<text x="72.0" y="364.0" font-size="12" fill="#898781" text-anchor="end" font-weight="400">0%</text>
+<line x1="80.0" y1="283.3" x2="920.0" y2="283.3" stroke="#e1e0d9" stroke-width="1"/>
+<text x="72.0" y="287.3" font-size="12" fill="#898781" text-anchor="end" font-weight="400">20%</text>
+<line x1="80.0" y1="206.7" x2="920.0" y2="206.7" stroke="#e1e0d9" stroke-width="1"/>
+<text x="72.0" y="210.7" font-size="12" fill="#898781" text-anchor="end" font-weight="400">40%</text>
+<line x1="80.0" y1="130.0" x2="920.0" y2="130.0" stroke="#e1e0d9" stroke-width="1"/>
+<text x="72.0" y="134.0" font-size="12" fill="#898781" text-anchor="end" font-weight="400">60%</text>
 
-<path d="M109.0,380.0 V379.8 Q109.0,379.5 109.2,379.5 H130.8 Q131.0,379.5 131.0,379.8 V380.0 Z" fill="#eb6834"/>
-<text x="96.0" y="374.0" font-size="11" fill="#52514e" text-anchor="middle" font-weight="400">0</text>
-<text x="120.0" y="373.5" font-size="11" fill="#52514e" text-anchor="middle" font-weight="400">0.12</text>
-<text x="108.0" y="398.0" font-size="12" fill="#898781" text-anchor="middle" font-weight="400">8</text>
+<path d="M165.0,360.0 V359.8 Q165.0,359.5 165.2,359.5 H188.8 Q189.0,359.5 189.0,359.8 V360.0 Z" fill="#eb6834"/>
+<text x="151.0" y="353.0" font-size="12" fill="#52514e" text-anchor="middle" font-weight="400">0</text>
+<text x="177.0" y="352.5" font-size="12" fill="#52514e" text-anchor="middle" font-weight="400">0.12%</text>
+<text x="164.0" y="380.0" font-size="13" fill="#52514e" text-anchor="middle" font-weight="400">8 路</text>
 
-<path d="M185.0,380.0 V379.4 Q185.0,378.7 185.6,378.7 H206.4 Q207.0,378.7 207.0,379.4 V380.0 Z" fill="#eb6834"/>
-<text x="172.0" y="374.0" font-size="11" fill="#52514e" text-anchor="middle" font-weight="400">0</text>
-<text x="196.0" y="372.7" font-size="11" fill="#52514e" text-anchor="middle" font-weight="400">0.32</text>
-<text x="184.0" y="398.0" font-size="12" fill="#898781" text-anchor="middle" font-weight="400">16</text>
+<path d="M333.0,360.0 V359.4 Q333.0,358.8 333.6,358.8 H356.4 Q357.0,358.8 357.0,359.4 V360.0 Z" fill="#eb6834"/>
+<text x="319.0" y="353.0" font-size="12" fill="#52514e" text-anchor="middle" font-weight="400">0</text>
+<text x="345.0" y="351.8" font-size="12" fill="#52514e" text-anchor="middle" font-weight="400">0.32%</text>
+<text x="332.0" y="380.0" font-size="13" fill="#52514e" text-anchor="middle" font-weight="400">16 路</text>
 
-<path d="M261.0,380.0 V362.7 Q261.0,358.7 265.0,358.7 H279.0 Q283.0,358.7 283.0,362.7 V380.0 Z" fill="#eb6834"/>
-<text x="248.0" y="374.0" font-size="11" fill="#52514e" text-anchor="middle" font-weight="400">0</text>
-<text x="272.0" y="352.7" font-size="11" fill="#52514e" text-anchor="middle" font-weight="400">5.3</text>
-<text x="260.0" y="398.0" font-size="12" fill="#898781" text-anchor="middle" font-weight="400">24</text>
+<path d="M501.0,360.0 V343.6 Q501.0,339.6 505.0,339.6 H521.0 Q525.0,339.6 525.0,343.6 V360.0 Z" fill="#eb6834"/>
+<text x="487.0" y="353.0" font-size="12" fill="#52514e" text-anchor="middle" font-weight="400">0</text>
+<text x="513.0" y="332.6" font-size="12" fill="#52514e" text-anchor="middle" font-weight="400">5.3%</text>
+<text x="500.0" y="380.0" font-size="13" fill="#52514e" text-anchor="middle" font-weight="400">24 路</text>
 
-<path d="M337.0,380.0 V306.9 Q337.0,302.9 341.0,302.9 H355.0 Q359.0,302.9 359.0,306.9 V380.0 Z" fill="#eb6834"/>
-<text x="324.0" y="374.0" font-size="11" fill="#52514e" text-anchor="middle" font-weight="400">0</text>
-<text x="348.0" y="296.9" font-size="11" fill="#52514e" text-anchor="middle" font-weight="400">19.3</text>
-<text x="336.0" y="398.0" font-size="12" fill="#898781" text-anchor="middle" font-weight="400">32</text>
+<path d="M669.0,360.0 V290.1 Q669.0,286.1 673.0,286.1 H689.0 Q693.0,286.1 693.0,290.1 V360.0 Z" fill="#eb6834"/>
+<text x="655.0" y="353.0" font-size="12" fill="#52514e" text-anchor="middle" font-weight="400">0</text>
+<text x="681.0" y="279.1" font-size="12" fill="#52514e" text-anchor="middle" font-weight="400">19.3%</text>
+<text x="668.0" y="380.0" font-size="13" fill="#52514e" text-anchor="middle" font-weight="400">32 路</text>
 
-<path d="M413.0,380.0 V167.9 Q413.0,163.9 417.0,163.9 H431.0 Q435.0,163.9 435.0,167.9 V380.0 Z" fill="#eb6834"/>
-<text x="400.0" y="374.0" font-size="11" fill="#52514e" text-anchor="middle" font-weight="400">0</text>
-<text x="424.0" y="157.9" font-size="11" fill="#52514e" text-anchor="middle" font-weight="400">54.0</text>
-<text x="412.0" y="398.0" font-size="12" fill="#898781" text-anchor="middle" font-weight="400">40</text>
-<text x="260.0" y="420.0" font-size="12" fill="#898781" text-anchor="middle" font-weight="400">并发路数（整组）</text>
-<text x="550.0" y="126.0" font-size="14" fill="#0b0b0b" text-anchor="start" font-weight="600">最慢 1% 的流速（tok/s）</text>
-<line x1="550.0" y1="380.0" x2="930.0" y2="380.0" stroke="#c3c2b7" stroke-width="1"/>
-<text x="542.0" y="384.0" font-size="12" fill="#898781" text-anchor="end" font-weight="400">20</text>
-<line x1="550.0" y1="332.0" x2="930.0" y2="332.0" stroke="#e1e0d9" stroke-width="1"/>
-<text x="542.0" y="336.0" font-size="12" fill="#898781" text-anchor="end" font-weight="400">30</text>
-<line x1="550.0" y1="284.0" x2="930.0" y2="284.0" stroke="#e1e0d9" stroke-width="1"/>
-<text x="542.0" y="288.0" font-size="12" fill="#898781" text-anchor="end" font-weight="400">40</text>
-<line x1="550.0" y1="236.0" x2="930.0" y2="236.0" stroke="#e1e0d9" stroke-width="1"/>
-<text x="542.0" y="240.0" font-size="12" fill="#898781" text-anchor="end" font-weight="400">50</text>
-<line x1="550.0" y1="188.0" x2="930.0" y2="188.0" stroke="#e1e0d9" stroke-width="1"/>
-<text x="542.0" y="192.0" font-size="12" fill="#898781" text-anchor="end" font-weight="400">60</text>
-<line x1="550.0" y1="140.0" x2="930.0" y2="140.0" stroke="#e1e0d9" stroke-width="1"/>
-<text x="542.0" y="144.0" font-size="12" fill="#898781" text-anchor="end" font-weight="400">70</text>
-<text x="550.0" y="398.0" font-size="12" fill="#898781" text-anchor="middle" font-weight="400">0</text>
-<text x="597.5" y="398.0" font-size="12" fill="#898781" text-anchor="middle" font-weight="400">8</text>
-<text x="645.0" y="398.0" font-size="12" fill="#898781" text-anchor="middle" font-weight="400">16</text>
-<text x="692.5" y="398.0" font-size="12" fill="#898781" text-anchor="middle" font-weight="400">24</text>
-<text x="740.0" y="398.0" font-size="12" fill="#898781" text-anchor="middle" font-weight="400">32</text>
-<text x="787.5" y="398.0" font-size="12" fill="#898781" text-anchor="middle" font-weight="400">40</text>
-<text x="835.0" y="398.0" font-size="12" fill="#898781" text-anchor="middle" font-weight="400">48</text>
-<text x="882.5" y="398.0" font-size="12" fill="#898781" text-anchor="middle" font-weight="400">56</text>
-<text x="930.0" y="398.0" font-size="12" fill="#898781" text-anchor="middle" font-weight="400">64</text>
-<polyline points="561.9,169.8 573.8,200.5 597.5,245.1 609.4,267.7 621.2,275.4 633.1,294.1 645.0,293.1 668.8,301.8 692.5,314.7 716.2,332.5 740.0,344.0 787.5,352.6" fill="none" stroke="#eb6834" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="561.9" cy="169.8" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="573.8" cy="200.5" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="597.5" cy="245.1" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="609.4" cy="267.7" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="621.2" cy="275.4" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="633.1" cy="294.1" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="645.0" cy="293.1" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="668.8" cy="301.8" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="692.5" cy="314.7" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="716.2" cy="332.5" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="740.0" cy="344.0" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="787.5" cy="352.6" r="4" fill="#eb6834" stroke="#fcfcfb" stroke-width="2"/>
-<polyline points="561.9,180.8 573.8,186.1 597.5,205.8 645.0,235.5 692.5,259.5 740.0,271.0 787.5,291.2 811.2,299.8 835.0,311.4 882.5,312.8 930.0,319.5" fill="none" stroke="#2a78d6" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-<circle cx="561.9" cy="180.8" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="573.8" cy="186.1" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="597.5" cy="205.8" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="645.0" cy="235.5" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="692.5" cy="259.5" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="740.0" cy="271.0" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="787.5" cy="291.2" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="811.2" cy="299.8" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="835.0" cy="311.4" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="882.5" cy="312.8" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
-<circle cx="930.0" cy="319.5" r="4" fill="#2a78d6" stroke="#fcfcfb" stroke-width="2"/>
-<line x1="550.0" y1="274.4" x2="930.0" y2="274.4" stroke="#52514e" stroke-width="1.5"/>
-<text x="926.0" y="267.4" font-size="12" fill="#52514e" text-anchor="end" font-weight="400">42 tok/s 底线（RTF ≤ 0.5）</text>
-<text x="740.0" y="420.0" font-size="12" fill="#898781" text-anchor="middle" font-weight="400">并发路数（整组）</text>
-<text x="24.0" y="456.0" font-size="12" fill="#898781" text-anchor="start" font-weight="400">单体 8 路起就有卡顿流；PD 到 40 路都是 0，44 路开始出现（1.38%），48 路 17.8%。每卡 16 路时 PD p1 42.7，单体 38.1。</text>
+<path d="M837.0,360.0 V156.9 Q837.0,152.9 841.0,152.9 H857.0 Q861.0,152.9 861.0,156.9 V360.0 Z" fill="#eb6834"/>
+<text x="823.0" y="353.0" font-size="12" fill="#52514e" text-anchor="middle" font-weight="400">0</text>
+<text x="849.0" y="145.9" font-size="12" fill="#52514e" text-anchor="middle" font-weight="400">54.0%</text>
+<text x="836.0" y="380.0" font-size="13" fill="#52514e" text-anchor="middle" font-weight="400">40 路</text>
+<text x="24.0" y="414.0" font-size="12" fill="#898781" text-anchor="start" font-weight="400">PD 到 40 路都是 0 卡顿；单体 8 路就开始有流卡顿。</text>
 </svg>

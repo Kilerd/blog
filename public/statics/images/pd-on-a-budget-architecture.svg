@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="960" height="622" viewBox="0 0 960 622" role="img" aria-labelledby="t d" font-family="-apple-system, BlinkMacSystemFont, &#x27;PingFang SC&#x27;, &#x27;Hiragino Sans GB&#x27;, &#x27;Noto Sans CJK SC&#x27;, &#x27;Microsoft YaHei&#x27;, &#x27;Segoe UI&#x27;, sans-serif">
 <title id="t">PD 部署架构：Router 后面挂固定的 1P1D 单元</title>
-<desc id="d">TTS 引擎把请求发给 Router，Router 按会话亲和分发到多个单元，KEDA 按 decode 在途路数扩缩单元。每个单元是一个 Pod：Rust 写的 pd-lb 同时把请求发给 Prefill 和 Decode，Prefill 把 KV 在同一台机器上拷给 Decode，Decode 把 token 流回 LB。B300 上 Prefill 通过 FABRIC 句柄直接写 Decode 的 KV 池；5090 上由 nvlink-proxy sidecar 代做 P2P 拷贝。</desc>
+<desc id="d">TTS 引擎把请求发给 Router，Router 按会话亲和分发到多个单元，KEDA 按 decode 在途路数扩缩单元。每个单元是一个 Pod：Rust 写的 pd-lb 同时把请求发给 Prefill 和 Decode，Prefill 把 KV 在同一台机器上拷给 Decode，Decode 把 token 流回 LB。B300 上 Prefill 通过 FABRIC 句柄直接写 Decode 的 KV 池；5090 上由每个单元自己的 nvlink-proxy sidecar 代做 P2P 拷贝。</desc>
 <rect width="960" height="622" fill="#fcfcfb"/>
 <text x="24.0" y="34.0" font-size="18" fill="#0b0b0b" text-anchor="start" font-weight="600">部署形态：固定的 1P1D 单元</text>
 <text x="24.0" y="58.0" font-size="13" fill="#52514e" text-anchor="start" font-weight="400">一个单元 = 一个 Pod = 同一台机器上的 2 张卡。扩容就是多起几个单元。</text>
@@ -26,9 +26,9 @@
 <line x1="214.0" y1="378.0" x2="255.0" y2="378.0" stroke="#898781" stroke-width="1.2"/><polygon points="262.0,378.0 255.0,373.8 255.0,382.2" fill="#898781"/>
 <text x="220.0" y="372.0" font-size="11" fill="#898781" text-anchor="start" font-weight="400">扩缩</text>
 <rect x="296.0" y="196.0" width="170.0" height="96.0" rx="8" fill="#ffffff" stroke="#d6d5ce" stroke-width="1"/>
-<text x="308.0" y="218.0" font-size="14" fill="#0b0b0b" text-anchor="start" font-weight="600">pd-lb（Rust）</text>
+<text x="308.0" y="218.0" font-size="14" fill="#0b0b0b" text-anchor="start" font-weight="600">pd-lb</text>
 <text x="308.0" y="238.0" font-size="12" fill="#52514e" text-anchor="start" font-weight="400">只转发给本单元的 P 和 D</text>
-<text x="308.0" y="255.0" font-size="12" fill="#52514e" text-anchor="start" font-weight="400">预热通过才就绪</text>
+<text x="308.0" y="255.0" font-size="12" fill="#52514e" text-anchor="start" font-weight="400">P、D 都健康才就绪</text>
 <text x="308.0" y="272.0" font-size="12" fill="#52514e" text-anchor="start" font-weight="400">退出前把在途流放完</text>
 <rect x="540.0" y="132.0" width="190.0" height="78.0" rx="8" fill="#ffffff" stroke="#52514e" stroke-width="1"/>
 <text x="552.0" y="154.0" font-size="14" fill="#0b0b0b" text-anchor="start" font-weight="600">Prefill（GPU A）</text>
@@ -55,23 +55,22 @@
 <text x="764.0" y="154.0" font-size="14" fill="#0b0b0b" text-anchor="start" font-weight="600">注册 sidecar</text>
 <text x="764.0" y="174.0" font-size="12" fill="#52514e" text-anchor="start" font-weight="400">健康才注册到 Router，</text>
 <text x="764.0" y="191.0" font-size="12" fill="#52514e" text-anchor="start" font-weight="400">退出时先摘掉</text>
-<rect x="752.0" y="228.0" width="160.0" height="150.0" rx="8" fill="#f4f4f1" stroke="#d6d5ce" stroke-width="1"/>
+<rect x="752.0" y="228.0" width="160.0" height="132.0" rx="8" fill="#f4f4f1" stroke="#d6d5ce" stroke-width="1"/>
 <text x="764.0" y="250.0" font-size="14" fill="#0b0b0b" text-anchor="start" font-weight="600">nvlink-proxy</text>
 <text x="764.0" y="270.0" font-size="12" fill="#52514e" text-anchor="start" font-weight="400">sidecar，仅 5090</text>
 <text x="764.0" y="287.0" font-size="12" fill="#52514e" text-anchor="start" font-weight="400">看得见所有卡</text>
 <text x="764.0" y="304.0" font-size="12" fill="#52514e" text-anchor="start" font-weight="400">替 P 把 KV 拷给 D</text>
-<text x="764.0" y="321.0" font-size="12" fill="#52514e" text-anchor="start" font-weight="400">每对卡 P2P 自检，</text>
-<text x="764.0" y="338.0" font-size="12" fill="#52514e" text-anchor="start" font-weight="400">不过就走主机内存</text>
+<text x="764.0" y="321.0" font-size="12" fill="#52514e" text-anchor="start" font-weight="400">每个单元独享一个</text>
 <rect x="24.0" y="474.0" width="440.0" height="124.0" rx="8" fill="#f4f4f1" stroke="#d6d5ce" stroke-width="1"/>
 <text x="36.0" y="496.0" font-size="14" fill="#0b0b0b" text-anchor="start" font-weight="600">B300：FABRIC 直写</text>
 <text x="36.0" y="516.0" font-size="12" fill="#52514e" text-anchor="start" font-weight="400">D 的 KV 池用 FABRIC 内存分配并导出句柄（IMEX）</text>
 <text x="36.0" y="533.0" font-size="12" fill="#52514e" text-anchor="start" font-weight="400">P 导入后，一个 gather kernel 直接写进 D 的页</text>
 <text x="36.0" y="550.0" font-size="12" fill="#52514e" text-anchor="start" font-weight="400">2048 条散落的行 0.47 ms；上游逐块拷贝约 296 ms</text>
-<text x="36.0" y="567.0" font-size="12" fill="#52514e" text-anchor="start" font-weight="400">跨机或自检失败时退回 TCP（慢但对）</text>
+<text x="36.0" y="567.0" font-size="12" fill="#52514e" text-anchor="start" font-weight="400">跨机或 FABRIC 不可用时退回 TCP（慢但对）</text>
 <rect x="488.0" y="474.0" width="440.0" height="124.0" rx="8" fill="#f4f4f1" stroke="#d6d5ce" stroke-width="1"/>
 <text x="500.0" y="496.0" font-size="14" fill="#0b0b0b" text-anchor="start" font-weight="600">RTX 5090：nvlink-proxy</text>
 <text x="500.0" y="516.0" font-size="12" fill="#52514e" text-anchor="start" font-weight="400">sidecar 不申请 GPU，NVIDIA_VISIBLE_DEVICES=all</text>
 <text x="500.0" y="533.0" font-size="12" fill="#52514e" text-anchor="start" font-weight="400">替两边打开 CUDA IPC 句柄，走 PCIe P2P（~50 GB/s）</text>
-<text x="500.0" y="550.0" font-size="12" fill="#52514e" text-anchor="start" font-weight="400">坏掉的卡对改走 pinned 主机内存中转</text>
+<text x="500.0" y="550.0" font-size="12" fill="#52514e" text-anchor="start" font-weight="400">每个单元一个，不再和同机的其他单元排队</text>
 <text x="500.0" y="567.0" font-size="12" fill="#52514e" text-anchor="start" font-weight="400">端到端 KV 校验：对不上就中止这个请求</text>
 </svg>
